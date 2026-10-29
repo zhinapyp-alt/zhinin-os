@@ -9,10 +9,6 @@ export default {
         const gender = body.gender === 'm' ? 'm' : 'f';
         const level = body.level || 'Introducción';
 
-        if (!messages.length || messages[messages.length - 1].role !== 'user') {
-          return new Response(JSON.stringify({ error: 'Falta tu pregunta' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-        }
-
         const trato = gender === 'm' ? 'masculino (listo, preparado)' : 'femenino (lista, preparada)';
         const systemPrompt = `Eres Zhinin, asistente de Arduino y ESP32. Responde en español, breve. Trato: ${trato}. Módulo: ${level}.`;
 
@@ -23,8 +19,8 @@ export default {
 
         const apiKey = env.GEMINI_API_KEY;
         
-        // AQUÍ ESTÁ EL ARREGLO: Cambiamos v1beta por v1
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        // AQUÍ ESTÁ EL ARREGLO: v1beta y gemini-1.5-flash-latest
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
