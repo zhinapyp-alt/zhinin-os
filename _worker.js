@@ -2,7 +2,6 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Si la petición es para nuestro chat de IA
     if (url.pathname === '/api/zhinin' && request.method === 'POST') {
       try {
         const body = await request.json();
@@ -10,10 +9,11 @@ export default {
         const gender = body.gender === 'm' ? 'm' : 'f';
         const level = body.level || 'Introducción';
 
-        const trato = gender === 'm' 
-          ? 'masculino (listo, preparado)' 
-          : 'femenino (lista, preparada)';
+        if (!messages.length || messages[messages.length - 1].role !== 'user') {
+          return new Response(JSON.stringify({ error: 'Falta tu pregunta' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+        }
 
+        const trato = gender === 'm' ? 'masculino (listo, preparado)' : 'femenino (lista, preparada)';
         const systemPrompt = `Eres Zhinin, asistente de Arduino y ESP32. Responde en español, breve. Trato: ${trato}. Módulo: ${level}.`;
 
         const geminiContents = messages.slice(-20).map(m => ({
@@ -22,7 +22,9 @@ export default {
         }));
 
         const apiKey = env.GEMINI_API_KEY;
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        
+        // AQUÍ ESTÁ EL ARREGLO: Cambiamos v1beta por v1
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -33,22 +35,19 @@ export default {
         });
 
         const data = await response.json();
-        if (data.error) return new Response(JSON.stringify({ error: data.error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
         
+        if (data.error) {
+           return new Response(JSON.stringify({ error: 'Error de Gemini: ' + data.error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+        }
+
         const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No pude responder.';
         return new Response(JSON.stringify({ reply }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
       } catch (error) {
-        return new Response(JSON.stringify({ error: 'Error de Zhinin.' }), { status: 502, headers: { 'Content-Type': 'application/json' } });
+        return new Response(JSON.stringify({ error: 'Error en el servidor de Zhinin.' }), { status: 502, headers: { 'Content-Type': 'application/json' } });
       }
     }
-
-    // SALVAVIDAS: Si no es el chat, muestra el index.html
-    try {
-      return await env.ASSETS.fetch(request);
-    } catch (e) {
-      // Si falla la ruta exacta, forzamos la raíz para que cargue el index
-      return env.ASSETS.fetch(new Request(new URL('/', request.url), request));
-    }
+    
+    return env.ASSETS.fetch(request);
   }
 };
