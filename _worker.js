@@ -2,7 +2,6 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Si la petición es para el chat
     if (url.pathname === '/api/zhinin' && request.method === 'POST') {
       try {
         const body = await request.json();
@@ -27,15 +26,13 @@ Reglas:
 - Sé breve: máximo 3 párrafos cortos. Usa bloques de código si ayudan.
 - Si te piden la respuesta directa de una evaluación, da una pista en lugar de la solución.`;
 
-        // Adaptamos los mensajes al formato que pide Google Gemini
         const geminiContents = messages.slice(-20).map(m => ({
-          role: m.role === 'assistant' ? 'model' : 'user', // Gemini usa 'model' en vez de 'assistant'
+          role: m.role === 'assistant' ? 'model' : 'user',
           parts: [{ text: m.content.slice(0, 2000) }]
         }));
 
         const apiKey = env.GEMINI_API_KEY;
 
-        // Llamada a la API de Google AI Studio (usando el modelo gemini-1.5-flash)
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -60,7 +57,6 @@ Reglas:
       }
     }
 
-    // Si no es el chat, muestra tu página web normal
     return env.ASSETS.fetch(request);
   }
 };
