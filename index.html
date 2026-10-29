@@ -144,7 +144,7 @@ body{font-size:15px;line-height:1.6}
 
 <div class="screen" id="screen-profile">
   <div class="welcome">
-    <h1>ZHININ_OS v4.0</h1>
+    <h1>ZHININ_OS v5.0</h1>
     <p>:: Laboratorio Agroindustrial ::</p>
     <p style="color:var(--text)">Antes de empezar, Zhinin necesita saber cómo llamarte y cómo hablarte.</p>
     <div class="field"><label>Tu nombre (opcional)</label><input type="text" id="in-name" placeholder="Ej. Zinia" maxlength="20"></div>
@@ -286,7 +286,7 @@ const WORLDS = {
         desc:'Ultrasónico, suelo, DHT11, OLED y la trampa del código.',
         sublevels:[
           { t:'teach', title:'Sensor ultrasónico (HC-SR04)', voice:'El sensor ultrasónico manda un pulso por el pin trig y mide cuánto tarda en volver por el pin echo. Esa duración la divides entre cincuenta y ocho punto cero cero y te da la distancia en centímetros.', html:`<h3>HC-SR04</h3><pre class="good"><code>digitalWrite(trig, LOW);\ndelayMicroseconds(2);\ndigitalWrite(trig, HIGH);\ndelayMicroseconds(10);\ndigitalWrite(trig, LOW);\n\nlong tiempo = pulseIn(echo, HIGH);\nint distancia = tiempo / 58.00;   // cm</code></pre><div class="note"><b>¿Por qué 58.00?</b> El sonido tarda ~29 µs en ir y ~29 µs en volver por cm. 29 + 29 = 58.</div>` },
-          { t:'teach', title:'Humedad de suelo (analogRead A0)', voice:'El sensor de humedad de suelo se lee con analog read en el pin A cero. Devuelve un número entre cero y mil veintitrés. Cuanto más seco, más alto el número.', html:`<h3>Humedad de suelo</h3><pre class="good"><code>int humedad = analogRead(A0);   // 0..1023\n\nif (humedad < 300) {\n  // suelo seco\n}</code></pre><div class="tip"><b>Ojo:</b> en ESP32 es <b>0..4095</b> (12 bits).</div>` },
+          { t:'teach', title:'Humedad de suelo (analogRead A0)', voice:'El sensor de humedad de suelo se lee con analog read en el pin A cero. Devuelve un número entre cero y mil veintitrés. Cuanto más seco, más alto el número.', html:`<h3>Humedad de suelo</h3><pre class="good"><code>int humedad = analogRead(A0);   // 0..1023\n\nif (humedad &lt; 300) {\n  // suelo seco\n}</code></pre><div class="tip"><b>Ojo:</b> en ESP32 es <b>0..4095</b> (12 bits).</div>` },
           { t:'teach', title:'DHT11', voice:'El D H T once necesita la librería D H T punto h. Le dices el tipo D H T once, el pin, y lees read temperature o read humidity.', html:`<h3>DHT11 con <code>DHT.h</code></h3><pre class="good"><code>#include "DHT.h"\n\n#define DHTPIN 2\n#define DHTTYPE DHT11\nDHT dht(DHTPIN, DHTTYPE);\n\nvoid setup() {\n  dht.begin();\n}\n\nvoid loop() {\n  float t = dht.readTemperature();\n  float h = dht.readHumidity();\n  delay(2000);\n}</code></pre><div class="note"><b>Ojo:</b> el DHT11 es lento. Lee cada 2 s o devuelve <code>NaN</code>.</div>` },
           { t:'teach', title:'OLED SH1106 con U8g2', voice:'La pantalla O L E D se conecta por I dos C. S D A va al pin A cuatro y S C L al A cinco. Se controla con U ocho g dos. clear Buffer borra, draw Str escribe, send Buffer manda a la pantalla.', html:`<h3>OLED SH1106</h3><p>Conexión: <b>SDA = A4</b>, <b>SCL = A5</b>.</p><pre class="good"><code>#include &lt;U8g2lib.h&gt;\n#include &lt;Wire.h&gt;\n\nU8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);\n\nvoid setup() {\n  u8g2.begin();\n}\n\nvoid loop() {\n  u8g2.clearBuffer();\n  u8g2.setFont(u8g2_font_ncenB08_tr);\n  u8g2.drawStr(0, 20, "Hola Zinia!");\n  u8g2.sendBuffer();\n}</code></pre><div class="tip"><b>Flujo:</b> <code>clearBuffer → drawStr → sendBuffer</code>. Sin el último, no se ve nada.</div>` },
           { t:'teach', title:'Simulador: La Carita OLED', voice:'Juega con los controles. Si el obstáculo está a menos de quince centímetros o la humedad es menor a trescientos, la pantalla se pondrá molesta.', html:`<h3>Prueba la lógica del examen final</h3><p>Mueve los controles y observa la pantalla OLED virtual. Esta es la misma condición <code>if</code> que usarás en el papel.</p>
@@ -300,7 +300,7 @@ const WORLDS = {
               <label><span>Humedad de suelo</span> <span id="sim-hum-val">500</span></label>
               <input type="range" id="sim-hum" min="0" max="1023" value="500">
             </div>
-            <pre style="text-align:left;margin-top:15px;font-size:11px"><code id="sim-code">if (distancia < 15 || humedad < 300) {</code></pre>
+            <pre style="text-align:left;margin-top:15px;font-size:11px"><code id="sim-code">if (distancia &lt; 15 || humedad &lt; 300) {</code></pre>
           </div>` },
           { t:'teach', title:'La trampa del while (Funtion_Flag)', voice:'Esta es la trampa más grande del código Lafvin. El código original usa bucles while con una bandera para atrapar la ejecución. Si tú pones tu código de sensores en el loop principal, nunca se va a ejecutar porque el while se queda dando vueltas para siempre.', html:`<h3>¿Qué hace <code>while (Funtion_Flag)</code>?</h3><p>Es un bucle que se repite <b>mientras</b> la variable <code>Funtion_Flag</code> sea verdadera. El código original del Lafvin lo usa para "secuestrar" el programa dentro de una función hasta que pase algo (como recibir un comando Bluetooth).</p><pre class="bad"><code>void loop() {\n  while (Funtion_Flag) {\n    // El programa se queda ATRAPADO aquí\n    // hasta que Funtion_Flag cambie a false\n  }\n  // Tu código de sensores NUNCA llega aquí\n}</code></pre><div class="note"><b>Trampa de examen:</b> si te piden agregar un sensor nuevo, NO lo pongas en el <code>loop()</code> principal. Debes ponerlo <b>dentro</b> del <code>while</code> que ya existe, o cambiar la lógica para que la bandera se libere.</div><pre class="good"><code>// Correcto: el sensor va DENTRO del while\nvoid loop() {\n  while (Funtion_Flag) {\n    int humedad = analogRead(A0);  // ✅ aquí sí corre\n    // ... resto de la lógica\n  }\n}</code></pre>` },
           { t:'teach', title:'Bluetooth: switch/case con charAt(1)', voice:'Cuando el robot recibe un mensaje por Bluetooth, lo lee carácter por carácter. El primer carácter suele ser un símbolo como el asterisco, y el segundo carácter es el comando real. Char At uno te devuelve ese segundo carácter. Después usas switch y case para decidir qué hacer.', html:`<h3>Leer Bluetooth y decidir con <code>switch</code></h3><pre class="good"><code>String comando = "";\n\nvoid loop() {\n  while (Serial.available() > 0) {\n    char c = Serial.read();\n    comando += c;\n  }\n\n  if (comando.length() > 1) {\n    char accion = comando.charAt(1);  // segundo carácter\n    switch (accion) {\n      case 'G': avanzar(); break;\n      case 'T': retroceder(); break;\n      case 'L': girarIzquierda(); break;\n      case 'R': girarDerecha(); break;\n      default:  detener(); break;\n    }\n  }\n  comando = "";  // limpiar para el siguiente\n}</code></pre><div class="tip"><b>¿Por qué <code>charAt(1)</code>?</b> Si el mensaje es <code>"*G"</code>, el índice 0 es <code>'*'</code> y el índice 1 es <code>'G'</code>. Por eso se lee el segundo carácter.</div><div class="note"><b>Ojo:</b> los <code>case 'G'</code> van con <b>comillas simples</b> porque son <code>char</code>, no <code>String</code>.</div>` },
@@ -393,7 +393,6 @@ function renderMap(){
   const completed=state.completed[state.world]||{};
   const grid=$('level-grid'); grid.innerHTML='';
   
-  // Añadir minijuego
   const mgCard=document.createElement('div');
   mgCard.className='level-card minigame';
   mgCard.innerHTML=`<div class="lvl-num">Arcade</div><div class="lvl-title">🎮 Caza Errores</div><div class="lvl-desc">Récord: ${state.mgHighScore} pts. ¡Pon a prueba tus reflejos!</div><div class="lvl-status">▶</div>`;
@@ -435,7 +434,6 @@ function renderSublevel(){
     card.innerHTML=`<button class="voice-btn" id="btn-voice">🔊 Escuchar a Zhinin</button><div>${sub.html}</div>`;
     content.appendChild(card);
     
-    // Lógica del simulador OLED
     if(sub.title === 'Simulador: La Carita OLED'){
       setTimeout(()=>{
         const dEl=$('sim-dist'), hEl=$('sim-hum'), fEl=$('sim-face'), cdEl=$('sim-code');
@@ -516,8 +514,7 @@ function nextSub(){
   currentSub++; renderSublevel();
 }
 
-// ================= MINIJUEGO CAZA ERRORES =================
-let mgInterval, mgTimeout, mgScore=0, mgTime=100, mgCurrentCorrect=true;
+let mgInterval, mgTimeout, mgScore=0, mgTime=100, mgCurrentCorrect=true, mgCurrentQuestion=null;
 const mgCodes = [
   { c: 'digitalWrite(4, HIGH);', ok: true },
   { c: 'digitalwrite(4, HIGH);', ok: false, why: 'W minúscula' },
@@ -545,9 +542,9 @@ function nextMgQuestion(){
   mgTime = 100;
   $('mg-timer').style.width = '100%';
   
-  const q = mgCodes[Math.floor(Math.random() * mgCodes.length)];
-  mgCurrentCorrect = q.ok;
-  $('mg-code').textContent = q.c;
+  mgCurrentQuestion = mgCodes[Math.floor(Math.random() * mgCodes.length)];
+  mgCurrentCorrect = mgCurrentQuestion.ok;
+  $('mg-code').textContent = mgCurrentQuestion.c;
   
   $('mg-btn-ok').disabled = false;
   $('mg-btn-err').disabled = false;
@@ -557,7 +554,7 @@ function nextMgQuestion(){
     $('mg-timer').style.width = mgTime + '%';
     if(mgTime <= 0) {
       clearInterval(mgInterval);
-      handleMgAnswer(null, q);
+      handleMgAnswer(null, mgCurrentQuestion);
     }
   }, 50);
 }
@@ -600,7 +597,6 @@ function endMinigame(){
   alert(`¡Juego terminado!\nPuntos: ${mgScore}\nRécord: ${state.mgHighScore}`);
   showScreen('screen-map'); renderMap();
 }
-// ==========================================================
 
 let chatHistory=[], chatBusy=false;
 function openChat(){
@@ -678,8 +674,8 @@ function bootChat(){ $('fab-chat').onclick=openChat; $('btn-chat-close').onclick
 function bootMinigame(){
   $('btn-mg-back').onclick=()=>{ clearInterval(mgInterval); clearTimeout(mgTimeout); showScreen('screen-map'); renderMap(); };
   $('btn-sound3').onclick=$('btn-sound').onclick;
-  $('mg-btn-ok').onclick=()=>handleMgAnswer(true, {ok: mgCurrentCorrect});
-  $('mg-btn-err').onclick=()=>handleMgAnswer(false, {ok: mgCurrentCorrect});
+  $('mg-btn-ok').onclick=()=>handleMgAnswer(true, mgCurrentQuestion);
+  $('mg-btn-err').onclick=()=>handleMgAnswer(false, mgCurrentQuestion);
 }
 
 function init(){
