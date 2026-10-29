@@ -9,30 +9,16 @@ export default {
         const gender = body.gender === 'm' ? 'm' : 'f';
         const level = body.level || 'Introducción';
 
-        if (!messages.length || messages[messages.length - 1].role !== 'user') {
-          return new Response(JSON.stringify({ error: 'Falta tu pregunta' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-        }
-
-        const trato = gender === 'm' 
-          ? 'El estudiante es varón: usa siempre el masculino (listo, preparado, bienvenido).' 
-          : 'La estudiante es mujer: usa siempre el femenino (lista, preparada, bienvenida).';
-
-        const systemPrompt = `Eres Zhinin, el asistente de estudio del simulador "Zhinin OS".
-Ayudas a preparar un examen de Arduino y ESP32. Temas: sintaxis, variables, sensores, motores, OLED, Bluetooth, WiFi.
-${trato}
-El estudiante está viendo el módulo: "${level}".
-Reglas:
-- Responde siempre en español, con calidez.
-- Sé breve: máximo 3 párrafos cortos. Usa bloques de código si ayudan.
-- Si te piden la respuesta directa de una evaluación, da una pista en lugar de la solución.`;
+        const trato = gender === 'm' ? 'masculino (listo, preparado)' : 'femenino (lista, preparada)';
+        const systemPrompt = `Eres Zhinin, asistente de Arduino y ESP32. Responde en español, breve. Trato: ${trato}. Módulo: ${level}.`;
 
         const geminiContents = messages.slice(-20).map(m => ({
           role: m.role === 'assistant' ? 'model' : 'user',
           parts: [{ text: m.content.slice(0, 2000) }]
         }));
 
+        // Aquí lee la llave secreta de Cloudflare
         const apiKey = env.GEMINI_API_KEY;
-
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -44,19 +30,15 @@ Reglas:
         });
 
         const data = await response.json();
+        if (data.error) return new Response(JSON.stringify({ error: data.error.message }), { status: 500 });
         
-        if (data.error) {
-          return new Response(JSON.stringify({ error: 'Error de Gemini: ' + data.error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
-        }
-
-        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No pude generar una respuesta.';
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No pude responder.';
         return new Response(JSON.stringify({ reply }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
       } catch (error) {
-        return new Response(JSON.stringify({ error: 'Zhinin no pudo responder ahora.' }), { status: 502, headers: { 'Content-Type': 'application/json' } });
+        return new Response(JSON.stringify({ error: 'Error de Zhinin.' }), { status: 502 });
       }
     }
-
     return env.ASSETS.fetch(request);
   }
 };
