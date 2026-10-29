@@ -154,7 +154,7 @@ body{font-size:15px;line-height:1.6}
 
 <div class="screen" id="screen-profile">
   <div class="welcome">
-    <h1>ZHININ_OS v5.0</h1>
+    <h1>ZHININ_OS v6.0</h1>
     <p>:: Laboratorio Agroindustrial ::</p>
     <p style="color:var(--text)">Antes de empezar, Zhinin necesita saber cómo llamarte y cómo hablarte.</p>
     <div class="field"><label>Tu nombre (opcional)</label><input type="text" id="in-name" placeholder="Ej. Zinia" maxlength="20"></div>
@@ -257,64 +257,54 @@ const WORLDS = {
     id: 'arduino', title: 'Mundo Arduino', subtitle: 'Lafvin 6 en 1 · Examen a papel',
     levels: [
       {
-        id:'a0', title:'El Alfabeto del Código',
+        id:'a0', title:'Nivel 0: Cero Absoluto',
+        desc:'¿Qué es programar? Variables, funciones y la estructura básica.',
+        sublevels:[
+          { t:'teach', title:'¿Qué es programar?', voice:'Bienvenida al nivel cero. Programar es darle instrucciones a una computadora paso a paso, como una receta de cocina. El Arduino es una mini computadora que lee tus instrucciones de arriba a abajo.', html:`<h3>Pensar como una computadora</h3><p>Una computadora no adivina. Hace <b>exactamente</b> lo que le dices, en el orden en que se lo dices. Si te equivocas en un símbolo, se rompe.</p><p>Imagina que le das una receta al robot:</p><ol style="margin-left:20px"><li>Encender motor.</li><li>Esperar 2 segundos.</li><li>Apagar motor.</li></ol><p>Eso, en código, se ve así:</p><pre class="good"><code>digitalWrite(4, HIGH); // 1. Encender\ndelay(2000);           // 2. Esperar\ndigitalWrite(4, LOW);  // 3. Apagar</code></pre>` },
+          { t:'teach', title:'¿Qué es una variable?', voice:'Una variable es una caja con un nombre. Tú guardas un número dentro de esa caja para usarlo después. Si la caja se llama distancia, dentro guardas el número quince.', html:`<h3>Las cajas de la memoria</h3><p>En lugar de escribir el número <code>15</code> por todos lados, lo guardas en una caja llamada <code>distancia</code>.</p><pre class="good"><code>int distancia = 15;</code></pre><p>Existen diferentes tipos de cajas:</p><ul style="margin-left:20px"><li><code>int</code>: números enteros (1, 2, 100).</li><li><code>float</code>: números con decimales (1.5, 3.14).</li><li><code>boolean</code>: solo dos valores (verdadero o falso).</li></ul>` },
+          { t:'teach', title:'¿Qué es una función?', voice:'Una función es un botón que hace una acción. En lugar de escribir diez líneas de código, creas una función con un nombre y la llamas cuando la necesitas.', html:`<h3>Botones mágicos</h3><p>Fíjate en <code>delay(2000)</code>. <code>delay</code> es una función que ya viene programada. Cuando la llamas, el Arduino sabe que debe hacer una pausa.</p><p>Las funciones siempre llevan paréntesis <code>()</code>. A veces necesitan datos dentro, como <code>delay(2000)</code>, donde <code>2000</code> es el tiempo que debe esperar.</p>` },
+          { t:'teach', title:'La estructura: setup y loop', voice:'Todo programa de Arduino tiene dos partes. Setup, que se ejecuta solo una vez al encender. Y loop, que se repite por siempre, como un disco rayado.', html:`<h3>El esqueleto del programa</h3><pre class="good"><code>void setup() {\n  // Se ejecuta 1 vez al encender.\n  // Aquí preparas los pines.\n}\n\nvoid loop() {\n  // Se repite por siempre.\n  // Aquí va la acción del robot.\n}</code></pre><p>Si pones la acción del motor en <code>setup</code>, el motor se mueve una vez y nunca más. Si lo pones en <code>loop</code>, se moverá para siempre.</p>` },
+          { t:'quiz', q:'¿Qué hace la función <code>delay(1000)</code>?', opts:['Enciende el motor','Hace una pausa de 1 segundo','Guarda una variable','Reinicia el Arduino'], a:1, explain:'<code>delay()</code> detiene el programa durante los milisegundos que le pongas entre paréntesis. 1000 ms = 1 segundo.' },
+          { t:'quiz', q:'¿Cuál es la diferencia entre <code>setup()</code> y <code>loop()</code>?', opts:['setup se repite por siempre; loop se ejecuta una vez','setup se ejecuta una vez al encender; loop se repite por siempre','Son lo mismo','loop es para pantallas y setup para sensores'], a:1, explain:'<code>setup()</code> prepara todo (se ejecuta una vez). <code>loop()</code> es el bucle infinito del programa.' }
+        ]
+      },
+      {
+        id:'a1', title:'El Alfabeto del Código',
         desc:'Punto y coma, llaves, mayúsculas y la plantilla universal.',
         sublevels:[
-          { t:'teach', title:'El punto y coma ;', voice:'Bienvenida al nivel cero. Antes de mover un motor, tienes que entender tres símbolos. El primero es el punto y coma. Cada orden que le das al Arduino termina en punto y coma. Si lo olvidas, el código no compila y el examen queda mal.', html:`<h3>1. El punto y coma <code>;</code></h3><p>Es el <b>punto final</b> de cada instrucción. Sin él, el compilador cree que la orden sigue en la línea siguiente.</p><pre class="bad"><code>digitalWrite(4, HIGH)    // ❌ falta ;</code></pre><pre class="good"><code>digitalWrite(4, HIGH);   // ✅ correcto</code></pre><div class="note"><b>Trampa de examen:</b> te dan el código bien escrito pero le quitan un <code>;</code> y te piden "marcar el error". Revisa siempre el final de cada línea.</div>` },
+          { t:'teach', title:'El punto y coma ;', voice:'El punto y coma es el punto final de una oración. Cada orden que le das al Arduino termina en punto y coma. Si lo olvidas, el código no compila y el examen queda mal.', html:`<h3>1. El punto y coma <code>;</code></h3><p>Es el <b>punto final</b> de cada instrucción. Sin él, el compilador cree que la orden sigue en la línea siguiente.</p><pre class="bad"><code>digitalWrite(4, HIGH)    // ❌ falta ;</code></pre><pre class="good"><code>digitalWrite(4, HIGH);   // ✅ correcto</code></pre><div class="note"><b>Trampa de examen:</b> te dan el código bien escrito pero le quitan un <code>;</code> y te piden "marcar el error". Revisa siempre el final de cada línea.</div>` },
           { t:'teach', title:'Las llaves { }', voice:'El segundo símbolo son las llaves. Abren y cierran bloques. Si abres una llave, tienes que cerrarla. Si no la cierras, el compilador se pierde y te marca error en una línea que no era.', html:`<h3>2. Las llaves <code>{ }</code></h3><p>Delimitan bloques: el cuerpo de <code>setup()</code>, de <code>loop()</code>, de un <code>if</code>.</p><pre class="good"><code>void setup() {\n  pinMode(4, OUTPUT);\n}</code></pre><div class="note"><b>Trampa:</b> si olvidas cerrar una llave, el error aparece muchas líneas después. Cuenta: deben ser pares.</div>` },
           { t:'teach', title:'Mayúsculas que valen puntos', voice:'El tercer símbolo son las mayúsculas. C más más distingue mayúsculas de minúsculas. Digital write con la W mayúscula. Digital write con la w minúscula no existe y el Arduino no lo reconoce.', html:`<h3>3. Mayúsculas obligatorias (CamelCase)</h3><pre class="good"><code>pinMode(4, OUTPUT);       // ✅ M mayúscula\ndigitalWrite(4, HIGH);    // ✅ W mayúscula\ndigitalRead(2);           // ✅ R mayúscula\nanalogWrite(6, 128);      // ✅ W mayúscula</code></pre><pre class="bad"><code>digitalwrite(4, HIGH);    // ❌ W minúscula\npinmode(4, OUTPUT);       // ❌ M minúscula</code></pre><div class="note"><b>En el examen:</b> es el error más fácil de tachar. Repasa las "W" y las "M".</div>` },
-          { t:'teach', title:'La plantilla universal', voice:'Con esos tres símbolos ya puedes escribir tu plantilla universal. Constante entera, void setup, void loop. Es lo primero que dibujas en la hoja en blanco.', html:`<h3>4. La plantilla universal</h3><pre class="good"><code>// PARTE 1: DEFINIR PINES Y VARIABLES\nconst int IN1 = 4;\nconst int IN2 = 5;\n\n// PARTE 2: CONFIGURACIÓN (1 sola vez)\nvoid setup() {\n  pinMode(IN1, OUTPUT);\n  pinMode(IN2, OUTPUT);\n}\n\n// PARTE 3: BUCLE INFINITO\nvoid loop() {\n  // Aquí va la lógica del robot\n}</code></pre><div class="tip"><b>Truco:</b> si te dan la hoja en blanco, lo primero que dibujas es esta plantilla.</div>` },
-          { t:'quiz', q:'¿Cuál es el error en: <code>digitalWrite(4, HIGH)</code>?', opts:['Falta el punto y coma al final','HIGH debería ser high','digitalWrite debería ser DigitalWrite','El 4 debería ir entre comillas'], a:0, explain:'La instrucción está bien escrita, pero le falta el <code>;</code> final. Sin él, el compilador no sabe que terminó.' },
-          { t:'quiz', q:'¿Qué diferencia hay entre <code>setup()</code> y <code>loop()</code>?', opts:['setup() corre una vez al encender; loop() se repite sin parar','setup() es para motores; loop() para sensores','Son iguales, solo cambia el nombre','loop() solo corre si hay WiFi'], a:0, explain:'<code>setup()</code> corre una sola vez. <code>loop()</code> se ejecuta en bucle.' }
+          { t:'quiz', q:'¿Cuál es el error en: <code>digitalWrite(4, HIGH)</code>?', opts:['Falta el punto y coma al final','HIGH debería ser high','digitalWrite debería ser DigitalWrite','El 4 debería ir entre comillas'], a:0, explain:'La instrucción está bien escrita, pero le falta el <code>;</code> final. Sin él, el compilador no sabe que terminó.' }
         ]
       },
       {
-        id:'a1', title:'Variables y Tipos',
-        desc:'int, float, String, boolean, char y volatile.',
+        id:'a2', title:'Anatomía del Código (600 líneas)',
+        desc:'Cómo leer el código del Lafvin sin morir en el intento.',
         sublevels:[
-          { t:'teach', title:'¿Qué es una variable?', voice:'Una variable es una caja con nombre donde guardas un valor. En Arduino cada caja tiene un tipo. Entero: int. Decimal: float. Texto: String.', html:`<h3>Una caja con nombre</h3><pre class="good"><code>int distancia = 25;          // entero\nfloat temperatura = 23.5;     // decimal\nString nombre = "Zinia";      // texto\nboolean encendido = true;     // verdadero/falso\nchar letra = 'A';             // un carácter</code></pre><div class="note"><b>Ojo:</b> <code>"texto"</code> con comillas dobles (String), <code>'A'</code> con comillas simples (char).</div>` },
-          { t:'teach', title:'¿Y para qué sirve volatile?', voice:'Volatile es una palabra rara que aparece mucho en el código del Lafvin. Le dice al compilador: oye, este valor puede cambiar solo, no lo guardes en un registro.', html:`<h3><code>volatile</code></h3><p>Le dice al compilador: <i>"no optimices esta variable, su valor puede cambiar por fuera"</i>. Se usa en variables que modifica una interrupción o un bucle muy rápido.</p><pre class="good"><code>volatile int contador = 0;</code></pre><div class="tip"><b>En el Lafvin:</b> verás <code>volatile</code> en <code>Funtion_Flag</code> que controla los <code>while</code>.</div>` },
-          { t:'teach', title:'const int para pines', voice:'Constante entera es la combinación que usas para darle nombre a un pin. Const int IN1 igual a cuatro. Le dices al Arduino: el pin cuatro se llama IN1 y no cambia.', html:`<h3><code>const int</code> para pines</h3><pre class="good"><code>const int IN1 = 4;\nconst int IN2 = 5;\n\nvoid setup() {\n  pinMode(IN1, OUTPUT);\n}</code></pre>` },
-          { t:'quiz', q:'¿Qué tipo usarías para guardar <code>23.5</code>?', opts:['int','float','char','String'], a:1, explain:'<code>float</code> guarda decimales. <code>int</code> solo enteros.' },
-          { t:'quiz', q:'¿Cuál declaración es correcta para guardar la letra A?', opts:['<code>char letra = "A";</code>','<code>char letra = \'A\';</code>','<code>String letra = \'A\';</code>','<code>int letra = "A";</code>'], a:1, explain:'Para <code>char</code> se usan comillas simples.' }
+          { t:'teach', title:'No son 600 líneas, son 5 bloques', voice:'Tranquila. Esas seiscientas líneas no son seiscientas cosas diferentes. Son los mismos cinco bloques de código copiados y pegados muchas veces para cada sensor y cada motor.', html:`<h3>El secreto del código largo</h3><p>Cuando abras el archivo del Lafvin, entra en pánico. Pero mira la estructura:</p><pre class="good"><code>void setup() {\n  // 1. Preparar pines (30 líneas)\n}\n\nvoid loop() {\n  // 2. Leer sensores (100 líneas)\n  // 3. Tomar decisiones (if/else) (300 líneas)\n  // 4. Mover motores (100 líneas)\n  // 5. Leer Bluetooth (70 líneas)\n}</code></pre><div class="tip"><b>Tu misión en el examen:</b> no memorizar las 600 líneas. Es saber identificar en qué parte va cada cosa.</div>` },
+          { t:'teach', title:'La trampa del while (Funtion_Flag)', voice:'Esta es la trampa más grande del código Lafvin. El código original usa bucles while con una bandera para atrapar la ejecución. Si tú pones tu código de sensores en el loop principal, nunca se va a ejecutar porque el while se queda dando vueltas para siempre.', html:`<h3>¿Qué hace <code>while (Funtion_Flag)</code>?</h3><p>Es un bucle que se repite <b>mientras</b> la variable <code>Funtion_Flag</code> sea verdadera. El código original del Lafvin lo usa para "secuestrar" el programa dentro de una función hasta que pase algo (como recibir un comando Bluetooth).</p><pre class="bad"><code>void loop() {\n  while (Funtion_Flag) {\n    // El programa se queda ATRAPADO aquí\n    // hasta que Funtion_Flag cambie a false\n  }\n  // Tu código de sensores NUNCA llega aquí\n}</code></pre><div class="note"><b>Trampa de examen:</b> si te piden agregar un sensor nuevo, NO lo pongas en el <code>loop()</code> principal. Debes ponerlo <b>dentro</b> del <code>while</code> que ya existe, o cambiar la lógica para que la bandera se libere.</div>` },
+          { t:'quiz', q:'¿Dónde debes poner el código de un sensor nuevo en el Lafvin para que SÍ se ejecute?', opts:['En el loop() principal','Dentro del while (Funtion_Flag) que ya existe','En el setup()','Fuera de todas las funciones'], a:1, explain:'Si el código original usa <code>while (Funtion_Flag)</code>, el <code>loop()</code> queda atrapado. Tu sensor debe ir dentro de ese <code>while</code> o liberar la bandera.' }
         ]
       },
       {
-        id:'a2', title:'Motores y PWM',
+        id:'a3', title:'Motores y PWM',
         desc:'digitalWrite para dirección, analogWrite para velocidad.',
         sublevels:[
           { t:'teach', title:'Mover un motor', voice:'Para mover un motor hacia adelante le mandas energía por un canal y apagas el otro. Digital write IN1 en HIGH y digital write IN2 en LOW. Para frenar, los dos en LOW.', html:`<h3>Avanzar y frenar</h3><pre class="good"><code>// Avanzar\ndigitalWrite(IN1, HIGH);\ndigitalWrite(IN2, LOW);\n\n// Frenar\ndigitalWrite(IN1, LOW);\ndigitalWrite(IN2, LOW);</code></pre>` },
-          { t:'teach', title:'delay() para pausas', voice:'Delay detiene la ejecución durante el tiempo que le digas en milisegundos. Delay dos mil mantiene el avance dos segundos. Ojo, delay bloquea todo lo demás.', html:`<h3><code>delay(ms)</code></h3><pre class="good"><code>digitalWrite(IN1, HIGH);   // Avanza\ndelay(2000);               // 2 segundos\ndigitalWrite(IN1, LOW);    // Se detiene</code></pre><div class="note"><b>Trampa Lafvin:</b> <code>delay()</code> <b>bloquea</b>. Durante esos 2 s el Arduino no lee sensores ni Bluetooth.</div>` },
           { t:'teach', title:'analogWrite y PWM', voice:'Analog write genera una señal PWM para controlar velocidad. Va de cero a doscientos cincuenta y cinco. Cero es parado, doscientos cincuenta y cinco es velocidad máxima. Solo funciona en pines con el símbolo de la tilde.', html:`<h3><code>analogWrite(pin, 0..255)</code></h3><pre class="good"><code>analogWrite(5, 128);   // mitad\nanalogWrite(5, 255);   // máximo</code></pre><div class="note"><b>Error clásico:</b> usar <code>analogWrite</code> en un pin sin PWM. En el Uno son <b>3, 5, 6, 9, 10, 11</b>.</div>` },
-          { t:'quiz', q:'¿Qué hace <code>analogWrite(5, 200)</code>?', opts:['Enciende el pin 5 al máximo','Da al pin 5 una velocidad del 78% (200/255) por PWM','Apaga el pin 5','Lee el pin 5'], a:1, explain:'200/255 ≈ 78% del ciclo de trabajo.' },
-          { t:'quiz', q:'Diferencia entre <code>digitalWrite</code> y <code>analogWrite</code>:', opts:['digitalWrite controla dirección (HIGH/LOW); analogWrite controla velocidad (0-255) por PWM','Son lo mismo','analogWrite es solo para sensores','digitalWrite solo funciona en el pin 13'], a:0, explain:'digitalWrite es on/off. analogWrite da valor intermedio 0-255 por PWM.' }
+          { t:'quiz', q:'¿Qué hace <code>analogWrite(5, 200)</code>?', opts:['Enciende el pin 5 al máximo','Da al pin 5 una velocidad del 78% (200/255) por PWM','Apaga el pin 5','Lee el pin 5'], a:1, explain:'200/255 ≈ 78% del ciclo de trabajo.' }
         ]
       },
       {
-        id:'a3', title:'Sensores, OLED y Lafvin',
-        desc:'Ultrasónico, suelo, DHT11, OLED y la trampa del código.',
+        id:'a4', title:'El Gran Desafío: Tus Sensores',
+        desc:'Cómo integrar el DHT11, la humedad de suelo y la OLED.',
         sublevels:[
           { t:'teach', title:'Sensor ultrasónico (HC-SR04)', voice:'El sensor ultrasónico manda un pulso por el pin trig y mide cuánto tarda en volver por el pin echo. Esa duración la divides entre cincuenta y ocho punto cero cero y te da la distancia en centímetros.', html:`<h3>HC-SR04</h3><pre class="good"><code>digitalWrite(trig, LOW);\ndelayMicroseconds(2);\ndigitalWrite(trig, HIGH);\ndelayMicroseconds(10);\ndigitalWrite(trig, LOW);\n\nlong tiempo = pulseIn(echo, HIGH);\nint distancia = tiempo / 58.00;   // cm</code></pre><div class="note"><b>¿Por qué 58.00?</b> El sonido tarda ~29 µs en ir y ~29 µs en volver por cm. 29 + 29 = 58.</div>` },
           { t:'teach', title:'Humedad de suelo (analogRead A0)', voice:'El sensor de humedad de suelo se lee con analog read en el pin A cero. Devuelve un número entre cero y mil veintitrés. Cuanto más seco, más alto el número.', html:`<h3>Humedad de suelo</h3><pre class="good"><code>int humedad = analogRead(A0);   // 0..1023\n\nif (humedad &lt; 300) {\n  // suelo seco\n}</code></pre><div class="tip"><b>Ojo:</b> en ESP32 es <b>0..4095</b> (12 bits).</div>` },
-          { t:'teach', title:'DHT11', voice:'El D H T once necesita la librería D H T punto h. Le dices el tipo D H T once, el pin, y lees read temperature o read humidity.', html:`<h3>DHT11 con <code>DHT.h</code></h3><pre class="good"><code>#include "DHT.h"\n\n#define DHTPIN 2\n#define DHTTYPE DHT11\nDHT dht(DHTPIN, DHTTYPE);\n\nvoid setup() {\n  dht.begin();\n}\n\nvoid loop() {\n  float t = dht.readTemperature();\n  float h = dht.readHumidity();\n  delay(2000);\n}</code></pre><div class="note"><b>Ojo:</b> el DHT11 es lento. Lee cada 2 s o devuelve <code>NaN</code>.</div>` },
           { t:'teach', title:'OLED SH1106 con U8g2', voice:'La pantalla O L E D se conecta por I dos C. S D A va al pin A cuatro y S C L al A cinco. Se controla con U ocho g dos. clear Buffer borra, draw Str escribe, send Buffer manda a la pantalla.', html:`<h3>OLED SH1106</h3><p>Conexión: <b>SDA = A4</b>, <b>SCL = A5</b>.</p><pre class="good"><code>#include &lt;U8g2lib.h&gt;\n#include &lt;Wire.h&gt;\n\nU8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);\n\nvoid setup() {\n  u8g2.begin();\n}\n\nvoid loop() {\n  u8g2.clearBuffer();\n  u8g2.setFont(u8g2_font_ncenB08_tr);\n  u8g2.drawStr(0, 20, "Hola Zinia!");\n  u8g2.sendBuffer();\n}</code></pre><div class="tip"><b>Flujo:</b> <code>clearBuffer → drawStr → sendBuffer</code>. Sin el último, no se ve nada.</div>` },
-          { t:'teach', title:'Simulador: La Carita OLED', voice:'Juega con los controles. Si el obstáculo está a menos de quince centímetros o la humedad es menor a trescientos, la pantalla se pondrá molesta.', html:`<h3>Prueba la lógica del examen final</h3><p>Mueve los controles y observa la pantalla OLED virtual. Esta es la misma condición <code>if</code> que usarás en el papel.</p>
-          <div class="simulator">
-            <div class="oled-screen" id="sim-face">:)</div>
-            <div class="slider-group">
-              <label><span>Distancia (cm)</span> <span id="sim-dist-val">50</span></label>
-              <input type="range" id="sim-dist" min="0" max="100" value="50">
-            </div>
-            <div class="slider-group">
-              <label><span>Humedad de suelo</span> <span id="sim-hum-val">500</span></label>
-              <input type="range" id="sim-hum" min="0" max="1023" value="500">
-            </div>
-            <pre style="text-align:left;margin-top:15px;font-size:11px"><code id="sim-code">if (distancia &lt; 15 || humedad &lt; 300) {</code></pre>
-          </div>` },
-          { t:'teach', title:'La trampa del while (Funtion_Flag)', voice:'Esta es la trampa más grande del código Lafvin. El código original usa bucles while con una bandera para atrapar la ejecución. Si tú pones tu código de sensores en el loop principal, nunca se va a ejecutar porque el while se queda dando vueltas para siempre.', html:`<h3>¿Qué hace <code>while (Funtion_Flag)</code>?</h3><p>Es un bucle que se repite <b>mientras</b> la variable <code>Funtion_Flag</code> sea verdadera. El código original del Lafvin lo usa para "secuestrar" el programa dentro de una función hasta que pase algo (como recibir un comando Bluetooth).</p><pre class="bad"><code>void loop() {\n  while (Funtion_Flag) {\n    // El programa se queda ATRAPADO aquí\n    // hasta que Funtion_Flag cambie a false\n  }\n  // Tu código de sensores NUNCA llega aquí\n}</code></pre><div class="note"><b>Trampa de examen:</b> si te piden agregar un sensor nuevo, NO lo pongas en el <code>loop()</code> principal. Debes ponerlo <b>dentro</b> del <code>while</code> que ya existe, o cambiar la lógica para que la bandera se libere.</div><pre class="good"><code>// Correcto: el sensor va DENTRO del while\nvoid loop() {\n  while (Funtion_Flag) {\n    int humedad = analogRead(A0);  // ✅ aquí sí corre\n    // ... resto de la lógica\n  }\n}</code></pre>` },
-          { t:'teach', title:'Bluetooth: switch/case con charAt(1)', voice:'Cuando el robot recibe un mensaje por Bluetooth, lo lee carácter por carácter. El primer carácter suele ser un símbolo como el asterisco, y el segundo carácter es el comando real. Char At uno te devuelve ese segundo carácter. Después usas switch y case para decidir qué hacer.', html:`<h3>Leer Bluetooth y decidir con <code>switch</code></h3><pre class="good"><code>String comando = "";\n\nvoid loop() {\n  while (Serial.available() > 0) {\n    char c = Serial.read();\n    comando += c;\n  }\n\n  if (comando.length() > 1) {\n    char accion = comando.charAt(1);  // segundo carácter\n    switch (accion) {\n      case 'G': avanzar(); break;\n      case 'T': retroceder(); break;\n      case 'L': girarIzquierda(); break;\n      case 'R': girarDerecha(); break;\n      default:  detener(); break;\n    }\n  }\n  comando = "";  // limpiar para el siguiente\n}</code></pre><div class="tip"><b>¿Por qué <code>charAt(1)</code>?</b> Si el mensaje es <code>"*G"</code>, el índice 0 es <code>'*'</code> y el índice 1 es <code>'G'</code>. Por eso se lee el segundo carácter.</div><div class="note"><b>Ojo:</b> los <code>case 'G'</code> van con <b>comillas simples</b> porque son <code>char</code>, no <code>String</code>.</div>` },
-          { t:'quiz', q:'¿Por qué se divide entre <code>58.00</code> en el ultrasónico?', opts:['Porque 58 es la velocidad del sonido en m/s','Porque el sonido tarda ~29 µs en ir y ~29 en volver por cm','Porque el sensor usa PWM de 58 Hz','Es una constante arbitraria'], a:1, explain:'29 + 29 = 58 µs por cm (ida y vuelta). Por eso <code>tiempo / 58.00</code> da cm.' },
-          { t:'quiz', q:'¿Dónde debes poner el código de un sensor nuevo en el Lafvin para que SÍ se ejecute?', opts:['En el loop() principal','Dentro del while (Funtion_Flag) que ya existe','En el setup()','Fuera de todas las funciones'], a:1, explain:'Si el código original usa <code>while (Funtion_Flag)</code>, el <code>loop()</code> queda atrapado. Tu sensor debe ir dentro de ese <code>while</code> o liberar la bandera.' }
+          { t:'teach', title:'Integración Final: Todo junto', voice:'Aquí unes todo. La pantalla O L E D muestra la carita feliz si el suelo está húmedo y el obstáculo está lejos. Si el suelo está seco o el obstáculo está cerca, muestra la carita molesta. Este es el corazón de tu examen final.', html:`<h3>El examen final resuelto</h3><p>Tu examen te pedirá unir el sensor ultrasónico, el de humedad de suelo y la pantalla OLED. La lógica central es esta:</p><pre class="good"><code>void loop() {\n  // 1. Leer sensores\n  int distancia = medirDistancia();\n  int humedad   = analogRead(A0);\n\n  // 2. Decidir carita\n  u8g2.clearBuffer();\n  if (distancia &lt; 15 || humedad &lt; 300) {\n    u8g2.drawStr(0, 30, ":( Cuidado!");\n  } else {\n    u8g2.drawStr(0, 30, ":) Todo bien");\n  }\n  u8g2.sendBuffer();\n}</code></pre><div class="note"><b>Condición crítica:</b> <code>distancia < 15</code> <b>O</b> <code>humedad < 300</code> → carita molesta. Usa el operador <code>||</code> (OR lógico).</div>` },
+          { t:'quiz', q:'¿Por qué se divide entre <code>58.00</code> en el ultrasónico?', opts:['Porque 58 es la velocidad del sonido en m/s','Porque el sonido tarda ~29 µs en ir y ~29 en volver por cm','Porque el sensor usa PWM de 58 Hz','Es una constante arbitraria'], a:1, explain:'29 + 29 = 58 µs por cm (ida y vuelta). Por eso <code>tiempo / 58.00</code> da cm.' }
         ]
       }
     ]
@@ -327,9 +317,7 @@ const WORLDS = {
         desc:'3.3V, pines por GPIO y qué NO conectar.',
         sublevels:[
           { t:'teach', title:'El ESP32 no es un Arduino con WiFi', voice:'Cuidado. El ESP32 no es solo un Arduino con WiFi. Trabaja a tres punto tres voltios, y si le metes cinco voltios a un pin lo puedes quemar.', html:`<h3>Diferencias críticas</h3><table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px"><tr style="border-bottom:1px solid var(--border)"><th style="text-align:left;padding:8px;color:var(--cyan)">Aspecto</th><th style="text-align:left;padding:8px;color:var(--cyan)">Arduino Uno</th><th style="text-align:left;padding:8px;color:var(--cyan)">ESP32</th></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">Voltaje</td><td style="padding:8px">5 V</td><td style="padding:8px"><b>3.3 V</b></td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">ADC</td><td style="padding:8px">10 bits (0-1023)</td><td style="padding:8px"><b>12 bits (0-4095)</b></td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">PWM</td><td style="padding:8px">analogWrite</td><td style="padding:8px">ledcWrite</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">Pines</td><td style="padding:8px">D2, D3, A0</td><td style="padding:8px">GPIO + número</td></tr><tr><td style="padding:8px">WiFi</td><td style="padding:8px">No integrado</td><td style="padding:8px"><b>Integrado</b></td></tr></table><div class="note"><b>Regla de oro:</b> ningún GPIO tolera más de 3.3 V.</div>` },
-          { t:'teach', title:'Pines por GPIO', voice:'En el ESP32 los pines no se llaman D dos o A cero. Se llaman G P I O y el número. Y no todos se pueden usar.', html:`<h3>Restricciones</h3><ul style="margin-left:20px;color:var(--text);font-size:13px"><li><b>GPIO 34, 35, 36, 39:</b> solo entrada.</li><li><b>GPIO 6–11:</b> ocupados por flash. No usar.</li><li><b>GPIO 1 y 3:</b> UART0 (Serial).</li><li><b>GPIO 0, 2, 5, 12, 15:</b> pines de arranque.</li></ul><div class="tip"><b>Buenos para empezar:</b> GPIO 4, 5, 18, 19, 21, 22, 23, 25, 26, 27.</div>` },
-          { t:'quiz', q:'¿Qué voltaje toleran los pines del ESP32?', opts:['5 V, igual que el Uno','3.3 V','12 V','Depende del pin'], a:1, explain:'Todos los GPIO del ESP32 son de 3.3 V. 5 V los daña.' },
-          { t:'quiz', q:'¿Qué rango devuelve <code>analogRead()</code> en ESP32?', opts:['0–255','0–1023','0–4095','0–65535'], a:2, explain:'ADC de 12 bits: 0 a 4095. Esa es la trampa clásica.' }
+          { t:'quiz', q:'¿Qué voltaje toleran los pines del ESP32?', opts:['5 V, igual que el Uno','3.3 V','12 V','Depende del pin'], a:1, explain:'Todos los GPIO del ESP32 son de 3.3 V. 5 V los daña.' }
         ]
       },
       {
@@ -337,16 +325,7 @@ const WORLDS = {
         desc:'Los 12 bits y el truco del ADC2 que falla con WiFi.',
         sublevels:[
           { t:'teach', title:'ADC2 falla con WiFi', voice:'Aquí viene la trampa más grande del ESP32. Tiene dos convertidores: A D C uno y A D C dos. El A D C dos no funciona cuando el WiFi está encendido.', html:`<h3>ADC1 vs ADC2</h3><pre class="good"><code>// ADC1 (seguro con WiFi):\n// GPIO 32, 33, 34, 35, 36, 37, 38, 39\nint valor = analogRead(34);\n\n// ADC2 (falla con WiFi):\n// GPIO 0, 2, 4, 12-15, 25-27</code></pre><div class="note"><b>Regla:</b> si usas WiFi + sensor analógico, conecta el sensor a un pin de <b>ADC1</b> (32–39).</div>` },
-          { t:'teach', title:'Conectarse a WiFi', voice:'Para conectar el ESP32 a WiFi incluyes la librería WiFi punto h. Llamas a WiFi punto begin con nombre y contraseña. Después un while que espera hasta que el estado sea connected.', html:`<h3>WiFi en 5 líneas</h3><pre class="good"><code>#include &lt;WiFi.h&gt;\n\nvoid setup() {\n  Serial.begin(115200);\n  WiFi.begin("MiRed", "MiPassword");\n  while (WiFi.status() != WL_CONNECTED) {\n    delay(500);\n    Serial.print(".");\n  }\n  Serial.println(WiFi.localIP());\n}</code></pre><div class="tip"><b>Ojo:</b> <code>WL_CONNECTED</code> va todo en mayúsculas.</div>` },
           { t:'quiz', q:'Tu sensor analógico no lee cuando activas WiFi. ¿Qué pasó?', opts:['Sensor dañado','Sensor en pin del ADC2 (falla con WiFi)','El ESP32 no tiene ADC','Falta <code>delay()</code>'], a:1, explain:'ADC2 se desactiva con WiFi. Mueve el sensor a ADC1 (GPIO 32–39).' }
-        ]
-      },
-      {
-        id:'e2', title:'PWM con ledc',
-        desc:'El reemplazo de analogWrite en ESP32.',
-        sublevels:[
-          { t:'teach', title:'No existe analogWrite', voice:'En el ESP32 no existe analog write. Se usa el controlador L E D C. Primero lo configuras con ledc Attach, después escribes con ledc Write.', html:`<h3>PWM con <code>ledc</code></h3><pre class="good"><code>// Core ESP32 nuevo (3.x)\n#define PIN_MOTOR 18\n#define FREC 5000\n#define RES 8    // 8 bits → 0..255\n\nvoid setup() {\n  ledcAttach(PIN_MOTOR, FREC, RES);\n}\n\nvoid loop() {\n  ledcWrite(PIN_MOTOR, 128);   // 50%\n}</code></pre><div class="note"><b>Core viejo (2.x):</b> <code>ledcSetup(canal, frec, res)</code> + <code>ledcAttachPin(pin, canal)</code> + <code>ledcWrite(canal, val)</code>.</div>` },
-          { t:'quiz', q:'¿Qué reemplaza a <code>analogWrite</code> en ESP32?', opts:['digitalWrite','ledcWrite','analogOutput','pwmWrite'], a:1, explain:'Se configura con <code>ledcAttach</code> y se escribe con <code>ledcWrite</code>.' }
         ]
       }
     ]
@@ -356,8 +335,8 @@ const WORLDS = {
 const state = { name:'', gender:'f', sound:true, xp:0, hp:100, streak:0, world:'arduino',
   unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false, mgHighScore:0 };
 
-function save(){ try{ localStorage.setItem('zhinin_v5', JSON.stringify(state)); }catch(e){} }
-function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v5')||'null'); if(s) Object.assign(state,s); }catch(e){} }
+function save(){ try{ localStorage.setItem('zhinin_v6', JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v6')||'null'); if(s) Object.assign(state,s); }catch(e){} }
 load();
 
 let audioCtx=null;
@@ -374,11 +353,18 @@ function speak(text){
   try{
     speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
-    u.lang='es-ES'; u.pitch=1.6; u.rate=1.15;
+    u.lang='es-ES'; 
+    u.pitch=1.8; // Tono mucho más agudo, estilo anime
+    u.rate=1.15; // Un poco más rápido y enérgico
+    
     const voices=speechSynthesis.getVoices();
     const es=voices.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
-    const male=es.find(v=>/(male|hombre|jorge|diego|enrique|pablo|juan)/i.test(v.name));
-    if(male) u.voice=male; else if(es[0]) u.voice=es[0];
+    // Buscar voces femeninas para lograr ese tono agudo
+    const female = es.find(v=>/(female|mujer|monica|paulina|helena|sabina|lucia)/i.test(v.name));
+    
+    if(female) u.voice=female; 
+    else if(es[0]) u.voice=es[0];
+    
     speechSynthesis.speak(u);
   }catch(e){}
 }
@@ -443,21 +429,6 @@ function renderSublevel(){
     card.innerHTML=`<button class="voice-btn" id="btn-voice">🔊 Escuchar a Zhinin</button><div>${sub.html}</div>`;
     content.appendChild(card);
     
-    if(sub.title === 'Simulador: La Carita OLED'){
-      setTimeout(()=>{
-        const dEl=$('sim-dist'), hEl=$('sim-hum'), fEl=$('sim-face'), cdEl=$('sim-code');
-        if(!dEl || !hEl) return;
-        const updateSim=()=>{
-          const d=parseInt(dEl.value), h=parseInt(hEl.value);
-          $('sim-dist-val').textContent=d; $('sim-hum-val').textContent=h;
-          if(d < 15 || h < 300) { fEl.textContent=':('; fEl.style.color='var(--red)'; cdEl.textContent='if (distancia < 15 || humedad < 300) { // ⚠️ MOVIDO'; }
-          else { fEl.textContent=':)'; fEl.style.color='var(--cyan)'; cdEl.textContent='if (distancia < 15 || humedad < 300) { // OK'; }
-        };
-        dEl.addEventListener('input', updateSim); hEl.addEventListener('input', updateSim);
-        updateSim();
-      }, 100);
-    }
-
     $('btn-voice').onclick=()=>{ const btn=$('btn-voice'); btn.classList.add('speaking'); btn.textContent='🔊 Hablando...'; speak(sub.voice); const check=setInterval(()=>{ if(!speechSynthesis.speaking){ clearInterval(check); btn.classList.remove('speaking'); btn.textContent='🔊 Escuchar a Zhinin'; } },300); };
     setTimeout(()=>speak(sub.voice),300);
   } else {
