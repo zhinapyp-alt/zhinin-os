@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Zhinin OS :: Battle Royale</title>
+<title>Zhinin OS :: Academia de Combate</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0a0e14;--bg2:#11161f;--card:#161d28;--border:#243041;--text:#d4dae4;--muted:#7a8697;--cyan:#00f0ff;--magenta:#ff2d95;--green:#3ddc84;--red:#ff4757;--yellow:#ffd166;--orange:#ff9f43}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Courier New',ui-monospace,monospace;overflow-x:hidden}
 body{font-size:15px;line-height:1.6}
-.screen{display:none;min-height:100vh;padding:16px}
+.screen{display:none;min-height:100vh;padding:16px;position:relative}
 .screen.active{display:block}
 .topbar{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;position:sticky;top:8px;z-index:50;margin-bottom:16px}
 .topbar .logo{font-weight:bold;color:var(--cyan);font-size:14px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -45,7 +45,6 @@ body{font-size:15px;line-height:1.6}
 .level-card.locked{opacity:.5;cursor:not-allowed}
 .level-card.done{border-color:var(--green)}
 .level-card.minigame{border-color:var(--yellow);background:linear-gradient(135deg,rgba(255,209,102,.1),rgba(0,0,0,0))}
-.level-card.royale{border-color:var(--magenta);background:linear-gradient(135deg,rgba(255,45,149,.15),rgba(0,0,0,0))}
 .level-card .lvl-num{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
 .level-card .lvl-title{font-size:16px;color:var(--text);font-weight:bold;margin:4px 0}
 .level-card .lvl-desc{font-size:12px;color:var(--muted)}
@@ -78,12 +77,6 @@ body{font-size:15px;line-height:1.6}
 .quiz-opts{display:grid;gap:8px}
 .quiz-opts button{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:8px;text-align:left;font-family:inherit;font-size:13px;cursor:pointer;line-height:1.4}
 .quiz-opts button:hover{border-color:var(--cyan)}
-.quiz-opts button.correct{border-color:var(--green);background:rgba(61,220,132,.15);color:var(--green)}
-.quiz-opts button.wrong{border-color:var(--red);background:rgba(255,71,87,.15);color:var(--red)}
-.quiz-feedback{margin-top:12px;padding:12px;border-radius:8px;font-size:13px;display:none}
-.quiz-feedback.show{display:block}
-.quiz-feedback.ok{background:rgba(61,220,132,.1);border:1px solid var(--green);color:var(--green)}
-.quiz-feedback.fail{background:rgba(255,71,87,.1);border:1px solid var(--red);color:var(--red)}
 .nav-btns{display:flex;gap:10px}
 .nav-btns button{flex:1;padding:14px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;font-weight:bold}
 .nav-btns .back{background:transparent;border:1px solid var(--border);color:var(--muted)}
@@ -123,38 +116,20 @@ body{font-size:15px;line-height:1.6}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(1.5)}}
 .shake{animation:shake .4s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.minigame-box{text-align:center;padding:20px}
-.timer-bar{height:8px;background:var(--border);border-radius:4px;margin-bottom:20px;overflow:hidden}
-.timer-fill{height:100%;background:var(--cyan);transition:width .1s linear}
-.code-block{background:#000;padding:20px;border-radius:8px;font-family:monospace;font-size:16px;margin-bottom:20px;text-align:left;color:#fff;border:1px solid var(--border)}
-.mg-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.mg-btns button{padding:20px;font-size:20px;font-weight:bold;border-radius:12px;border:none;cursor:pointer;color:#fff;font-family:inherit}
-.btn-ok{background:var(--green)}
-.btn-error{background:var(--red)}
-.code-editor-container{margin-top:15px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.code-editor-header{background:var(--bg2);padding:8px 12px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
-.code-input{width:100%;height:150px;background:#000;color:var(--cyan);border:none;padding:12px;font-family:'Courier New',monospace;font-size:14px;resize:vertical}
-.code-input:focus{outline:none}
-.btn-run{background:var(--green);color:#000;border:none;padding:10px;width:100%;font-family:inherit;font-weight:bold;font-size:14px;cursor:pointer;transition:0.2s}
-.btn-run:active{transform:scale(0.98)}
-.console-output{background:#000;color:var(--muted);padding:10px;font-size:12px;min-height:40px;border-top:1px solid var(--border);font-family:monospace}
 
-/* ESTILOS BATTLE ROYALE */
-.br-container { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 10px; }
-.br-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 2px; width: 100%; max-width: 350px; aspect-ratio: 1; background: #000; border: 2px solid var(--border); padding: 4px; border-radius: 8px; }
-.br-cell { background: #1a2233; border-radius: 2px; display: flex; justify-content: center; align-items: center; font-size: 14px; transition: all 0.2s; }
-.br-cell.storm { background: rgba(255, 45, 149, 0.3); border: 1px solid rgba(255, 45, 149, 0.5); }
-.br-cell.player { background: var(--cyan); font-size: 20px; box-shadow: 0 0 10px var(--cyan); z-index: 2;}
-.br-cell.enemy { background: var(--red); font-size: 16px; z-index: 1;}
-.d-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 160px; height: 160px; }
-.d-pad button { background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 8px; font-size: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; user-select: none; }
-.d-pad button:active { background: var(--cyan); color: #000; }
-.btn-up { grid-column: 2; grid-row: 1; }
-.btn-left { grid-column: 1; grid-row: 2; }
-.btn-right { grid-column: 3; grid-row: 2; }
-.btn-down { grid-column: 2; grid-row: 3; }
-.btn-attack { grid-column: 1 / span 3; grid-row: 4; background: var(--magenta); color: #fff; font-weight: bold; font-size: 16px; border: none; border-radius: 8px; margin-top: 10px; padding: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,45,149,0.4); }
-.btn-attack:active { transform: scale(0.95); }
+/* ESTILOS BATALLA */
+.battle-arena { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; position: relative; }
+.bug-enemy { font-size: 80px; animation: floatBug 2s infinite ease-in-out; transition: all 0.3s; z-index: 10; }
+@keyframes floatBug { 0%,100%{transform:translateY(0) rotate(-5deg)} 50%{transform:translateY(-20px) rotate(5deg)} }
+.laser-beam { position: absolute; top: 50%; left: 50%; width: 0; height: 10px; background: var(--cyan); box-shadow: 0 0 20px var(--cyan); transform: translate(-50%, -50%); transition: all 0.2s; z-index: 5; border-radius: 5px; }
+.laser-beam.fire { width: 200px; opacity: 0; }
+.bug-hp-bar { width: 200px; height: 15px; background: #333; border: 2px solid var(--red); border-radius: 8px; margin-top: 20px; overflow: hidden; }
+.bug-hp-fill { height: 100%; background: var(--red); width: 100%; transition: width 0.3s; }
+.battle-timer { font-size: 24px; font-weight: bold; color: var(--yellow); position: absolute; top: 0; right: 0; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; }
+.battle-question { margin-top: 20px; background: var(--card); padding: 20px; border-radius: 12px; border: 2px solid var(--border); width: 100%; }
+.battle-opts { display: grid; gap: 10px; margin-top: 15px; }
+.battle-opts button { padding: 15px; font-size: 14px; font-family: inherit; background: var(--bg2); border: 1px solid var(--border); color: var(--text); border-radius: 8px; cursor: pointer; text-align: left; }
+.battle-opts button:active { transform: scale(0.98); }
 @media(min-width:700px){.hud{grid-template-columns:1fr 1fr 1fr 1fr}}
 </style>
 </head>
@@ -171,9 +146,9 @@ body{font-size:15px;line-height:1.6}
 
 <div class="screen" id="screen-profile">
   <div class="welcome">
-    <h1>ZHININ_OS v13.0</h1>
-    <p>:: Battle Royale de Código ::</p>
-    <p style="color:var(--text)">¡Hola! Soy Zhinin. Prepárate para sobrevivir a la tormenta de bugs. Dime cómo prefieres que te hable.</p>
+    <h1>ZHININ_OS v14.0</h1>
+    <p>:: Academia de Combate ::</p>
+    <p style="color:var(--text)">¡Hola! Soy Zhinin. Aprender aquí es peligroso: cada lección es una batalla. Dime cómo prefieres que te hable.</p>
     <div class="field"><label>Tu nombre (opcional)</label><input type="text" id="in-name" placeholder="Ej. Zinia" maxlength="20"></div>
     <div class="field"><label>¿Cómo te refieres a ti?</label>
       <div class="gender-btns">
@@ -181,7 +156,7 @@ body{font-size:15px;line-height:1.6}
         <button data-g="m">👨 Varón</button>
       </div>
     </div>
-    <button class="btn-primary" id="btn-start">[ ENTRAR A LA ARENA ]</button>
+    <button class="btn-primary" id="btn-start">[ INICIAR ENTRENAMIENTO ]</button>
   </div>
 </div>
 
@@ -222,6 +197,25 @@ body{font-size:15px;line-height:1.6}
   </div>
 </div>
 
+<!-- PANTALLA DE BATALLA -->
+<div class="screen" id="screen-battle">
+  <div class="topbar">
+    <div class="logo">⚔️ Zona de Combate</div>
+  </div>
+  <div class="battle-arena">
+    <div class="battle-timer" id="battle-timer">15s</div>
+    <div class="bug-enemy" id="bug-enemy">👾</div>
+    <div class="laser-beam" id="laser-beam"></div>
+    <div class="bug-hp-bar"><div class="bug-hp-fill" id="bug-hp"></div></div>
+  </div>
+  
+  <div class="battle-question">
+    <div class="quiz-q" id="battle-q">Cargando...</div>
+    <div class="battle-opts" id="battle-opts"></div>
+    <div class="quiz-feedback" id="battle-fb" style="display:none;"></div>
+  </div>
+</div>
+
 <div class="screen" id="screen-complete">
   <div class="complete">
     <div class="trophy">🏆</div>
@@ -241,40 +235,15 @@ body{font-size:15px;line-height:1.6}
     <div class="logo">Caza Errores</div>
     <button id="btn-sound3">🔊</button>
   </div>
-  <div class="content-card minigame-box">
-    <div class="timer-bar"><div class="timer-fill" id="mg-timer" style="width:100%"></div></div>
+  <div class="content-card minigame-box" style="text-align:center; padding:20px;">
+    <div class="timer-bar" style="height:8px; background:var(--border); border-radius:4px; margin-bottom:20px; overflow:hidden;"><div class="timer-fill" id="mg-timer" style="width:100%; height:100%; background:var(--cyan); transition:width .1s linear;"></div></div>
     <p style="color:var(--muted);margin-bottom:10px;font-size:12px">¿Este código está BIEN o tiene un ERROR?</p>
-    <div class="code-block" id="mg-code">cargando...</div>
-    <div class="mg-btns">
-      <button class="btn-ok" id="mg-btn-ok">✅ Correcto</button>
-      <button class="btn-error" id="mg-btn-err">❌ Error</button>
+    <div class="code-block" id="mg-code" style="background:#000; padding:20px; border-radius:8px; font-family:monospace; font-size:16px; margin-bottom:20px; text-align:left; color:#fff; border:1px solid var(--border);">cargando...</div>
+    <div class="mg-btns" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <button class="btn-ok" id="mg-btn-ok" style="padding:20px; font-size:20px; font-weight:bold; border-radius:12px; border:none; cursor:pointer; color:#fff; background:var(--green); font-family:inherit;">✅ Correcto</button>
+      <button class="btn-error" id="mg-btn-err" style="padding:20px; font-size:20px; font-weight:bold; border-radius:12px; border:none; cursor:pointer; color:#fff; background:var(--red); font-family:inherit;">❌ Error</button>
     </div>
     <div class="quiz-feedback" id="mg-fb"></div>
-  </div>
-</div>
-
-<div class="screen" id="screen-br">
-  <div class="topbar">
-    <button id="btn-br-back">← mapa</button>
-    <div class="logo">Battle Royale</div>
-    <button id="btn-sound5">🔊</button>
-  </div>
-  
-  <div class="hud">
-    <div class="hud-card"><div class="label">Vida</div><div class="value" id="br-hp">100</div></div>
-    <div class="hud-card"><div class="label">Tiempo</div><div class="value" id="br-time">60s</div></div>
-    <div class="hud-card"><div class="label">Bugs</div><div class="value" id="br-score">0</div></div>
-  </div>
-
-  <div class="br-container">
-    <div class="br-grid" id="br-grid"></div>
-    <div class="d-pad">
-      <button class="btn-up" onclick="moveBR(0,-1)">↑</button>
-      <button class="btn-left" onclick="moveBR(-1,0)">←</button>
-      <button class="btn-right" onclick="moveBR(1,0)">→</button>
-      <button class="btn-down" onclick="moveBR(0,1)">↓</button>
-      <button class="btn-attack" onclick="attackBR()">⚔️ ATACAR</button>
-    </div>
   </div>
 </div>
 
@@ -294,32 +263,37 @@ body{font-size:15px;line-height:1.6}
 </div>
 
 <script>
+// He transformado algunos Quizzes en "battles" para fusionar el juego con la teoría.
 const WORLDS = {
   arduino: {
     id: 'arduino', title: 'Mundo Arduino', subtitle: 'Lafvin 4WD Proyecto Final',
     levels: [
-      { id:'a0', title:'Nivel 0: Cero Absoluto', desc:'¿Qué es programar? Variables, funciones y la estructura básica.', sublevels:[{ t:'teach', title:'¿Qué es programar?', voice:'¡Holaaa! Bienvenida al nivel cero. Estoy muy feliz de acompañarte. Programar es darle instrucciones a una computadora paso a paso, como una receta de cocina.', html:`<h3>Pensar como una computadora</h3><pre class="good"><code>digitalWrite(4, HIGH); // 1. Encender\ndelay(2000);           // 2. Esperar\ndigitalWrite(4, LOW);  // 3. Apagar</code></pre>` }] },
-      { id:'a1', title:'El Alfabeto del Código', desc:'Punto y coma, llaves, mayúsculas.', sublevels:[{ t:'teach', title:'El punto y coma ;', voice:'El punto y coma es el punto final de una oración. Cada orden termina en punto y coma.', html:`<pre class="good"><code>digitalWrite(4, HIGH);</code></pre>` }] },
-      { id:'a3', title:'Bucles y Servomotores', desc:'Domina el for y mueve el cuello del robot.', sublevels:[{ t:'teach', title:'El Bucle For', voice:'El bucle for es el mejor amigo del programador.', html:`<pre class="good"><code>for (int i = 0; i < 5; i++) {\n  digitalWrite(4, HIGH);\n  delay(200);\n}</code></pre>` }] },
       { 
-        id:'a7', title:'Nivel 8: Control Bluetooth', 
-        desc:'Aprende a controlar tu robot desde el celular.', 
+        id:'a0', title:'Nivel 0: Cero Absoluto', desc:'¿Qué es programar? Variables, funciones.', 
         sublevels:[
-          { t:'teach', title:'¿Cómo funciona el Bluetooth?', voice:'El módulo Bluetooth se conecta a los pines RX y TX del Arduino. Cuando tú presionas un botón en tu celular, envía una letra. El Arduino la lee y hace una acción.', html:`<h3>El módulo HC-05 / HC-06</h3><p>Todo lo que envíes desde tu celular, el Arduino lo lee con <code>Serial.read()</code>.</p><pre class="good"><code>void setup() {\n  Serial.begin(9600); // Iniciar Bluetooth\n}</code></pre>` },
-          { t:'code', title:'¡Desafío Bluetooth!', 
-            voice:'Escribe un if que compruebe si hay datos disponibles en Serial. Si es así, guarda el dato en una variable llamada comando.', 
-            html:`<h3>Tu misión</h3><p>Escribe el código para leer el comando Bluetooth.</p><p style="font-size:12px;color:var(--muted)">Pista: <code>if (Serial.available() > 0) { char comando = Serial.read(); }</code></p>`,
-            codeReq: /if\s*\(\s*Serial\.available\s*\(\s*\)\s*>\s*0\s*\)\s*\{?\s*(char\s+)?comando\s*=\s*Serial\.read\s*\(\s*\)/i,
-            codeSuccess: '¡Excelente! Ya sabes cómo leer el control remoto.',
-            codeError: 'Revisa la sintaxis. Debe ser Serial.available() > 0 y Serial.read().' }
+          { t:'teach', title:'¿Qué es programar?', voice:'¡Holaaa! Bienvenida al nivel cero. Programar es darle instrucciones a una computadora paso a paso, como una receta de cocina.', html:`<h3>Pensar como una computadora</h3><pre class="good"><code>digitalWrite(4, HIGH); // 1. Encender\ndelay(2000);           // 2. Esperar\ndigitalWrite(4, LOW);  // 3. Apagar</code></pre>` },
+          { t:'battle', q:'¿Qué hace la función <code>delay(1000)</code>?', opts:['Enciende el motor','Hace una pausa de 1 segundo','Reinicia el Arduino'], a:1, explain:'delay() pausa el código.', enemy:'🐛' }
+        ] 
+      },
+      { 
+        id:'a1', title:'El Alfabeto del Código', desc:'Punto y coma, llaves, mayúsculas.', 
+        sublevels:[
+          { t:'teach', title:'El punto y coma ;', voice:'El punto y coma es el punto final de una oración. Cada orden termina en punto y coma.', html:`<pre class="good"><code>digitalWrite(4, HIGH);</code></pre>` },
+          { t:'battle', q:'¿Cuál es el error en: <code>digitalWrite(4, HIGH)</code>?', opts:['Falta el ; final','HIGH debería ser high','DigitalWrite con D mayúscula'], a:0, explain:'Falta el punto y coma.', enemy:'👾' }
         ]
       },
       { 
-        id:'a8', title:'Nivel 9: La Verdad de las 600 líneas', 
-        desc:'Descubre por qué el código original es tan largo y cómo limpiarlo.', 
+        id:'a3', title:'Bucles y Servomotores', desc:'Domina el for y mueve el cuello del robot.', 
         sublevels:[
-          { t:'teach', title:'El código espagueti', voice:'El código original del Lafvin es largo porque el autor no usó funciones ni bucles. Simplemente copió y pegó el mismo código para cada sensor. ¡Es lo que llamamos código espagueti!', html:`<h3>¿Por qué 600 líneas?</h3><p>En lugar de crear una función <code>avanzar()</code>, escribió el <code>digitalWrite</code> una y otra vez por cada modo de operación.</p><div class="tip"><b>La Solución:</b> Crear una función <code>void avanzar() { ... }</code> y llamarla. Así el código baja a 150 líneas.</div>` },
-          { t:'quiz', q:'¿Cuál es el mejor consejo para leer el código de 600 líneas?', opts:['Memorizar todo', 'Identificar los 5 bloques principales (Setup, Motores, Sensores, Bluetooth, Loop)', 'Escribirlo 100 veces'], a:1, explain:'Al identificar los bloques, el código largo se vuelve fácil de entender.' }
+          { t:'teach', title:'El Bucle For', voice:'El bucle for es el mejor amigo del programador. Repite código sin escribirlo mil veces.', html:`<pre class="good"><code>for (int i = 0; i < 5; i++) {\n  digitalWrite(4, HIGH);\n  delay(200);\n}</code></pre>` },
+          { t:'battle', q:'¿Cuántas veces se repite el bucle <code>for(int i=0; i&lt;5; i++)</code>?', opts:['4 veces','5 veces','Infinitas veces'], a:1, explain:'Empieza en 0 y va hasta 4. Son 5 repeticiones.', enemy:'👹' }
+        ]
+      },
+      { 
+        id:'a7', title:'Control Bluetooth', desc:'Aprende a controlar tu robot desde el celular.', 
+        sublevels:[
+          { t:'teach', title:'Leyendo Bluetooth', voice:'Cuando tú presionas un botón en tu celular, envía una letra. El Arduino la lee con Serial.read().', html:`<pre class="good"><code>if (Serial.available() > 0) {\n  char comando = Serial.read();\n}</code></pre>` },
+          { t:'battle', q:'¿Qué función lee el comando Bluetooth?', opts:['Serial.print()','Serial.read()','analogRead()'], a:1, explain:'Serial.read() lee los datos entrantes.', enemy:'👽' }
         ]
       }
     ]
@@ -327,16 +301,22 @@ const WORLDS = {
   esp32: {
     id: 'esp32', title: 'Mundo ESP32', subtitle: 'WiFi, BLE, 3.3V y ADC 12 bits',
     levels: [
-      { id:'e0', title:'ESP32 vs Arduino', desc:'3.3V, pines por GPIO.', sublevels:[{ t:'teach', title:'El ESP32 no es un Arduino', voice:'¡Cuidado! El ESP32 trabaja a tres punto tres voltios. ¡Siempre revisa los voltajes!', html:`<p>Voltaje: <b>3.3 V</b>. ADC: <b>12 bits (0-4095)</b>.</p>` }] }
+      { 
+        id:'e0', title:'ESP32 vs Arduino', desc:'3.3V, pines por GPIO.', 
+        sublevels:[
+          { t:'teach', title:'El ESP32 no es un Arduino', voice:'¡Cuidado! El ESP32 trabaja a tres punto tres voltios. ¡Siempre revisa los voltajes!', html:`<p>Voltaje: <b>3.3 V</b>. ADC: <b>12 bits (0-4095)</b>.</p>` },
+          { t:'battle', q:'¿A qué voltaje trabaja el ESP32?', opts:['5V','3.3V','12V'], a:1, explain:'Es de 3.3V, si le metes 5V lo quemas.', enemy:'🔥' }
+        ] 
+      }
     ]
   }
 };
 
 const state = { name:'', gender:'f', sound:true, xp:0, hp:100, streak:0, world:'arduino',
-  unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false, mgHighScore:0, brHighScore:0 };
+  unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false, mgHighScore:0 };
 
-function save(){ try{ localStorage.setItem('zhinin_v13', JSON.stringify(state)); }catch(e){} }
-function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v13')||'null'); if(s) Object.assign(state,s); }catch(e){} }
+function save(){ try{ localStorage.setItem('zhinin_v14', JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v14')||'null'); if(s) Object.assign(state,s); }catch(e){} }
 load();
 
 let audioCtx=null;
@@ -345,8 +325,9 @@ function beep(freq,dur,type,vol){ if(!state.sound) return; try{ const ctx=ensure
 function sfxClick(){ beep(800,0.05,'square',0.06); }
 function sfxCorrect(){ beep(660,0.1,'sine',0.1); setTimeout(()=>beep(880,0.15,'sine',0.1),100); setTimeout(()=>beep(1320,0.2,'sine',0.1),220); }
 function sfxWrong(){ beep(200,0.15,'sawtooth',0.1); setTimeout(()=>beep(140,0.25,'sawtooth',0.1),120); }
+function sfxLaser(){ beep(1200,0.1,'sine',0.05); setTimeout(()=>beep(600,0.2,'sawtooth',0.05),50); }
+function sfxExplode(){ beep(100,0.4,'sawtooth',0.3); }
 function sfxLevel(){ beep(523,0.12,'sine',0.12); setTimeout(()=>beep(659,0.12,'sine',0.12),130); setTimeout(()=>beep(784,0.12,'sine',0.12),260); setTimeout(()=>beep(1047,0.3,'sine',0.12),390); }
-function sfxHit(){ beep(100,0.2,'sawtooth',0.2); }
 
 if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices(); speechSynthesis.getVoices(); }
 function speak(text){
@@ -366,7 +347,7 @@ function stopSpeak(){ if('speechSynthesis' in window) speechSynthesis.cancel(); 
 
 const $=(id)=>document.getElementById(id);
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); window.scrollTo(0,0); }
-function setSoundBtn(){ const t=state.sound?'🔊':'🔇'; $('btn-sound').textContent=t; $('btn-sound2').textContent=t; $('btn-sound3').textContent=t; $('btn-sound5').textContent=t; }
+function setSoundBtn(){ const t=state.sound?'🔊':'🔇'; $('btn-sound').textContent=t; $('btn-sound2').textContent=t; $('btn-sound3').textContent=t; }
 function updateHUD(){
   $('hud-xp').textContent=state.xp; $('hud-hp').textContent=state.hp; $('hud-streak').textContent=state.streak+' 🔥';
   $('hud-xp-bar').style.width=Math.min(100,(state.xp%500)/5)+'%';
@@ -388,19 +369,13 @@ function renderMap(){
   mgCard.onclick=()=>{ sfxClick(); openMinigame(); };
   grid.appendChild(mgCard);
 
-  const brCard=document.createElement('div');
-  brCard.className='level-card royale';
-  brCard.innerHTML=`<div class="lvl-num">Supervivencia</div><div class="lvl-title">☠️ Battle Royale</div><div class="lvl-desc">Sobrevive a la tormenta de bugs por 60s.</div><div class="lvl-status">▶</div>`;
-  brCard.onclick=()=>{ sfxClick(); openBR(); };
-  grid.appendChild(brCard);
-
   world.levels.forEach((lvl,i)=>{
     const isUnlocked=unlocked.includes(lvl.id);
     const isDone=completed[lvl.id];
     const isCurrent=isUnlocked && !isDone && (i===0 || completed[world.levels[i-1].id]);
     const card=document.createElement('div');
     card.className='level-card'+(isUnlocked?'':' locked')+(isDone?' done':'')+(isCurrent?' current':'');
-    card.innerHTML=`<div class="lvl-num">Nivel ${i} · ${lvl.sublevels.length} subniveles</div>
+    card.innerHTML=`<div class="lvl-num">Nivel ${i} · ${lvl.sublevels.length} partes</div>
       <div class="lvl-title">${lvl.title}</div>
       <div class="lvl-desc">${lvl.desc}</div>
       <div class="lvl-status">${isDone?'✓':(isUnlocked?'▶':'🔒')}</div>`;
@@ -419,96 +394,157 @@ function renderSublevel(){
   const sub=currentLevel.sublevels[currentSub];
   $('lvl-top-title').textContent=currentLevel.title;
   $('lvl-title').textContent=currentLevel.title;
-  $('lvl-progress').textContent=`Subnivel ${currentSub+1} / ${currentLevel.sublevels.length}`;
+  $('lvl-progress').textContent=`Parte ${currentSub+1} / ${currentLevel.sublevels.length}`;
   const dots=$('lvl-dots'); dots.innerHTML='';
   currentLevel.sublevels.forEach((_,i)=>{ const s=document.createElement('span'); if(i<currentSub) s.className='done'; else if(i===currentSub) s.className='current'; dots.appendChild(s); });
+  
+  $('btn-prev').disabled=currentSub===0;
+  $('btn-next').textContent=currentSub===currentLevel.sublevels.length-1?'Terminar →':'Siguiente →';
+  $('btn-next').disabled=(sub.t!=='teach' && !currentQuizAnswered);
+
   const content=$('lvl-content'); content.innerHTML='';
   
   if(sub.t==='teach'){
+    showScreen('screen-level');
     const card=document.createElement('div'); card.className='content-card';
     card.innerHTML=`<button class="voice-btn" id="btn-voice">🔊 Escuchar a Zhinin</button><div>${sub.html}</div>`;
     content.appendChild(card);
     $('btn-voice').onclick=()=>{ const btn=$('btn-voice'); btn.classList.add('speaking'); btn.textContent='🔊 Hablando...'; speak(sub.voice); const check=setInterval(()=>{ if(!speechSynthesis.speaking){ clearInterval(check); btn.classList.remove('speaking'); btn.textContent='🔊 Escuchar a Zhinin'; } },300); };
     setTimeout(()=>speak(sub.voice),300);
+    $('btn-next').disabled=false;
   } 
-  else if(sub.t==='quiz'){
-    const card=document.createElement('div'); card.className='content-card';
-    card.innerHTML=`<div class="quiz-q">${sub.q}</div><div class="quiz-opts" id="quiz-opts"></div><div class="quiz-feedback" id="quiz-fb"></div>`;
-    content.appendChild(card);
-    sub.opts.forEach((opt,i)=>{ const b=document.createElement('button'); b.textContent=opt; b.onclick=()=>selectAnswer(i); $('quiz-opts').appendChild(b); });
+  else if(sub.t==='battle'){
+    showScreen('screen-battle');
+    startBattle(sub);
   }
-  else if(sub.t==='code'){
-    const card=document.createElement('div'); card.className='content-card';
-    card.innerHTML=`<div class="quiz-q">${sub.title}</div><div>${sub.html}</div>
-      <div class="code-editor-container">
-        <div class="code-editor-header"><span>main.ino</span><span>Arduino C++</span></div>
-        <textarea class="code-input" id="code-input" placeholder="Escribe tu código aquí..."></textarea>
-        <button class="btn-run" id="btn-run-code">▶ Ejecutar Código</button>
-        <div class="console-output" id="console-out">Esperando código...</div>
-      </div>
-      <div class="quiz-feedback" id="quiz-fb"></div>`;
-    content.appendChild(card);
+}
+
+// === SISTEMA DE BATALLA INTERACTIVA ===
+let battleTimerInterval;
+let battleTimeLeft = 15;
+let currentBattleSub = null;
+
+function startBattle(sub) {
+  currentBattleSub = sub;
+  battleTimeLeft = 15;
+  currentQuizAnswered = false;
+  
+  $('bug-enemy').textContent = sub.enemy || '👾';
+  $('bug-enemy').style.transform = 'scale(1)';
+  $('bug-enemy').style.opacity = '1';
+  $('bug-hp').style.width = '100%';
+  $('laser-beam').className = 'laser-beam';
+  $('battle-fb').style.display = 'none';
+  
+  $('battle-q').innerHTML = sub.q;
+  const optsDiv = $('battle-opts'); optsDiv.innerHTML = '';
+  
+  sub.opts.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.innerHTML = opt;
+    b.onclick = () => handleBattleAnswer(i, b);
+    optsDiv.appendChild(b);
+  });
+
+  clearInterval(battleTimerInterval);
+  $('battle-timer').textContent = battleTimeLeft + 's';
+  $('battle-timer').style.color = 'var(--yellow)';
+  
+  battleTimerInterval = setInterval(() => {
+    battleTimeLeft--;
+    $('battle-timer').textContent = battleTimeLeft + 's';
+    if(battleTimeLeft <= 5) $('battle-timer').style.color = 'var(--red)';
     
-    $('btn-run-code').onclick = () => {
-      const code = $('code-input').value;
-      const out = $('console-out');
-      const fb = $('quiz-fb');
-      out.textContent = "Compilando...";
-      setTimeout(()=>{
-        if(sub.codeReq.test(code)) {
-          out.textContent = "✅ Compilación exitosa. Programa ejecutado.";
-          out.style.color = "var(--green)";
-          fb.className='quiz-feedback show ok';
-          fb.innerHTML=`✅ <b>¡Excelente!</b> ${sub.codeSuccess}`;
-          sfxCorrect();
-          if(!currentQuizAnswered) { state.streak++; state.xp+=100; currentQuizAnswered=true; $('btn-next').disabled=false; updateHUD(); spawnParticle('+100 XP','var(--green)'); save(); }
-        } else {
-          out.textContent = "❌ Error de compilación o lógica incorrecta.";
-          out.style.color = "var(--red)";
-          fb.className='quiz-feedback show fail';
-          fb.innerHTML=`❌ <b>Inténtalo de nuevo.</b> ${sub.codeError}`;
-          sfxWrong();
-        }
-      }, 800);
-    };
-  }
-  $('btn-prev').disabled=currentSub===0;
-  $('btn-next').textContent=currentSub===currentLevel.sublevels.length-1?'Terminar →':'Siguiente →';
-  $('btn-next').disabled=(sub.t!=='teach' && !currentQuizAnswered);
-  window.scrollTo(0,0);
+    if(battleTimeLeft <= 0) {
+      clearInterval(battleTimerInterval);
+      timeOutBattle();
+    }
+  }, 1000);
 }
 
-function selectAnswer(i){
+function handleBattleAnswer(idx, btnEl) {
   if(currentQuizAnswered) return;
-  const sub=currentLevel.sublevels[currentSub];
-  const opts=document.querySelectorAll('#quiz-opts button');
-  const fb=$('quiz-fb');
-  opts.forEach((b,idx)=>{ if(idx===sub.a) b.classList.add('correct'); else if(idx===i) b.classList.add('wrong'); b.disabled=true; });
-  const correct=i===sub.a;
-  currentQuizAnswered=true;
-  if(correct){
-    sfxCorrect(); state.streak++;
-    const gain=state.streak>3?75:50; state.xp+=gain;
-    fb.className='quiz-feedback show ok';
-    fb.innerHTML=`✅ <b>¡Correcto!</b> +${gain} XP · Racha: ${state.streak} 🔥<br>${sub.explain}`;
-    spawnParticle('+'+gain+' XP','var(--green)');
-    save();
+  currentQuizAnswered = true;
+  clearInterval(battleTimerInterval);
+  
+  const sub = currentBattleSub;
+  const correct = (idx === sub.a);
+  
+  // Deshabilitar botones
+  document.querySelectorAll('#battle-opts button').forEach(b => b.style.pointerEvents = 'none');
+  
+  if(correct) {
+    btnEl.style.background = 'rgba(61,220,132,.3)';
+    btnEl.style.borderColor = 'var(--green)';
+    
+    // Animación de Láser
+    sfxLaser();
+    const laser = $('laser-beam');
+    laser.style.background = 'var(--cyan)';
+    laser.style.boxShadow = '0 0 20px var(--cyan)';
+    laser.classList.add('fire');
+    
+    setTimeout(() => {
+      sfxExplode();
+      const bug = $('bug-enemy');
+      bug.style.transform = 'scale(1.5) rotate(45deg)';
+      bug.textContent = '💥';
+      $('bug-hp').style.width = '0%';
+      
+      setTimeout(() => {
+        bug.style.opacity = '0';
+        $('battle-fb').className = 'quiz-feedback show ok';
+        $('battle-fb').style.display = 'block';
+        $('battle-fb').innerHTML = `✅ <b>¡Impacto letal!</b> ${sub.explain}`;
+        
+        state.streak++; state.xp += 150;
+        updateHUD(); save();
+        $('btn-next').disabled = false;
+      }, 500);
+    }, 200);
+    
   } else {
-    sfxWrong(); state.streak=0; state.hp=Math.max(0,state.hp-10);
-    fb.className='quiz-feedback show fail';
-    fb.innerHTML=`❌ <b>Incorrecto.</b> −10 HP<br>${sub.explain}`;
-    document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'),400);
-    save();
+    btnEl.style.background = 'rgba(255,71,87,.3)';
+    btnEl.style.borderColor = 'var(--red)';
+    enemyAttacks();
   }
-  updateHUD();
-  $('btn-next').disabled=false;
 }
 
-function spawnParticle(text,color){
-  const p=document.createElement('div'); p.className='particle'; p.textContent=text; p.style.color=color;
-  p.style.left=(window.innerWidth/2-30)+'px'; p.style.top=(window.innerHeight/2)+'px';
-  document.body.appendChild(p); setTimeout(()=>p.remove(),1200);
+function timeOutBattle() {
+  if(currentQuizAnswered) return;
+  currentQuizAnswered = true;
+  enemyAttacks(true);
 }
+
+function enemyAttacks(isTimeout = false) {
+  sfxWrong();
+  document.body.classList.add('shake');
+  setTimeout(()=>document.body.classList.remove('shake'), 400);
+  
+  const bug = $('bug-enemy');
+  bug.style.transform = 'scale(1.3) translateY(30px)';
+  
+  setTimeout(() => {
+    bug.style.transform = 'scale(1) translateY(0)';
+    $('battle-fb').className = 'quiz-feedback show fail';
+    $('battle-fb').style.display = 'block';
+    $('battle-fb').innerHTML = `❌ <b>${isTimeout ? '¡Tiempo agotado!' : '¡Respuesta incorrecta!'}</b> El Bug te atacó. -20 HP.<br>${currentBattleSub.explain}`;
+    
+    state.streak = 0;
+    state.hp = Math.max(0, state.hp - 20);
+    updateHUD(); save();
+    $('btn-next').disabled = false;
+    
+    if(state.hp <= 0) {
+      setTimeout(() => {
+        alert('☠️ Has caído en combate. Tu vida se ha restaurado a 100 para que sigas entrenando.');
+        state.hp = 100; updateHUD(); save();
+        showScreen('screen-map'); renderMap();
+      }, 1000);
+    }
+  }, 300);
+}
+// =====================================
 
 function nextSub(){
   stopSpeak();
@@ -550,165 +586,12 @@ function nextMgQuestion(){
 function handleMgAnswer(ans, q){
   clearInterval(mgInterval); $('mg-btn-ok').disabled = true; $('mg-btn-err').disabled = true;
   const userSaysOk = (ans === true); const isCorrect = (ans !== null && userSaysOk === q.ok);
-  const fb = $('mg-fb'); fb.className = 'quiz-feedback show ' + (isCorrect ? 'ok' : 'fail');
-  if(isCorrect){ sfxCorrect(); mgScore += 10; state.xp += 5; fb.innerHTML = `✅ ¡Bien! +5 XP`; spawnParticle('+5 XP', 'var(--green)'); }
+  const fb = $('mg-fb'); fb.className = 'quiz-feedback show ' + (isCorrect ? 'ok' : 'fail'); fb.style.display='block';
+  if(isCorrect){ sfxCorrect(); mgScore += 10; state.xp += 5; fb.innerHTML = `✅ ¡Bien! +5 XP`; }
   else { sfxWrong(); state.hp = Math.max(0, state.hp - 5); document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'),400); fb.innerHTML = ans === null ? `⏰ ¡Tiempo! ` : `❌ Error. `; if(q.why) fb.innerHTML += `(${q.why})`; updateHUD(); }
   mgTimeout = setTimeout(()=>{ if(state.hp <= 0) endMinigame(); else nextMgQuestion(); }, 1500);
 }
-function endMinigame(){ clearInterval(mgInterval); clearTimeout(mgTimeout); if(mgScore > state.mgHighScore) state.mgHighScore = mgScore; save(); alert(`¡Juego terminado!\nPuntos: ${mgScore}\nRécord: ${state.mgHighScore}`); showScreen('screen-map'); renderMap(); }
-
-// ================= BATTLE ROYALE =================
-let brPlayer = {x: 5, y: 5};
-let brEnemies = [];
-let brStormRadius = 5;
-let brTime = 60;
-let brScore = 0;
-let brHp = 100;
-let brInterval = null;
-
-function openBR(){
-  showScreen('screen-br');
-  startBR();
-}
-
-function startBR() {
-    brPlayer = {x: 5, y: 5};
-    brEnemies = [];
-    // Spawn 6 enemies en las esquinas
-    for(let i=0; i<6; i++) {
-        brEnemies.push({x: Math.random() > 0.5 ? 0 : 10, y: Math.random() > 0.5 ? 0 : 10, id: i});
-    }
-    brStormRadius = 5;
-    brTime = 60;
-    brScore = 0;
-    brHp = 100;
-    clearInterval(brInterval);
-    brInterval = setInterval(brTick, 1000);
-    renderBR();
-}
-
-function renderBR() {
-    const grid = $('br-grid');
-    grid.innerHTML = '';
-    for(let y=0; y<11; y++) {
-        for(let x=0; x<11; x++) {
-            const cell = document.createElement('div');
-            cell.className = 'br-cell';
-            
-            // Tormenta
-            if (Math.abs(x-5) > brStormRadius || Math.abs(y-5) > brStormRadius) {
-                cell.classList.add('storm');
-            }
-            
-            // Jugador
-            if (x === brPlayer.x && y === brPlayer.y) {
-                cell.classList.add('player');
-                cell.textContent = '🤖';
-            }
-            
-            // Enemigos
-            if (brEnemies.some(e => e.x === x && e.y === y)) {
-                cell.classList.add('enemy');
-                if(cell.textContent !== '🤖') cell.textContent = '👾';
-            }
-            
-            grid.appendChild(cell);
-        }
-    }
-    
-    $('br-hp').textContent = brHp;
-    $('br-time').textContent = brTime;
-    $('br-score').textContent = brScore;
-}
-
-function moveBR(dx, dy) {
-    if(brHp <= 0 || brTime <= 0) return;
-    brPlayer.x = Math.max(0, Math.min(10, brPlayer.x + dx));
-    brPlayer.y = Math.max(0, Math.min(10, brPlayer.y + dy));
-    renderBR();
-}
-
-function attackBR() {
-    if(brHp <= 0 || brTime <= 0) return;
-    
-    let nearest = null; let minDist = 999;
-    brEnemies.forEach(e => {
-        let dist = Math.abs(e.x - brPlayer.x) + Math.abs(e.y - brPlayer.y);
-        if(dist < minDist) { minDist = dist; nearest = e; }
-    });
-    
-    if(nearest && minDist <= 3) {
-        brEnemies = brEnemies.filter(e => e !== nearest);
-        brScore += 10;
-        sfxCorrect();
-        spawnParticle('💥 Bug eliminado', 'var(--cyan)');
-        renderBR();
-        
-        // Spawn nuevo enemigo para mantener el reto
-        setTimeout(() => {
-           if(brHp > 0 && brTime > 0) {
-              brEnemies.push({x: Math.random() > 0.5 ? 0 : 10, y: Math.random() > 0.5 ? 0 : 10, id: Date.now()});
-              renderBR();
-           }
-        }, 1500);
-        
-    } else {
-        sfxWrong();
-        spawnParticle('Fuera de rango', 'var(--muted)');
-    }
-}
-
-function brTick() {
-    brTime--;
-    
-    // Daño de la tormenta
-    if (Math.abs(brPlayer.x-5) > brStormRadius || Math.abs(brPlayer.y-5) > brStormRadius) {
-        brHp -= 5;
-        sfxHit();
-        spawnParticle('-5 HP (Tormenta)', 'var(--red)');
-    }
-    
-    // La tormenta se cierra
-    if (brTime % 15 === 0 && brStormRadius > 1) brStormRadius--;
-    
-    // Movimiento de enemigos
-    brEnemies.forEach(e => {
-        let dx = Math.sign(brPlayer.x - e.x);
-        let dy = Math.sign(brPlayer.y - e.y);
-        
-        // Movimiento inteligente (persigue en el eje más lejano)
-        if (Math.abs(brPlayer.x - e.x) > Math.abs(brPlayer.y - e.y)) e.x += dx;
-        else e.y += dy;
-        
-        // Daño al jugador
-        if (e.x === brPlayer.x && e.y === brPlayer.y) {
-            brHp -= 15;
-            sfxHit();
-            spawnParticle('-15 HP', 'var(--red)');
-            // Empujar al enemigo hacia atrás para que no te ataque 60 veces por segundo
-            e.x += dx; 
-            e.y += dy;
-        }
-    });
-    
-    renderBR();
-    
-    if (brHp <= 0) {
-        clearInterval(brInterval);
-        sfxWrong();
-        document.body.classList.add('shake');
-        setTimeout(()=>document.body.classList.remove('shake'), 500);
-        alert('☠️ HAS SIDO ELIMINADO. Los bugs te atraparon. ¡Intenta atacar más rápido!');
-        showScreen('screen-map'); renderMap();
-    } else if (brTime <= 0) {
-        clearInterval(brInterval);
-        sfxLevel();
-        alert(`🏆 ¡VICTORIA! Has sobrevivido al Battle Royale.\nBugs eliminados: ${brScore / 10}`);
-        if(state.brHighScore < brScore) { state.xp += 500; state.brHighScore = brScore; save(); updateHUD(); }
-        showScreen('screen-map'); renderMap();
-    }
-}
-// ==========================================================
+function endMinigame(){ clearInterval(mgInterval); clearTimeout(mgTimeout); if(mgScore > state.mgHighScore) state.mgHighScore = mgScore; save(); alert(`¡Juego terminado!\nPuntos: ${mgScore}`); showScreen('screen-map'); renderMap(); }
 
 let chatHistory=[], chatBusy=false;
 function openChat(){
@@ -740,7 +623,7 @@ async function sendChat(){
     const data = await res.json(); $('typing')?.remove();
     if(data.error) { addMsg('bot', 'Zhinin dice: ' + data.error); }
     else { const reply = data.reply || 'No pude responder.'; addMsg('bot',reply); chatHistory.push({role:'assistant',content:reply}); speak(reply); }
-  }catch(e){ $('typing')?.remove(); addMsg('bot','Zhinin no puede responder en este momento. Revisa tu conexión a internet.'); }
+  }catch(e){ $('typing')?.remove(); addMsg('bot','Zhinin no puede responder ahora.'); }
   finally{ chatBusy=false; $('btn-chat-send').disabled=false; $('chat-text').focus(); }
 }
 
@@ -755,7 +638,7 @@ function bootProfile(){
 function bootMap(){
   document.querySelectorAll('.world-tabs button').forEach(b=>{ b.onclick=()=>{ state.world=b.dataset.world; sfxClick(); renderMap(); }; });
   $('btn-sound').onclick=()=>{ state.sound=!state.sound; save(); setSoundBtn(); if(!state.sound) stopSpeak(); sfxClick(); };
-  $('btn-reset').onclick=()=>{ if(!confirm('¿Borrar todo tu progreso y récords?')) return; state.xp=0; state.hp=100; state.streak=0; state.unlocked={arduino:['a0'],esp32:['e0']}; state.completed={arduino:{},esp32:{}}; state.mgHighScore=0; state.brHighScore=0; save(); updateHUD(); renderMap(); };
+  $('btn-reset').onclick=()=>{ if(!confirm('¿Borrar todo tu progreso?')) return; state.xp=0; state.hp=100; state.streak=0; state.unlocked={arduino:['a0'],esp32:['e0']}; state.completed={arduino:{},esp32:{}}; state.mgHighScore=0; save(); updateHUD(); renderMap(); };
 }
 function bootLevel(){
   $('btn-back').onclick=()=>{ stopSpeak(); showScreen('screen-map'); renderMap(); };
@@ -771,18 +654,14 @@ function bootMinigame(){
   $('mg-btn-ok').onclick=()=>handleMgAnswer(true, mgCurrentQuestion);
   $('mg-btn-err').onclick=()=>handleMgAnswer(false, mgCurrentQuestion);
 }
-function bootBR(){
-  $('btn-br-back').onclick=()=>{ clearInterval(brInterval); stopSpeak(); showScreen('screen-map'); renderMap(); };
-  $('btn-sound5').onclick=$('btn-sound').onclick;
-}
 
 function init(){
   try {
-    setSoundBtn(); bootProfile(); bootMap(); bootLevel(); bootComplete(); bootChat(); bootMinigame(); bootBR();
+    setSoundBtn(); bootProfile(); bootMap(); bootLevel(); bootComplete(); bootChat(); bootMinigame();
     if(state.profileSet){ showScreen('screen-map'); renderMap(); } else { showScreen('screen-profile'); }
   } catch(e) {
     var el = document.getElementById('error-log');
-    if(el) { el.style.display = 'block'; el.innerHTML = '<strong>Error en la app:</strong><br>' + e.message; }
+    if(el) { el.style.display = 'block'; el.innerHTML = '<strong>Error:</strong><br>' + e.message; }
   }
 }
 init();
