@@ -670,4 +670,37 @@ function bootProfile(){
 }
 function bootMap(){
   document.querySelectorAll('.world-tabs button').forEach(b=>{ b.onclick=()=>{ state.world=b.dataset.world; sfxClick(); renderMap(); }; });
-  $('btn-sound').onclick=()=>{ state.sound
+  $('btn-sound').onclick=()=>{ state.sound=!state.sound; save(); setSoundBtn(); if(!state.sound) stopSpeak(); sfxClick(); };
+  $('btn-reset').onclick=()=>{ if(!confirm('¿Borrar todo tu progreso y récords?')) return; state.xp=0; state.hp=100; state.streak=0; state.unlocked={arduino:['a0'],esp32:['e0']}; state.completed={arduino:{},esp32:{}}; state.mgHighScore=0; save(); updateHUD(); renderMap(); };
+}
+function bootLevel(){
+  $('btn-back').onclick=()=>{ stopSpeak(); showScreen('screen-map'); renderMap(); };
+  $('btn-sound2').onclick=$('btn-sound').onclick;
+  $('btn-prev').onclick=()=>{ if(currentSub>0){ currentSub--; stopSpeak(); renderSublevel(); } };
+  $('btn-next').onclick=()=>nextSub();
+}
+function bootComplete(){ $('btn-continue').onclick=()=>{ showScreen('screen-map'); renderMap(); }; }
+function bootChat(){ $('fab-chat').onclick=openChat; $('btn-chat-close').onclick=closeChat; $('btn-chat-send').onclick=sendChat; $('chat-text').addEventListener('keydown',e=>{ if(e.key==='Enter') sendChat(); }); }
+function bootMinigame(){
+  $('btn-mg-back').onclick=()=>{ clearInterval(mgInterval); clearTimeout(mgTimeout); showScreen('screen-map'); renderMap(); };
+  $('btn-sound3').onclick=$('btn-sound').onclick;
+  $('mg-btn-ok').onclick=()=>handleMgAnswer(true, mgCurrentQuestion);
+  $('mg-btn-err').onclick=()=>handleMgAnswer(false, mgCurrentQuestion);
+}
+
+function init(){
+  try {
+    setSoundBtn(); bootProfile(); bootMap(); bootLevel(); bootComplete(); bootChat(); bootMinigame();
+    if(state.profileSet){ showScreen('screen-map'); renderMap(); } else { showScreen('screen-profile'); }
+  } catch(e) {
+    var el = document.getElementById('error-log');
+    if(el) {
+      el.style.display = 'block';
+      el.innerHTML = '<strong>Error en la app:</strong><br>' + e.message;
+    }
+  }
+}
+init();
+</script>
+</body>
+</html>
