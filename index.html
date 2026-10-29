@@ -122,11 +122,14 @@ body{font-size:15px;line-height:1.6}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(1.5)}}
 .shake{animation:shake .4s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.simulator{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:20px;text-align:center;margin-top:20px}
-.oled-screen{background:#000;border:4px solid #333;border-radius:8px;width:200px;height:100px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--cyan);font-family:monospace;box-shadow:0 0 15px rgba(0,240,255,.3);transition:all .3s}
-.slider-group{margin-bottom:15px;text-align:left}
-.slider-group label{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
-.slider-group input[type=range]{width:100%;accent-color:var(--magenta)}
+.minigame-box{text-align:center;padding:20px}
+.timer-bar{height:8px;background:var(--border);border-radius:4px;margin-bottom:20px;overflow:hidden}
+.timer-fill{height:100%;background:var(--cyan);transition:width .1s linear}
+.code-block{background:#000;padding:20px;border-radius:8px;font-family:monospace;font-size:16px;margin-bottom:20px;text-align:left;color:#fff;border:1px solid var(--border)}
+.mg-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mg-btns button{padding:20px;font-size:20px;font-weight:bold;border-radius:12px;border:none;cursor:pointer;color:#fff;font-family:inherit}
+.btn-ok{background:var(--green)}
+.btn-error{background:var(--red)}
 /* Estilos CodeCombat */
 .code-editor-container{margin-top:15px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
 .code-editor-header{background:var(--bg2);padding:8px 12px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
@@ -212,6 +215,25 @@ body{font-size:15px;line-height:1.6}
       <div><div class="num" id="comp-streak">0</div><div class="lbl">Racha</div></div>
     </div>
     <button class="btn-primary" id="btn-continue">[ VOLVER AL MAPA ]</button>
+  </div>
+</div>
+
+<!-- Minijuego Caza Errores -->
+<div class="screen" id="screen-minigame">
+  <div class="topbar">
+    <button id="btn-mg-back">← mapa</button>
+    <div class="logo">Caza Errores</div>
+    <button id="btn-sound3">🔊</button>
+  </div>
+  <div class="content-card minigame-box">
+    <div class="timer-bar"><div class="timer-fill" id="mg-timer" style="width:100%"></div></div>
+    <p style="color:var(--muted);margin-bottom:10px;font-size:12px">¿Este código está BIEN o tiene un ERROR?</p>
+    <div class="code-block" id="mg-code">cargando...</div>
+    <div class="mg-btns">
+      <button class="btn-ok" id="mg-btn-ok">✅ Correcto</button>
+      <button class="btn-error" id="mg-btn-err">❌ Error</button>
+    </div>
+    <div class="quiz-feedback" id="mg-fb"></div>
   </div>
 </div>
 
@@ -368,7 +390,7 @@ function stopSpeak(){ if('speechSynthesis' in window) speechSynthesis.cancel(); 
 
 const $=(id)=>document.getElementById(id);
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); window.scrollTo(0,0); }
-function setSoundBtn(){ const t=state.sound?'🔊':'🔇'; $('btn-sound').textContent=t; $('btn-sound2').textContent=t; }
+function setSoundBtn(){ const t=state.sound?'🔊':'🔇'; $('btn-sound').textContent=t; $('btn-sound2').textContent=t; $('btn-sound3').textContent=t; }
 function updateHUD(){
   $('hud-xp').textContent=state.xp; $('hud-hp').textContent=state.hp; $('hud-streak').textContent=state.streak+' 🔥';
   $('hud-xp-bar').style.width=Math.min(100,(state.xp%500)/5)+'%';
