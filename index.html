@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Zhinin OS :: Academia Definitiva</title>
+<title>Zhinin OS :: Curso Definitivo</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0a0e14;--bg2:#11161f;--card:#161d28;--border:#243041;--text:#d4dae4;--muted:#7a8697;--cyan:#00f0ff;--magenta:#ff2d95;--green:#3ddc84;--red:#ff4757;--yellow:#ffd166;--orange:#ff9f43}
@@ -125,24 +125,17 @@ body{font-size:15px;line-height:1.6}
 .game-opts { display: grid; gap: 10px; margin-top: 15px; }
 .game-opts button { padding: 15px; font-size: 14px; font-family: inherit; background: var(--bg2); border: 1px solid var(--border); color: var(--text); border-radius: 8px; cursor: pointer; text-align: left; }
 .game-opts button:active { transform: scale(0.98); }
-
-/* Memorama */
 .memory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
 .memory-card { background: var(--bg2); border: 2px solid var(--border); height: 80px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; text-align: center; padding: 5px; }
 .memory-card.flipped { background: var(--cyan); color: #000; border-color: var(--cyan); }
 .memory-card.matched { background: var(--green); color: #000; border-color: var(--green); pointer-events: none; }
-
-/* Puzzle de Código */
 .code-puzzle { background: #000; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 16px; margin-bottom: 15px; border: 1px solid var(--border); line-height: 2; }
 .code-slot { display: inline-block; min-width: 60px; border-bottom: 2px dashed var(--cyan); color: var(--cyan); text-align: center; cursor: pointer; }
 .puzzle-pieces { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px; }
 .puzzle-piece { background: var(--card); border: 1px solid var(--cyan); color: var(--text); padding: 10px 15px; border-radius: 8px; cursor: pointer; font-family: monospace; font-size: 14px; }
-
-/* Caza Errores (Tocar el bug) */
 .bughunt-container { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
 .bughunt-box { background: #000; border: 2px solid var(--border); padding: 15px; border-radius: 8px; font-family: monospace; cursor: pointer; font-size: 14px; transition: 0.2s; }
 .bughunt-box:active { transform: scale(0.98); }
-
 @media(min-width:700px){.hud{grid-template-columns:1fr 1fr 1fr 1fr}}
 </style>
 </head>
@@ -159,9 +152,9 @@ body{font-size:15px;line-height:1.6}
 
 <div class="screen" id="screen-profile">
   <div class="welcome">
-    <h1>ZHININ_OS v18.0</h1>
-    <p>:: Academia Definitiva ::</p>
-    <p style="color:var(--text)">¡Hola! Soy Zhinin. Hoy vamos a dominar el código con 4 minijuegos diferentes. Dime cómo prefieres que te hable.</p>
+    <h1>ZHININ_OS v19.0</h1>
+    <p>:: Curso Definitivo ::</p>
+    <p style="color:var(--text)">¡Hola! Soy Zhinin. Prepárate para aprender TODO sobre Arduino y ESP32, con manzanitas y juegos. Dime cómo prefieres que te hable.</p>
     <div class="field"><label>Tu nombre (opcional)</label><input type="text" id="in-name" placeholder="Ej. Zinia" maxlength="20"></div>
     <div class="field"><label>¿Cómo te refieres a ti?</label>
       <div class="gender-btns">
@@ -239,43 +232,40 @@ body{font-size:15px;line-height:1.6}
 </div>
 
 <script>
-// ==========================================
-// DATOS DEL CURSO: TEORÍA Y JUEGOS
-// ==========================================
 const WORLDS = {
   arduino: {
     id: 'arduino', title: 'Mundo Arduino', subtitle: 'Lafvin 4WD Proyecto Final',
     levels: [
       { 
-        id:'a0', title:'Nivel 0: Cero Absoluto', desc:'¿Qué es un pin? ¿Qué es HIGH?', 
+        id:'a0', title:'Nivel 0: Cero Absoluto', desc:'Pines, HIGH/LOW y tu primera orden.', 
         sublevels:[
-          { t:'teach', title:'El Cerebro y los Pines', voice:'¡Bienvenida! Un Arduino es un cerebro vacío. Tiene patitas de metal llamadas pines, numeradas. El pin 4 es solo el nombre de la patita 4. Si le mandas energía, se llama HIGH. Si se la quitas, se llama LOW.', html:`<h3>Vocabulario Básico</h3><ul style="margin-left:20px"><li><b>Pin:</b> Las patitas donde conectas las cosas. Tienen números (2, 3, 4...).</li><li><b>HIGH:</b> Encendido. Le mandamos energía.</li><li><b>LOW:</b> Apagado. Le quitamos la energía.</li></ul>` },
-          { t:'memory', title:'Memorama de Sintaxis', voice:'¡Vamos a jugar! Voltea las cartas y encuentra las parejas correctas.', html:`<h3>Encuentra las parejas</h3><p>Une el concepto con su significado.</p>`, pairs: [{a:'HIGH', b:'Encender'}, {a:'LOW', b:'Apagar'}, {a:'Pin', b:'Patita de metal'}] }
+          { t:'teach', title:'El Cerebro y los Pines', voice:'¡Bienvenida! Un Arduino es un cerebro vacío. Tiene patitas de metal llamadas pines, numeradas. El pin 4 es solo el nombre de la patita 4. Si le mandas energía, se llama HIGH. Si se la quitas, se llama LOW.', html:`<h3>Vocabulario Básico</h3><ul style="margin-left:20px"><li><b>Pin:</b> Las patitas donde conectas las cosas.</li><li><b>HIGH:</b> Encendido (energía).</li><li><b>LOW:</b> Apagado (sin energía).</li></ul>` },
+          { t:'memory', title:'Memorama de Sintaxis', voice:'¡Vamos a jugar! Voltea las cartas y encuentra las parejas correctas.', html:`<h3>Encuentra las parejas</h3>`, pairs: [{a:'HIGH', b:'Encender'}, {a:'LOW', b:'Apagar'}, {a:'Pin', b:'Patita de metal'}] }
         ] 
       },
       { 
-        id:'a1', title:'El Alfabeto del Código', desc:'Punto y coma, digitalWrite.', 
+        id:'a1', title:'Variables', desc:'Cajitas para guardar datos.', 
         sublevels:[
-          { t:'teach', title:'La orden: digitalWrite', voice:'La orden digital write enciende o apaga un pin. Por ejemplo, digital write 4, HIGH. Enciende el pin 4. ¡No olvides el punto y coma al final!', html:`<h3>La primera orden</h3><pre class="good"><code>digitalWrite(4, HIGH);</code></pre><p>Traduce: "Usa el pin 4 y ponlo en HIGH (encendido)".</p>` },
-          { t:'puzzle', title:'Rompecabezas de Código', voice:'El código está incompleto. Toca las piezas correctas para encender el pin 4.', html:`<h3>Arma la orden</h3>`, codeTemplate: "digitalWrite(4, [SLOT]);", pieces: ['HIGH', 'LOW', 'int'], answer: 'HIGH' }
+          { t:'teach', title:'Cajas con nombre', voice:'Una variable es una cajita. Si guardas un entero, usas int. Si guardas decimales, float. Si guardas letras, String.', html:`<h3>Tipos de datos</h3><pre class="good"><code>int edad = 15;\nfloat estatura = 1.65;\nString nombre = "Zinia";</code></pre>` },
+          { t:'puzzle', title:'Rompecabezas de Código', voice:'Completa la caja para guardar un número entero.', html:`<h3>Arma la orden</h3>`, codeTemplate: "[SLOT] distancia = 25;", pieces: ['int', 'float', 'String'], answer: 'int' }
         ]
       },
       { 
-        id:'a2', title:'Variables', desc:'Cajitas con nombre para guardar datos.', 
+        id:'a2', title:'Motores', desc:'Mueve el carrito hacia adelante.', 
         sublevels:[
-          { t:'teach', title:'¿Qué es una variable?', voice:'Una variable es una cajita con un nombre. Tiene un tipo. Si guardas un entero, es int. Si guardas decimales, es float.', html:`<h3>Tipos de datos</h3><pre class="good"><code>int distancia = 25; // Entero\nfloat temp = 23.5; // Decimal</code></pre>` },
-          { t:'battle', q:'¿Qué tipo usarías para guardar <code>23.5</code>?', opts:['int','float','char'], a:1, explain:'<code>float</code> guarda decimales.', enemy:'👾' }
+          { t:'teach', title:'Dirección (digitalWrite)', voice:'Para mover el motor hacia adelante, le das energía a un pin y apagas el otro. Así el motor gira.', html:`<h3>Avanzar</h3><pre class="good"><code>digitalWrite(IN1, HIGH);\ndigitalWrite(IN2, LOW);</code></pre>` },
+          { t:'battle', q:'Si pongo <code>IN1</code> en HIGH e <code>IN2</code> en LOW, el motor...', opts:['Avanza', 'Frena', 'Gira al revés'], a:0, explain:'Al mandar energía a uno y apagar el otro, se crea una diferencia que hace girar el motor hacia adelante.', enemy:'⚙️' }
         ]
       },
       { 
-        id:'a3', title:'Sensores y OLED', desc:'Los ojos del robot y su cara.', 
+        id:'a3', title:'Sensores', desc:'Ultrasónico y Humedad.', 
         sublevels:[
-          { t:'teach', title:'Sensor Ultrasónico', voice:'El sensor ultrasónico manda un pulso y mide cuánto tarda en volver. Esa duración la divides entre 58 y te da la distancia.', html:`<h3>HC-SR04</h3><pre class="good"><code>long tiempo = pulseIn(echo, HIGH);\nint distancia = tiempo / 58.00;</code></pre>` },
-          { t:'bughunt', title:'Caza Errores', voice:'Encuentra el bloque de código que tiene el error. Toca el bug.', html:`<h3>Toca el código con error</h3>`, goodCode: "digitalWrite(4, HIGH);", badCode: "digitalWrite(4, HIGH)" }
+          { t:'teach', title:'El Eco del Ultrasonido', voice:'El sensor ultrasónico manda un grito (pulso). Mide cuánto tarda en volver el eco. Divides entre 58 y tienes los centímetros.', html:`<h3>HC-SR04</h3><pre class="good"><code>long tiempo = pulseIn(echo, HIGH);\nint distancia = tiempo / 58.00;</code></pre>` },
+          { t:'bughunt', title:'Caza Errores', voice:'Toca el bloque de código que tiene el error. ¡Cuidado con las mayúsculas!', html:`<h3>¿Cuál está mal escrito?</h3>`, goodCode: "digitalWrite(4, HIGH);", badCode: "digitalwrite(4, high);" }
         ]
       },
       { 
-        id:'a4', title:'Examen Final (600 líneas)', desc:'El jefe final del Lafvin.', 
+        id:'a4', title:'Examen Final', desc:'La trampa de las 600 líneas.', 
         sublevels:[
           { t:'teach', title:'La trampa del while', voice:'El código original tiene un bucle while que atrapa el programa. Si pones tu código fuera, nunca se ejecutará.', html:`<h3>Funtion_Flag</h3><pre class="bad"><code>while(Funtion_Flag) {\n  // Tu código debe ir AQUÍ ADENTRO\n}</code></pre>` },
           { t:'battle', q:'¿Dónde va tu código nuevo para que sí se ejecute?', opts:['Fuera del while', 'Dentro del while (Funtion_Flag)', 'En el setup'], a:1, explain:'El while atrapa la ejecución, así que debes meterlo ahí.', enemy:'👹' }
@@ -289,7 +279,7 @@ const WORLDS = {
       { 
         id:'e0', title:'ESP32 Básico', desc:'El ESP32 trabaja a 3.3V.', 
         sublevels:[
-          { t:'teach', title:'El voltaje', voice:'El ESP32 no tolera 5V. Solo 3.3V. Si le metes 5V, lo quemas.', html:`<p>Voltaje: <b>3.3V</b>. ADC: <b>12 bits (0-4095)</b>.</p>` },
+          { t:'teach', title:'El voltaje', voice:'El ESP32 no tolera 5V. Solo 3.3V. Si le metes 5V, lo quemas. Además su lectura analógica va de 0 a 4095.', html:`<p>Voltaje: <b>3.3V</b>. ADC: <b>12 bits (0-4095)</b>.</p>` },
           { t:'battle', q:'¿A qué voltaje trabaja el ESP32?', opts:['5V','3.3V'], a:1, explain:'Es de 3.3V.', enemy:'🔥' }
         ] 
       }
@@ -300,8 +290,8 @@ const WORLDS = {
 const state = { name:'', gender:'f', sound:true, xp:0, hp:100, streak:0, world:'arduino',
   unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false };
 
-function save(){ try{ localStorage.setItem('zhinin_v18', JSON.stringify(state)); }catch(e){} }
-function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v18')||'null'); if(s) Object.assign(state,s); }catch(e){} }
+function save(){ try{ localStorage.setItem('zhinin_v19', JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v19')||'null'); if(s) Object.assign(state,s); }catch(e){} }
 load();
 
 let audioCtx=null;
@@ -313,6 +303,13 @@ function sfxWrong(){ beep(200,0.15,'sawtooth',0.1); setTimeout(()=>beep(140,0.25
 function sfxLaser(){ beep(1200,0.1,'sine',0.05); setTimeout(()=>beep(600,0.2,'sawtooth',0.05),50); }
 function sfxExplode(){ beep(100,0.4,'sawtooth',0.3); }
 function sfxLevel(){ beep(523,0.12,'sine',0.12); setTimeout(()=>beep(659,0.12,'sine',0.12),130); setTimeout(()=>beep(784,0.12,'sine',0.12),260); setTimeout(()=>beep(1047,0.3,'sine',0.12),390); }
+
+// AQUÍ ESTÁ LA FUNCIÓN QUE FALTABA
+function spawnParticle(text,color){
+  const p=document.createElement('div'); p.className='particle'; p.textContent=text; p.style.color=color;
+  p.style.left=(window.innerWidth/2-30)+'px'; p.style.top=(window.innerHeight/2)+'px';
+  document.body.appendChild(p); setTimeout(()=>p.remove(),1200);
+}
 
 if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices(); speechSynthesis.getVoices(); }
 function speak(text){
@@ -514,10 +511,7 @@ function flipMemory(el) {
   const sub = currentLevel.sublevels[currentSub];
   const id = el.dataset.id;
   const pair = sub.pairs[id];
-  el.textContent = el.textContent === '?' ? (window.memoryFlipped.length === 0 ? pair.a : pair.b) : el.textContent;
-  
-  // Corrección simple de texto
-  if(el.textContent === '?') el.textContent = pair.a; 
+  el.textContent = window.memoryFlipped.length === 0 ? pair.a : pair.b;
   
   window.memoryFlipped.push({el, id, text: el.textContent});
   
@@ -529,6 +523,7 @@ function flipMemory(el) {
       window.memoryFlipped = [];
       if(window.memoryMatched === window.memoryTotalPairs) {
         state.xp += 200; updateHUD(); save(); $('btn-next').disabled=false; currentQuizAnswered=true;
+        spawnParticle('+200 XP', 'var(--green)');
       }
     } else {
       sfxWrong();
