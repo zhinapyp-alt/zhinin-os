@@ -208,6 +208,12 @@ body{font-size:15px;line-height:1.6}
 </div>
 
 <script>
+// =========================================================================
+// 👇 PON TU API KEY DE GOOGLE GEMINI AQUÍ (reemplaza el texto de las comillas)
+// =========================================================================
+const GEMINI_API_KEY = ""; 
+// =========================================================================
+
 const WORLDS = {
   arduino: {
     id: 'arduino', title: 'Mundo Arduino', subtitle: 'Lafvin 6 en 1 · Examen a papel',
@@ -461,6 +467,7 @@ function addMsg(role,text){
     .replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\n/g,'<br>');
   div.innerHTML=html; body.appendChild(div); body.scrollTop=body.scrollHeight;
 }
+
 async function sendChat(){
   if(chatBusy) return;
   const input=$('chat-text'); const text=input.value.trim(); if(!text) return;
@@ -468,14 +475,57 @@ async function sendChat(){
   chatBusy=true; $('btn-chat-send').disabled=true;
   const typing=document.createElement('div'); typing.className='msg bot'; typing.textContent='...'; typing.id='typing';
   $('chat-body').appendChild(typing); $('chat-body').scrollTop=$('chat-body').scrollHeight;
+  
   try{
-    const res=await fetch('/api/zhinin',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({messages:chatHistory.slice(-20),gender:state.gender,level:currentLevel?currentLevel.title:'Introducción'})});
-    const data=await res.json();
+    // Adaptamos el historial de chat al formato de Google Gemini
+    const geminiContents = chatHistory.slice(-20).map(m => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content }]
+    }));
+
+    const trato = state.gender === 'm' 
+      ? 'El estudiante es varón: usa siempre el masculino (listo, preparado, bienvenido).' 
+      : 'La estudiante es mujer: usa siempre el femenino (lista, preparada, bienvenida).';
+
+    const systemPrompt = `Eres Zhinin, el asistente de estudio del simulador "Zhinin OS".
+Ayudas a preparar un examen de Arduino y ESP32. Temas: sintaxis, variables, sensores, motores, OLED, Bluetooth, WiFi.
+${trato}
+El estudiante está viendo el módulo: "${currentLevel?currentLevel.title:'Introducción'}".
+Reglas:
+- Responde siempre en español, con calidez.
+- Sé breve: máximo 3 párrafos cortos. Usa bloques de código si ayudan.
+- Si te piden la respuesta directa de una evaluación, da una pista en lugar de la solución.`;
+
+    // Hacemos la petición directo a Google
+    const res = await const res = await fetch('/api/zhinin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: chatHistory, gender: state.gender, level: currentLevel ? currentLevel.title : 'Intro' })
+});
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        contents: geminiContents
+      })
+    });
+
+    const data = await res.json();
     $('typing')?.remove();
-    if(data.reply){ addMsg('bot',data.reply); chatHistory.push({role:'assistant',content:data.reply}); speak(data.reply); }
-    else addMsg('bot','Zhinin no pudo responder. '+(data.error||''));
-  }catch(e){ $('typing')?.remove(); addMsg('bot','Error de conexión. Revisa tu red.'); }
+
+    if(data.error) {
+       addMsg('bot', 'Error de Google: ' + data.error.message + '. Revisa que tu API Key esté bien puesta en la línea 369.');
+    } else {
+       const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No pude generar una respuesta.';
+       addMsg('bot',reply); 
+       chatHistory.push({role:'assistant',content:reply}); 
+       speak(reply); 
+    }
+
+  }catch(e){ 
+    $('typing')?.remove(); 
+    addMsg('bot','Error de conexión. Revisa tu red o que la API Key sea correcta.'); 
+  }
   finally{ chatBusy=false; $('btn-chat-send').disabled=false; $('chat-text').focus(); }
 }
 
