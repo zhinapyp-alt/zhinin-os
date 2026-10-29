@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Zhinin OS :: Curso Definitivo</title>
+<title>Zhinin OS :: Academia Definitiva</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0a0e14;--bg2:#11161f;--card:#161d28;--border:#243041;--text:#d4dae4;--muted:#7a8697;--cyan:#00f0ff;--magenta:#ff2d95;--green:#3ddc84;--red:#ff4757;--yellow:#ffd166;--orange:#ff9f43}
@@ -152,9 +152,9 @@ body{font-size:15px;line-height:1.6}
 
 <div class="screen" id="screen-profile">
   <div class="welcome">
-    <h1>ZHININ_OS v19.0</h1>
-    <p>:: Curso Definitivo ::</p>
-    <p style="color:var(--text)">¡Hola! Soy Zhinin. Prepárate para aprender TODO sobre Arduino y ESP32, con manzanitas y juegos. Dime cómo prefieres que te hable.</p>
+    <h1>ZHININ_OS v20.0</h1>
+    <p>:: Academia Completa ::</p>
+    <p style="color:var(--text)">¡Hola! Soy Zhinin. Tienes 11 niveles para dominar Arduino y 3 para ESP32. Dime cómo prefieres que te hable.</p>
     <div class="field"><label>Tu nombre (opcional)</label><input type="text" id="in-name" placeholder="Ej. Zinia" maxlength="20"></div>
     <div class="field"><label>¿Cómo te refieres a ti?</label>
       <div class="gender-btns">
@@ -237,35 +237,77 @@ const WORLDS = {
     id: 'arduino', title: 'Mundo Arduino', subtitle: 'Lafvin 4WD Proyecto Final',
     levels: [
       { 
-        id:'a0', title:'Nivel 0: Cero Absoluto', desc:'Pines, HIGH/LOW y tu primera orden.', 
+        id:'a0', title:'Nivel 0: El Cerebro y Pines', desc:'Pines, HIGH, LOW y digitalWrite.', 
         sublevels:[
-          { t:'teach', title:'El Cerebro y los Pines', voice:'¡Bienvenida! Un Arduino es un cerebro vacío. Tiene patitas de metal llamadas pines, numeradas. El pin 4 es solo el nombre de la patita 4. Si le mandas energía, se llama HIGH. Si se la quitas, se llama LOW.', html:`<h3>Vocabulario Básico</h3><ul style="margin-left:20px"><li><b>Pin:</b> Las patitas donde conectas las cosas.</li><li><b>HIGH:</b> Encendido (energía).</li><li><b>LOW:</b> Apagado (sin energía).</li></ul>` },
-          { t:'memory', title:'Memorama de Sintaxis', voice:'¡Vamos a jugar! Voltea las cartas y encuentra las parejas correctas.', html:`<h3>Encuentra las parejas</h3>`, pairs: [{a:'HIGH', b:'Encender'}, {a:'LOW', b:'Apagar'}, {a:'Pin', b:'Patita de metal'}] }
+          { t:'teach', title:'Pines y Voltaje', voice:'¡Bienvenida! Un Arduino es un cerebro. Tiene patitas (pines). Si le mandas energía, se llama HIGH. Si se la quitas, LOW. Para hacerlo, usas digitalWrite. Por ejemplo: digitalWrite pin 4 en HIGH.', html:`<h3>Vocabulario Básico</h3><ul style="margin-left:20px"><li><b>Pin:</b> Las patitas (4, 5, 6...).</li><li><b>HIGH:</b> Encendido (energía).</li><li><b>LOW:</b> Apagado (sin energía).</li></ul><pre class="good"><code>digitalWrite(4, HIGH);</code></pre>` },
+          { t:'memory', title:'Memorama de Pines', voice:'¡Vamos a jugar! Encuentra las parejas.', html:`<h3>Encuentra las parejas</h3>`, pairs: [{a:'HIGH', b:'Encender'}, {a:'LOW', b:'Apagar'}, {a:'Pin', b:'Patita de metal'}] }
         ] 
       },
       { 
-        id:'a1', title:'Variables', desc:'Cajitas para guardar datos.', 
+        id:'a1', title:'Nivel 1: Variables', desc:'Cajitas para guardar datos.', 
         sublevels:[
-          { t:'teach', title:'Cajas con nombre', voice:'Una variable es una cajita. Si guardas un entero, usas int. Si guardas decimales, float. Si guardas letras, String.', html:`<h3>Tipos de datos</h3><pre class="good"><code>int edad = 15;\nfloat estatura = 1.65;\nString nombre = "Zinia";</code></pre>` },
-          { t:'puzzle', title:'Rompecabezas de Código', voice:'Completa la caja para guardar un número entero.', html:`<h3>Arma la orden</h3>`, codeTemplate: "[SLOT] distancia = 25;", pieces: ['int', 'float', 'String'], answer: 'int' }
+          { t:'teach', title:'Cajas con nombre', voice:'Una variable es una cajita. Si guardas un entero, usas int. Si guardas decimales, float. Si guardas letras, String. Por ejemplo: int edad = 15.', html:`<h3>Tipos de datos</h3><pre class="good"><code>int edad = 15;\nfloat estatura = 1.65;\nString nombre = "Zinia";</code></pre>` },
+          { t:'puzzle', title:'Rompecabezas de Variables', voice:'Completa la caja para guardar un número entero.', html:`<h3>Arma la orden</h3>`, codeTemplate: "[SLOT] distancia = 25;", pieces: ['int', 'float', 'String'], answer: 'int' }
         ]
       },
       { 
-        id:'a2', title:'Motores', desc:'Mueve el carrito hacia adelante.', 
+        id:'a2', title:'Nivel 2: Decisiones (if/else)', desc:'Haz que el robot piense.', 
         sublevels:[
-          { t:'teach', title:'Dirección (digitalWrite)', voice:'Para mover el motor hacia adelante, le das energía a un pin y apagas el otro. Así el motor gira.', html:`<h3>Avanzar</h3><pre class="good"><code>digitalWrite(IN1, HIGH);\ndigitalWrite(IN2, LOW);</code></pre>` },
-          { t:'battle', q:'Si pongo <code>IN1</code> en HIGH e <code>IN2</code> en LOW, el motor...', opts:['Avanza', 'Frena', 'Gira al revés'], a:0, explain:'Al mandar energía a uno y apagar el otro, se crea una diferencia que hace girar el motor hacia adelante.', enemy:'⚙️' }
+          { t:'teach', title:'Si pasa esto...', voice:'Usamos if (si) para tomar decisiones. Si la distancia es menor a 15, frena. Si no (else), avanza. Usamos los símbolos mayor que y menor que.', html:`<h3>Tomar decisiones</h3><pre class="good"><code>if (distancia < 15) {\n  // Frena\n  digitalWrite(IN1, LOW);\n} else {\n  // Avanza\n  digitalWrite(IN1, HIGH);\n}</code></pre>` },
+          { t:'bughunt', title:'Caza Errores en if', voice:'Toca el bloque que tiene el error.', html:`<h3>¿Cuál está mal escrito?</h3>`, goodCode: "if (distancia < 15) {", badCode: "if distancia < 15 {" }
         ]
       },
       { 
-        id:'a3', title:'Sensores', desc:'Ultrasónico y Humedad.', 
+        id:'a3', title:'Nivel 3: Bucles (for/while)', desc:'Repetir sin cansarse.', 
         sublevels:[
-          { t:'teach', title:'El Eco del Ultrasonido', voice:'El sensor ultrasónico manda un grito (pulso). Mide cuánto tarda en volver el eco. Divides entre 58 y tienes los centímetros.', html:`<h3>HC-SR04</h3><pre class="good"><code>long tiempo = pulseIn(echo, HIGH);\nint distancia = tiempo / 58.00;</code></pre>` },
-          { t:'bughunt', title:'Caza Errores', voice:'Toca el bloque de código que tiene el error. ¡Cuidado con las mayúsculas!', html:`<h3>¿Cuál está mal escrito?</h3>`, goodCode: "digitalWrite(4, HIGH);", badCode: "digitalwrite(4, high);" }
+          { t:'teach', title:'El poder del for', voice:'El bucle for repite código. Le dices dónde empieza, hasta dónde llega y cómo avanza. Por ejemplo, repetir 5 veces.', html:`<h3>Repetir código</h3><pre class="good"><code>for (int i = 0; i < 5; i++) {\n  digitalWrite(4, HIGH);\n  delay(200);\n}</code></pre>` },
+          { t:'battle', q:'¿Cuántas veces se repite el bucle <code>for(int i=0; i&lt;5; i++)</code>?', opts:['4 veces','5 veces','Infinitas veces'], a:1, explain:'Empieza en 0 y va hasta 4. Son 5 repeticiones.', enemy:'🔁' }
         ]
       },
       { 
-        id:'a4', title:'Examen Final', desc:'La trampa de las 600 líneas.', 
+        id:'a4', title:'Nivel 4: Motores y Velocidad', desc:'Avanzar, retroceder y PWM.', 
+        sublevels:[
+          { t:'teach', title:'Dirección y Velocidad', voice:'Digital write da dirección (HIGH/LOW). Analog write da velocidad (0 a 255) usando PWM. El pin 5 tiene PWM.', html:`<h3>Mover motores</h3><pre class="good"><code>// Dirección\ndigitalWrite(IN1, HIGH);\ndigitalWrite(IN2, LOW);\n// Velocidad (PWM)\nanalogWrite(ENA, 128);</code></pre>` },
+          { t:'battle', q:'¿Qué hace <code>analogWrite(5, 200)</code>?', opts:['Enciende al máximo','Da una velocidad del 78% por PWM','Apaga el pin'], a:1, explain:'200 de 255 es aproximadamente 78% de velocidad.', enemy:'⚙️' }
+        ]
+      },
+      { 
+        id:'a5', title:'Nivel 5: Servomotor', desc:'El cuello del robot.', 
+        sublevels:[
+          { t:'teach', title:'Mover el Servo', voice:'El servo gira de 0 a 180 grados. Necesitas la librería Servo.h. Usas miServo.write(90) para ponerlo a la mitad.', html:`<h3>El Servomotor</h3><pre class="good"><code>#include &lt;Servo.h&gt;\nServo miServo;\nvoid setup() { miServo.attach(9); }\nvoid loop() {\n  miServo.write(0);\n  delay(1000);\n  miServo.write(180);\n  delay(1000);\n}</code></pre>` },
+          { t:'memory', title:'Memorama de Servo', voice:'Encuentra las parejas del servo.', html:`<h3>Encuentra las parejas</h3>`, pairs: [{a:'Servo.h', b:'Librería'}, {a:'attach()', b:'Conectar al pin'}, {a:'write()', b:'Mover a ángulo'}] }
+        ]
+      },
+      { 
+        id:'a6', title:'Nivel 6: Sensor Ultrasónico', desc:'Los ojos del robot.', 
+        sublevels:[
+          { t:'teach', title:'El Eco', voice:'El sensor ultrasónico manda un pulso. Mide cuánto tarda en volver el eco. Divides entre 58 y tienes los centímetros.', html:`<h3>HC-SR04</h3><pre class="good"><code>long tiempo = pulseIn(echo, HIGH);\nint distancia = tiempo / 58.00;</code></pre>` },
+          { t:'puzzle', title:'Rompecabezas Ultrasónico', voice:'Completa la fórmula para obtener centímetros.', html:`<h3>Arma la fórmula</h3>`, codeTemplate: "int distancia = tiempo / [SLOT];", pieces: ['58.00', '100.0', '255'], answer: '58.00' }
+        ]
+      },
+      { 
+        id:'a7', title:'Nivel 7: Sensores Agroindustriales', desc:'DHT11 y Humedad de suelo.', 
+        sublevels:[
+          { t:'teach', title:'Humedad de suelo', voice:'El sensor de humedad se lee con analog read en el pin A cero. Devuelve de 0 a 1023. Menos de 300 significa que la tierra está seca.', html:`<h3>Humedad de Suelo</h3><pre class="good"><code>int humedad = analogRead(A0);\nif (humedad < 300) { /* Seco */ }</code></pre>` },
+          { t:'battle', q:'¿Qué rango devuelve <code>analogRead(A0)</code> en Arduino?', opts:['0-255','0-1023','0-4095'], a:1, explain:'El ADC del Arduino Uno es de 10 bits (0-1023).', enemy:'🌱' }
+        ]
+      },
+      { 
+        id:'a8', title:'Nivel 8: Pantalla OLED', desc:'La cara del robot.', 
+        sublevels:[
+          { t:'teach', title:'OLED con U8g2', voice:'La pantalla se conecta por I2C: SDA al A4 y SCL al A5. Usas la librería U8g2. Limpias el buffer, escribes (drawStr) y mandas a pantalla (sendBuffer).', html:`<h3>Mostrar texto</h3><pre class="good"><code>#include &lt;U8g2lib.h&gt;\nU8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);\n\nvoid setup() { u8g2.begin(); }\nvoid loop() {\n  u8g2.clearBuffer();\n  u8g2.drawStr(0, 20, "Hola!");\n  u8g2.sendBuffer();\n}</code></pre>` },
+          { t:'bughunt', title:'Caza Errores en OLED', voice:'Toca el bloque que tiene el error.', html:`<h3>¿Cuál está mal escrito?</h3>`, goodCode: "u8g2.sendBuffer();", badCode: "u8g2.sendbuffer();" }
+        ]
+      },
+      { 
+        id:'a9', title:'Nivel 9: Bluetooth', desc:'Control remoto desde el celular.', 
+        sublevels:[
+          { t:'teach', title:'Comandos Seriales', voice:'El Bluetooth envía letras. Usas Serial.read() para leer y switch-case para decidir qué hacer con cada letra.', html:`<h3>Control Remoto</h3><pre class="good"><code>if (Serial.available() > 0) {\n  char comando = Serial.read();\n  switch (comando) {\n    case 'F': avanzar(); break;\n    case 'B': retroceder(); break;\n  }\n}</code></pre>` },
+          { t:'battle', q:'¿Qué función lee los datos del Bluetooth?', opts:['Serial.print()','Serial.read()','analogRead()'], a:1, explain:'Serial.read() lee el carácter entrante.', enemy:'👽' }
+        ]
+      },
+      { 
+        id:'a10', title:'Nivel 10: Examen Final (600 líneas)', desc:'El jefe final del Lafvin.', 
         sublevels:[
           { t:'teach', title:'La trampa del while', voice:'El código original tiene un bucle while que atrapa el programa. Si pones tu código fuera, nunca se ejecutará.', html:`<h3>Funtion_Flag</h3><pre class="bad"><code>while(Funtion_Flag) {\n  // Tu código debe ir AQUÍ ADENTRO\n}</code></pre>` },
           { t:'battle', q:'¿Dónde va tu código nuevo para que sí se ejecute?', opts:['Fuera del while', 'Dentro del while (Funtion_Flag)', 'En el setup'], a:1, explain:'El while atrapa la ejecución, así que debes meterlo ahí.', enemy:'👹' }
@@ -282,6 +324,20 @@ const WORLDS = {
           { t:'teach', title:'El voltaje', voice:'El ESP32 no tolera 5V. Solo 3.3V. Si le metes 5V, lo quemas. Además su lectura analógica va de 0 a 4095.', html:`<p>Voltaje: <b>3.3V</b>. ADC: <b>12 bits (0-4095)</b>.</p>` },
           { t:'battle', q:'¿A qué voltaje trabaja el ESP32?', opts:['5V','3.3V'], a:1, explain:'Es de 3.3V.', enemy:'🔥' }
         ] 
+      },
+      {
+        id:'e1', title:'ADC y WiFi', desc:'Los 12 bits y el truco del ADC2.', 
+        sublevels:[
+          { t:'teach', title:'ADC2 falla con WiFi', voice:'Aquí viene la trampa más grande del ESP32. El A D C dos no funciona cuando el WiFi está encendido.', html:`<h3>ADC1 vs ADC2</h3><pre class="good"><code>// ADC1 (seguro con WiFi): GPIO 32-39\nint valor = analogRead(34);\n// ADC2 (falla con WiFi): GPIO 0, 2, 4, 12-15, 25-27</code></pre>` },
+          { t:'bughunt', title:'Caza Errores en ESP32', voice:'Toca el bloque que tiene el error.', html:`<h3>¿Cuál está mal escrito?</h3>`, goodCode: "ledcWrite(5, 128);", badCode: "analogWrite(5, 128);" }
+        ]
+      },
+      {
+        id:'e2', title:'PWM con LEDC', desc:'Controlar motores en ESP32.', 
+        sublevels:[
+          { t:'teach', title:'No existe analogWrite', voice:'En ESP32 no existe analog write. Se usa ledc Attach y ledc Write.', html:`<h3>PWM con ledc</h3><pre class="good"><code>ledcAttach(18, 5000, 8);\nledcWrite(18, 128); // 50%</code></pre>` },
+          { t:'battle', q:'¿Qué reemplaza a analogWrite en ESP32?', opts:['digitalWrite','ledcWrite','pwmWrite'], a:1, explain:'Se usa ledcWrite con la configuración de ledcAttach.', enemy:'📡' }
+        ]
       }
     ]
   }
@@ -290,8 +346,8 @@ const WORLDS = {
 const state = { name:'', gender:'f', sound:true, xp:0, hp:100, streak:0, world:'arduino',
   unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false };
 
-function save(){ try{ localStorage.setItem('zhinin_v19', JSON.stringify(state)); }catch(e){} }
-function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v19')||'null'); if(s) Object.assign(state,s); }catch(e){} }
+function save(){ try{ localStorage.setItem('zhinin_v20', JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v20')||'null'); if(s) Object.assign(state,s); }catch(e){} }
 load();
 
 let audioCtx=null;
@@ -304,7 +360,6 @@ function sfxLaser(){ beep(1200,0.1,'sine',0.05); setTimeout(()=>beep(600,0.2,'sa
 function sfxExplode(){ beep(100,0.4,'sawtooth',0.3); }
 function sfxLevel(){ beep(523,0.12,'sine',0.12); setTimeout(()=>beep(659,0.12,'sine',0.12),130); setTimeout(()=>beep(784,0.12,'sine',0.12),260); setTimeout(()=>beep(1047,0.3,'sine',0.12),390); }
 
-// AQUÍ ESTÁ LA FUNCIÓN QUE FALTABA
 function spawnParticle(text,color){
   const p=document.createElement('div'); p.className='particle'; p.textContent=text; p.style.color=color;
   p.style.left=(window.innerWidth/2-30)+'px'; p.style.top=(window.innerHeight/2)+'px';
@@ -365,9 +420,6 @@ let currentLevel=null, currentSub=0, currentQuizAnswered=false, currentLevelStar
 function findLevel(id){ for(const w of Object.values(WORLDS)){ const l=w.levels.find(x=>x.id===id); if(l) return {level:l,world:w}; } return null; }
 function openLevel(id){ const found=findLevel(id); if(!found) return; currentLevel=found.level; currentLevelStartXP=state.xp; currentSub=0; showScreen('screen-level'); renderSublevel(); }
 
-// ==========================================
-// RENDERIZADOR DE NIVELES Y JUEGOS
-// ==========================================
 function renderSublevel(){
   currentQuizAnswered=false;
   const sub=currentLevel.sublevels[currentSub];
