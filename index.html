@@ -152,9 +152,9 @@ body{font-size:15px;line-height:1.6}
 
 <div class="screen" id="screen-profile">
   <div class="welcome">
-    <h1>ZHININ_OS v20.0</h1>
-    <p>:: Academia Completa ::</p>
-    <p style="color:var(--text)">¡Hola! Soy Zhinin. Tienes 11 niveles para dominar Arduino y 3 para ESP32. Dime cómo prefieres que te hable.</p>
+    <h1>ZHININ_OS v21.0</h1>
+    <p>:: La Explicación Total ::</p>
+    <p style="color:var(--text)">¡Hola! Soy Zhinin. Aquí entenderás desde qué son las llaves hasta por qué se llaman IN1. Dime cómo prefieres que te hable.</p>
     <div class="field"><label>Tu nombre (opcional)</label><input type="text" id="in-name" placeholder="Ej. Zinia" maxlength="20"></div>
     <div class="field"><label>¿Cómo te refieres a ti?</label>
       <div class="gender-btns">
@@ -312,6 +312,34 @@ const WORLDS = {
           { t:'teach', title:'La trampa del while', voice:'El código original tiene un bucle while que atrapa el programa. Si pones tu código fuera, nunca se ejecutará.', html:`<h3>Funtion_Flag</h3><pre class="bad"><code>while(Funtion_Flag) {\n  // Tu código debe ir AQUÍ ADENTRO\n}</code></pre>` },
           { t:'battle', q:'¿Dónde va tu código nuevo para que sí se ejecute?', opts:['Fuera del while', 'Dentro del while (Funtion_Flag)', 'En el setup'], a:1, explain:'El while atrapa la ejecución, así que debes meterlo ahí.', enemy:'👹' }
         ]
+      },
+      { 
+        id:'a11', title:'Nivel 11: El Misterio de las Llaves {}', desc:'¿Cuándo y por qué se usan?', 
+        sublevels:[
+          { t:'teach', title:'Las llaves son loncheras', voice:'Las llaves { } son como una lonchera. Cuando dices si pasa esto, abres la lonchera { y metes las acciones. Si abres una llave, estás obligada a cerrarla } al final. Todo lo que está adentro de las llaves es lo que va a pasar.', html:`<h3>Abriendo y cerrando bloques</h3><p>Las llaves agrupan instrucciones. Fíjate en el <code>if</code>:</p><pre class="good"><code>if (distancia < 15) {\n  // AQUÍ ADENTRO van las órdenes\n  digitalWrite(IN1, LOW);\n  delay(1000);\n} // AQUÍ SE CIERRA</code></pre><div class="note"><b>Regla de oro:</b> Cada vez que pongas una llave que abre <code>{</code>, baja una línea y pon la que cierra <code>}</code>.</div>` },
+          { t:'puzzle', title:'Arma el Bloque', voice:'Completa el bloque para que el if funcione.', html:`<h3>Arma el código</h3>`, codeTemplate: "if (x > 5) [SLOT]\n  digitalWrite(4, HIGH);\n}", pieces: ['{', '}', '(', ']'], answer: '{' }
+        ]
+      },
+      { 
+        id:'a12', title:'Nivel 12: Bucle for Diseccionado', desc:'Entendiendo el for paso a paso.', 
+        sublevels:[
+          { t:'teach', title:'¿Qué es i++?', voice:'El bucle for es como decir hazme 5 lagartijas. La i es tu contador. int i igual a cero significa empieza desde cero. i menor a cinco significa hazlo hasta llegar a cinco. Y i más más significa súmale uno al contador cada vez.', html:`<h3>Anatomía del <code>for</code></h3><pre class="good"><code>for (int i = 0; i < 5; i++) {\n  digitalWrite(4, HIGH);\n  delay(200);\n}</code></pre><ul style="margin-left:20px"><li><b>int i = 0;</b> Empieza a contar desde 0.</li><li><b>i < 5;</b> Sigue repitiendo mientras sea menor a 5.</li><li><b>i++</b> Súmale 1 al contador (es lo mismo que i = i + 1).</li></ul>` },
+          { t:'battle', q:'¿Qué significa <code>i++</code>?', opts:['Que la variable i se suma a sí misma (i = i + 1)','Que el bucle termina','Que el bucle se pausa'], a:0, explain:'i++ es la forma corta de decir i = i + 1. Incrementa el contador.', enemy:'🔁' }
+        ]
+      },
+      { 
+        id:'a13', title:'Nivel 13: Apodos de Pines (IN1, ENA)', desc:'¿Por qué no usar solo números?', 
+        sublevels:[
+          { t:'teach', title:'Poniéndole apodos a los pines', voice:'El Arduino no sabe qué es un motor. Solo tiene patitas con números (4, 5, 9). Para no confundirte, el creador le puso apodos: llamó IN1 al pin 4, e ENA al pin 9. No son palabras mágicas, solo nombres inventados.', html:`<h3>Variables con apodos</h3><pre class="good"><code>const int IN1 = 4; // Pin 4 se llamará IN1\nconst int ENA = 9; // Pin 9 se llamará ENA\n\n// Ahora usas el apodo en vez del número\ndigitalWrite(IN1, HIGH);\nanalogWrite(ENA, 128);</code></pre><div class="note"><b>¿Por qué? </b> Es más fácil leer "IN1" y saber que es el motor, que leer "pin 4" y no saber qué hace.</div>` },
+          { t:'bughunt', title:'Caza Errores de Pines', voice:'Toca el bloque que tiene el error.', html:`<h3>¿Cuál está mal escrito?</h3>`, goodCode: "digitalWrite(IN1, HIGH);", badCode: "digitalWrite(IN1, HIGH)" }
+        ]
+      },
+      { 
+        id:'a14', title:'Nivel 14: void, attach y Funciones', desc:'¿Qué son esas palabras raras?', 
+        sublevels:[
+          { t:'teach', title:'El significado de void', voice:'void significa vacío. Cuando creas una función con void, significa que hace una acción pero no te devuelve un número. attach significa conectar. Es la orden que le das al servo para decirle en qué pin está.', html:`<h3>void y attach</h3><p><b>void</b> es el tipo de función que no devuelve nada. Como decir "¡Corre!" (hace la acción, no te da un resultado).</p><p><b>attach()</b> es una función del servo que significa "conectar".</p><pre class="good"><code>void setup() {\n  miServo.attach(9); // Conecta el servo al pin 9\n}</code></pre>` },
+          { t:'memory', title:'Memorama de Funciones', voice:'Encuentra las parejas.', html:`<h3>Encuentra las parejas</h3>`, pairs: [{a:'void', b:'No devuelve nada'}, {a:'attach', b:'Conectar el servo'}, {a:'setup', b:'Corre 1 vez'}] }
+        ]
       }
     ]
   },
@@ -346,8 +374,8 @@ const WORLDS = {
 const state = { name:'', gender:'f', sound:true, xp:0, hp:100, streak:0, world:'arduino',
   unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false };
 
-function save(){ try{ localStorage.setItem('zhinin_v20', JSON.stringify(state)); }catch(e){} }
-function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v20')||'null'); if(s) Object.assign(state,s); }catch(e){} }
+function save(){ try{ localStorage.setItem('zhinin_v21', JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v21')||'null'); if(s) Object.assign(state,s); }catch(e){} }
 load();
 
 let audioCtx=null;
