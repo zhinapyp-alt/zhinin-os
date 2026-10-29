@@ -44,6 +44,7 @@ body{font-size:15px;line-height:1.6}
 .level-card:active{transform:scale(.98)}
 .level-card.locked{opacity:.5;cursor:not-allowed}
 .level-card.done{border-color:var(--green)}
+.level-card.minigame{border-color:var(--yellow);background:linear-gradient(135deg,rgba(255,209,102,.1),rgba(0,0,0,0))}
 .level-card .lvl-num{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
 .level-card .lvl-title{font-size:16px;color:var(--text);font-weight:bold;margin:4px 0}
 .level-card .lvl-desc{font-size:12px;color:var(--muted)}
@@ -121,6 +122,21 @@ body{font-size:15px;line-height:1.6}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(1.5)}}
 .shake{animation:shake .4s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+/* Estilos para el simulador visual */
+.simulator{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:20px;text-align:center;margin-top:20px}
+.oled-screen{background:#000;border:4px solid #333;border-radius:8px;width:200px;height:100px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--cyan);font-family:monospace;box-shadow:0 0 15px rgba(0,240,255,.3);transition:all .3s}
+.slider-group{margin-bottom:15px;text-align:left}
+.slider-group label{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+.slider-group input[type=range]{width:100%;accent-color:var(--magenta)}
+/* Estilos para minijuego */
+.minigame-box{text-align:center;padding:20px}
+.timer-bar{height:8px;background:var(--border);border-radius:4px;margin-bottom:20px;overflow:hidden}
+.timer-fill{height:100%;background:var(--cyan);transition:width .1s linear}
+.code-block{background:#000;padding:20px;border-radius:8px;font-family:monospace;font-size:16px;margin-bottom:20px;text-align:left;color:#fff;border:1px solid var(--border)}
+.mg-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mg-btns button{padding:20px;font-size:20px;font-weight:bold;border-radius:12px;border:none;cursor:pointer;color:#fff;font-family:inherit}
+.btn-ok{background:var(--green)}
+.btn-error{background:var(--red)}
 @media(min-width:700px){.hud{grid-template-columns:1fr 1fr 1fr 1fr}}
 </style>
 </head>
@@ -192,6 +208,25 @@ body{font-size:15px;line-height:1.6}
   </div>
 </div>
 
+<!-- Minijuego Caza Errores -->
+<div class="screen" id="screen-minigame">
+  <div class="topbar">
+    <button id="btn-mg-back">← mapa</button>
+    <div class="logo">Caza Errores</div>
+    <button id="btn-sound3">🔊</button>
+  </div>
+  <div class="content-card minigame-box">
+    <div class="timer-bar"><div class="timer-fill" id="mg-timer" style="width:100%"></div></div>
+    <p style="color:var(--muted);margin-bottom:10px;font-size:12px">¿Este código está BIEN o tiene un ERROR?</p>
+    <div class="code-block" id="mg-code">cargando...</div>
+    <div class="mg-btns">
+      <button class="btn-ok" id="mg-btn-ok">✅ Correcto</button>
+      <button class="btn-error" id="mg-btn-err">❌ Error</button>
+    </div>
+    <div class="quiz-feedback" id="mg-fb"></div>
+  </div>
+</div>
+
 <button class="fab" id="fab-chat">💬</button>
 
 <div class="chat-panel" id="chat-panel">
@@ -208,12 +243,6 @@ body{font-size:15px;line-height:1.6}
 </div>
 
 <script>
-// =========================================================================
-// 👇 PON TU API KEY DE GOOGLE GEMINI AQUÍ (reemplaza el texto de las comillas)
-// =========================================================================
-const GEMINI_API_KEY = ""; 
-// =========================================================================
-
 const WORLDS = {
   arduino: {
     id: 'arduino', title: 'Mundo Arduino', subtitle: 'Lafvin 6 en 1 · Examen a papel',
@@ -260,9 +289,21 @@ const WORLDS = {
           { t:'teach', title:'Humedad de suelo (analogRead A0)', voice:'El sensor de humedad de suelo se lee con analog read en el pin A cero. Devuelve un número entre cero y mil veintitrés. Cuanto más seco, más alto el número.', html:`<h3>Humedad de suelo</h3><pre class="good"><code>int humedad = analogRead(A0);   // 0..1023\n\nif (humedad < 300) {\n  // suelo seco\n}</code></pre><div class="tip"><b>Ojo:</b> en ESP32 es <b>0..4095</b> (12 bits).</div>` },
           { t:'teach', title:'DHT11', voice:'El D H T once necesita la librería D H T punto h. Le dices el tipo D H T once, el pin, y lees read temperature o read humidity.', html:`<h3>DHT11 con <code>DHT.h</code></h3><pre class="good"><code>#include "DHT.h"\n\n#define DHTPIN 2\n#define DHTTYPE DHT11\nDHT dht(DHTPIN, DHTTYPE);\n\nvoid setup() {\n  dht.begin();\n}\n\nvoid loop() {\n  float t = dht.readTemperature();\n  float h = dht.readHumidity();\n  delay(2000);\n}</code></pre><div class="note"><b>Ojo:</b> el DHT11 es lento. Lee cada 2 s o devuelve <code>NaN</code>.</div>` },
           { t:'teach', title:'OLED SH1106 con U8g2', voice:'La pantalla O L E D se conecta por I dos C. S D A va al pin A cuatro y S C L al A cinco. Se controla con U ocho g dos. clear Buffer borra, draw Str escribe, send Buffer manda a la pantalla.', html:`<h3>OLED SH1106</h3><p>Conexión: <b>SDA = A4</b>, <b>SCL = A5</b>.</p><pre class="good"><code>#include &lt;U8g2lib.h&gt;\n#include &lt;Wire.h&gt;\n\nU8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);\n\nvoid setup() {\n  u8g2.begin();\n}\n\nvoid loop() {\n  u8g2.clearBuffer();\n  u8g2.setFont(u8g2_font_ncenB08_tr);\n  u8g2.drawStr(0, 20, "Hola Zinia!");\n  u8g2.sendBuffer();\n}</code></pre><div class="tip"><b>Flujo:</b> <code>clearBuffer → drawStr → sendBuffer</code>. Sin el último, no se ve nada.</div>` },
+          { t:'teach', title:'Simulador: La Carita OLED', voice:'Juega con los controles. Si el obstáculo está a menos de quince centímetros o la humedad es menor a trescientos, la pantalla se pondrá molesta.', html:`<h3>Prueba la lógica del examen final</h3><p>Mueve los controles y observa la pantalla OLED virtual. Esta es la misma condición <code>if</code> que usarás en el papel.</p>
+          <div class="simulator">
+            <div class="oled-screen" id="sim-face">:)</div>
+            <div class="slider-group">
+              <label><span>Distancia (cm)</span> <span id="sim-dist-val">50</span></label>
+              <input type="range" id="sim-dist" min="0" max="100" value="50">
+            </div>
+            <div class="slider-group">
+              <label><span>Humedad de suelo</span> <span id="sim-hum-val">500</span></label>
+              <input type="range" id="sim-hum" min="0" max="1023" value="500">
+            </div>
+            <pre style="text-align:left;margin-top:15px;font-size:11px"><code id="sim-code">if (distancia < 15 || humedad < 300) {</code></pre>
+          </div>` },
           { t:'teach', title:'La trampa del while (Funtion_Flag)', voice:'Esta es la trampa más grande del código Lafvin. El código original usa bucles while con una bandera para atrapar la ejecución. Si tú pones tu código de sensores en el loop principal, nunca se va a ejecutar porque el while se queda dando vueltas para siempre.', html:`<h3>¿Qué hace <code>while (Funtion_Flag)</code>?</h3><p>Es un bucle que se repite <b>mientras</b> la variable <code>Funtion_Flag</code> sea verdadera. El código original del Lafvin lo usa para "secuestrar" el programa dentro de una función hasta que pase algo (como recibir un comando Bluetooth).</p><pre class="bad"><code>void loop() {\n  while (Funtion_Flag) {\n    // El programa se queda ATRAPADO aquí\n    // hasta que Funtion_Flag cambie a false\n  }\n  // Tu código de sensores NUNCA llega aquí\n}</code></pre><div class="note"><b>Trampa de examen:</b> si te piden agregar un sensor nuevo, NO lo pongas en el <code>loop()</code> principal. Debes ponerlo <b>dentro</b> del <code>while</code> que ya existe, o cambiar la lógica para que la bandera se libere.</div><pre class="good"><code>// Correcto: el sensor va DENTRO del while\nvoid loop() {\n  while (Funtion_Flag) {\n    int humedad = analogRead(A0);  // ✅ aquí sí corre\n    // ... resto de la lógica\n  }\n}</code></pre>` },
           { t:'teach', title:'Bluetooth: switch/case con charAt(1)', voice:'Cuando el robot recibe un mensaje por Bluetooth, lo lee carácter por carácter. El primer carácter suele ser un símbolo como el asterisco, y el segundo carácter es el comando real. Char At uno te devuelve ese segundo carácter. Después usas switch y case para decidir qué hacer.', html:`<h3>Leer Bluetooth y decidir con <code>switch</code></h3><pre class="good"><code>String comando = "";\n\nvoid loop() {\n  while (Serial.available() > 0) {\n    char c = Serial.read();\n    comando += c;\n  }\n\n  if (comando.length() > 1) {\n    char accion = comando.charAt(1);  // segundo carácter\n    switch (accion) {\n      case 'G': avanzar(); break;\n      case 'T': retroceder(); break;\n      case 'L': girarIzquierda(); break;\n      case 'R': girarDerecha(); break;\n      default:  detener(); break;\n    }\n  }\n  comando = "";  // limpiar para el siguiente\n}</code></pre><div class="tip"><b>¿Por qué <code>charAt(1)</code>?</b> Si el mensaje es <code>"*G"</code>, el índice 0 es <code>'*'</code> y el índice 1 es <code>'G'</code>. Por eso se lee el segundo carácter.</div><div class="note"><b>Ojo:</b> los <code>case 'G'</code> van con <b>comillas simples</b> porque son <code>char</code>, no <code>String</code>.</div>` },
-          { t:'teach', title:'Proyecto final: OLED + sensores integrados', voice:'Aquí unes todo. La pantalla O L E D muestra la carita feliz si el suelo está húmedo y el obstáculo está lejos. Si el suelo está seco o el obstáculo está cerca, muestra la carita molesta. Este es el corazón de tu examen final.', html:`<h3>Integración final</h3><p>Tu examen final probablemente te pida unir el sensor ultrasónico, el de humedad de suelo y la pantalla OLED. La lógica central es esta:</p><pre class="good"><code>#include &lt;U8g2lib.h&gt;\n#include &lt;Wire.h&gt;\n\nU8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);\n\nvoid loop() {\n  // 1. Leer sensores\n  int distancia = medirDistancia();     // ultrasónico\n  int humedad   = analogRead(A0);       // suelo\n\n  // 2. Decidir carita\n  u8g2.clearBuffer();\n  if (distancia < 15 || humedad < 300) {\n    u8g2.drawStr(0, 30, ":(  Cuidado!");  // carita molesta\n  } else {\n    u8g2.drawStr(0, 30, ":)  Todo bien"); // carita feliz\n  }\n  u8g2.sendBuffer();\n\n  delay(500);\n}</code></pre><div class="note"><b>Condición crítica:</b> <code>distancia < 15</code> (obstáculo cerca) <b>O</b> <code>humedad < 300</code> (suelo seco) → carita molesta. Usa el operador <code>||</code> (OR lógico).</div>` },
           { t:'quiz', q:'¿Por qué se divide entre <code>58.00</code> en el ultrasónico?', opts:['Porque 58 es la velocidad del sonido en m/s','Porque el sonido tarda ~29 µs en ir y ~29 en volver por cm','Porque el sensor usa PWM de 58 Hz','Es una constante arbitraria'], a:1, explain:'29 + 29 = 58 µs por cm (ida y vuelta). Por eso <code>tiempo / 58.00</code> da cm.' },
           { t:'quiz', q:'¿Dónde debes poner el código de un sensor nuevo en el Lafvin para que SÍ se ejecute?', opts:['En el loop() principal','Dentro del while (Funtion_Flag) que ya existe','En el setup()','Fuera de todas las funciones'], a:1, explain:'Si el código original usa <code>while (Funtion_Flag)</code>, el <code>loop()</code> queda atrapado. Tu sensor debe ir dentro de ese <code>while</code> o liberar la bandera.' }
         ]
@@ -304,10 +345,10 @@ const WORLDS = {
 };
 
 const state = { name:'', gender:'f', sound:true, xp:0, hp:100, streak:0, world:'arduino',
-  unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false };
+  unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false, mgHighScore:0 };
 
-function save(){ try{ localStorage.setItem('zhinin_v4', JSON.stringify(state)); }catch(e){} }
-function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v4')||'null'); if(s) Object.assign(state,s); }catch(e){} }
+function save(){ try{ localStorage.setItem('zhinin_v5', JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v5')||'null'); if(s) Object.assign(state,s); }catch(e){} }
 load();
 
 let audioCtx=null;
@@ -336,7 +377,7 @@ function stopSpeak(){ if('speechSynthesis' in window) speechSynthesis.cancel(); 
 
 const $=(id)=>document.getElementById(id);
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); window.scrollTo(0,0); }
-function setSoundBtn(){ const t=state.sound?'🔊':'🔇'; $('btn-sound').textContent=t; $('btn-sound2').textContent=t; }
+function setSoundBtn(){ const t=state.sound?'🔊':'🔇'; $('btn-sound').textContent=t; $('btn-sound2').textContent=t; $('btn-sound3').textContent=t; }
 function updateHUD(){
   $('hud-xp').textContent=state.xp; $('hud-hp').textContent=state.hp; $('hud-streak').textContent=state.streak+' 🔥';
   $('hud-xp-bar').style.width=Math.min(100,(state.xp%500)/5)+'%';
@@ -351,6 +392,14 @@ function renderMap(){
   const unlocked=state.unlocked[state.world]||[];
   const completed=state.completed[state.world]||{};
   const grid=$('level-grid'); grid.innerHTML='';
+  
+  // Añadir minijuego
+  const mgCard=document.createElement('div');
+  mgCard.className='level-card minigame';
+  mgCard.innerHTML=`<div class="lvl-num">Arcade</div><div class="lvl-title">🎮 Caza Errores</div><div class="lvl-desc">Récord: ${state.mgHighScore} pts. ¡Pon a prueba tus reflejos!</div><div class="lvl-status">▶</div>`;
+  mgCard.onclick=()=>{ sfxClick(); openMinigame(); };
+  grid.appendChild(mgCard);
+
   world.levels.forEach((lvl,i)=>{
     const isUnlocked=unlocked.includes(lvl.id);
     const isDone=completed[lvl.id];
@@ -380,10 +429,27 @@ function renderSublevel(){
   const dots=$('lvl-dots'); dots.innerHTML='';
   currentLevel.sublevels.forEach((_,i)=>{ const s=document.createElement('span'); if(i<currentSub) s.className='done'; else if(i===currentSub) s.className='current'; dots.appendChild(s); });
   const content=$('lvl-content'); content.innerHTML='';
+  
   if(sub.t==='teach'){
     const card=document.createElement('div'); card.className='content-card';
     card.innerHTML=`<button class="voice-btn" id="btn-voice">🔊 Escuchar a Zhinin</button><div>${sub.html}</div>`;
     content.appendChild(card);
+    
+    // Lógica del simulador OLED
+    if(sub.title === 'Simulador: La Carita OLED'){
+      setTimeout(()=>{
+        const dEl=$('sim-dist'), hEl=$('sim-hum'), fEl=$('sim-face'), cdEl=$('sim-code');
+        const updateSim=()=>{
+          const d=parseInt(dEl.value), h=parseInt(hEl.value);
+          $('sim-dist-val').textContent=d; $('sim-hum-val').textContent=h;
+          if(d < 15 || h < 300) { fEl.textContent=':('; fEl.style.color='var(--red)'; cdEl.textContent='if (distancia < 15 || humedad < 300) { // ⚠️ MOVIDO'; }
+          else { fEl.textContent=':)'; fEl.style.color='var(--cyan)'; cdEl.textContent='if (distancia < 15 || humedad < 300) { // OK'; }
+        };
+        dEl.addEventListener('input', updateSim); hEl.addEventListener('input', updateSim);
+        updateSim();
+      }, 100);
+    }
+
     $('btn-voice').onclick=()=>{ const btn=$('btn-voice'); btn.classList.add('speaking'); btn.textContent='🔊 Hablando...'; speak(sub.voice); const check=setInterval(()=>{ if(!speechSynthesis.speaking){ clearInterval(check); btn.classList.remove('speaking'); btn.textContent='🔊 Escuchar a Zhinin'; } },300); };
     setTimeout(()=>speak(sub.voice),300);
   } else {
@@ -450,6 +516,92 @@ function nextSub(){
   currentSub++; renderSublevel();
 }
 
+// ================= MINIJUEGO CAZA ERRORES =================
+let mgInterval, mgTimeout, mgScore=0, mgTime=100, mgCurrentCorrect=true;
+const mgCodes = [
+  { c: 'digitalWrite(4, HIGH);', ok: true },
+  { c: 'digitalwrite(4, HIGH);', ok: false, why: 'W minúscula' },
+  { c: 'int x = 10', ok: false, why: 'Falta ;' },
+  { c: 'void loop() {', ok: true },
+  { c: 'pinMode(4, OUTPUT);', ok: true },
+  { c: 'if (x = 5) {}', ok: false, why: 'Usa ==' },
+  { c: 'analogWrite(5, 255);', ok: true },
+  { c: 'delay(1000)', ok: false, why: 'Falta ;' },
+  { c: 'float temp = 23.5;', ok: true },
+  { c: 'digitalRead(4);', ok: true },
+  { c: 'analogRead(A0)', ok: false, why: 'Falta ;' }
+];
+
+function openMinigame(){
+  showScreen('screen-minigame');
+  mgScore=0; mgTime=100; $('mg-fb').className='quiz-feedback';
+  nextMgQuestion();
+}
+
+function nextMgQuestion(){
+  clearInterval(mgInterval); clearTimeout(mgTimeout);
+  if(mgTime <= 0) return endMinigame();
+  
+  mgTime = 100;
+  $('mg-timer').style.width = '100%';
+  
+  const q = mgCodes[Math.floor(Math.random() * mgCodes.length)];
+  mgCurrentCorrect = q.ok;
+  $('mg-code').textContent = q.c;
+  
+  $('mg-btn-ok').disabled = false;
+  $('mg-btn-err').disabled = false;
+
+  mgInterval = setInterval(()=>{
+    mgTime -= 2;
+    $('mg-timer').style.width = mgTime + '%';
+    if(mgTime <= 0) {
+      clearInterval(mgInterval);
+      handleMgAnswer(null, q);
+    }
+  }, 50);
+}
+
+function handleMgAnswer(ans, q){
+  clearInterval(mgInterval);
+  $('mg-btn-ok').disabled = true;
+  $('mg-btn-err').disabled = true;
+  
+  const userSaysOk = (ans === true);
+  const isCorrect = (ans !== null && userSaysOk === q.ok);
+  
+  const fb = $('mg-fb');
+  fb.className = 'quiz-feedback show ' + (isCorrect ? 'ok' : 'fail');
+  
+  if(isCorrect){
+    sfxCorrect();
+    mgScore += 10; state.xp += 5;
+    fb.innerHTML = `✅ ¡Bien! +5 XP`;
+    spawnParticle('+5 XP', 'var(--green)');
+  } else {
+    sfxWrong();
+    state.hp = Math.max(0, state.hp - 5);
+    document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'),400);
+    fb.innerHTML = ans === null ? `⏰ ¡Tiempo! ` : `❌ Error. `;
+    if(q.why) fb.innerHTML += `(${q.why})`;
+    updateHUD();
+  }
+  
+  mgTimeout = setTimeout(()=>{
+    if(state.hp <= 0) endMinigame();
+    else nextMgQuestion();
+  }, 1500);
+}
+
+function endMinigame(){
+  clearInterval(mgInterval); clearTimeout(mgTimeout);
+  if(mgScore > state.mgHighScore) state.mgHighScore = mgScore;
+  save();
+  alert(`¡Juego terminado!\nPuntos: ${mgScore}\nRécord: ${state.mgHighScore}`);
+  showScreen('screen-map'); renderMap();
+}
+// ==========================================================
+
 let chatHistory=[], chatBusy=false;
 function openChat(){
   $('chat-panel').classList.add('open'); $('chat-text').focus();
@@ -477,46 +629,19 @@ async function sendChat(){
   $('chat-body').appendChild(typing); $('chat-body').scrollTop=$('chat-body').scrollHeight;
   
   try{
-    // Adaptamos el historial de chat al formato de Google Gemini
-    const geminiContents = chatHistory.slice(-20).map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
-    }));
-
-    const trato = state.gender === 'm' 
-      ? 'El estudiante es varón: usa siempre el masculino (listo, preparado, bienvenido).' 
-      : 'La estudiante es mujer: usa siempre el femenino (lista, preparada, bienvenida).';
-
-    const systemPrompt = `Eres Zhinin, el asistente de estudio del simulador "Zhinin OS".
-Ayudas a preparar un examen de Arduino y ESP32. Temas: sintaxis, variables, sensores, motores, OLED, Bluetooth, WiFi.
-${trato}
-El estudiante está viendo el módulo: "${currentLevel?currentLevel.title:'Introducción'}".
-Reglas:
-- Responde siempre en español, con calidez.
-- Sé breve: máximo 3 párrafos cortos. Usa bloques de código si ayudan.
-- Si te piden la respuesta directa de una evaluación, da una pista en lugar de la solución.`;
-
-    // Hacemos la petición directo a Google
- const res = await fetch('/api/zhinin', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: chatHistory, gender: state.gender, level: currentLevel ? currentLevel.title : 'Intro' })
-});
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: geminiContents
-      })
+    const res = await fetch('/api/zhinin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: chatHistory, gender: state.gender, level: currentLevel ? currentLevel.title : 'Intro' })
     });
 
     const data = await res.json();
     $('typing')?.remove();
 
     if(data.error) {
-       addMsg('bot', 'Error de Google: ' + data.error.message + '. Revisa que tu API Key esté bien puesta en la línea 369.');
+       addMsg('bot', 'Zhinin dice: ' + data.error);
     } else {
-       const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No pude generar una respuesta.';
+       const reply = data.reply || 'No pude responder.';
        addMsg('bot',reply); 
        chatHistory.push({role:'assistant',content:reply}); 
        speak(reply); 
@@ -524,7 +649,7 @@ Reglas:
 
   }catch(e){ 
     $('typing')?.remove(); 
-    addMsg('bot','Error de conexión. Revisa tu red o que la API Key sea correcta.'); 
+    addMsg('bot','Zhinin no puede responder en este momento. Revisa tu conexión a internet.'); 
   }
   finally{ chatBusy=false; $('btn-chat-send').disabled=false; $('chat-text').focus(); }
 }
@@ -540,7 +665,7 @@ function bootProfile(){
 function bootMap(){
   document.querySelectorAll('.world-tabs button').forEach(b=>{ b.onclick=()=>{ state.world=b.dataset.world; sfxClick(); renderMap(); }; });
   $('btn-sound').onclick=()=>{ state.sound=!state.sound; save(); setSoundBtn(); if(!state.sound) stopSpeak(); sfxClick(); };
-  $('btn-reset').onclick=()=>{ if(!confirm('¿Borrar todo tu progreso?')) return; state.xp=0; state.hp=100; state.streak=0; state.unlocked={arduino:['a0'],esp32:['e0']}; state.completed={arduino:{},esp32:{}}; save(); updateHUD(); renderMap(); };
+  $('btn-reset').onclick=()=>{ if(!confirm('¿Borrar todo tu progreso y récords?')) return; state.xp=0; state.hp=100; state.streak=0; state.unlocked={arduino:['a0'],esp32:['e0']}; state.completed={arduino:{},esp32:{}}; state.mgHighScore=0; save(); updateHUD(); renderMap(); };
 }
 function bootLevel(){
   $('btn-back').onclick=()=>{ stopSpeak(); showScreen('screen-map'); renderMap(); };
@@ -550,9 +675,15 @@ function bootLevel(){
 }
 function bootComplete(){ $('btn-continue').onclick=()=>{ showScreen('screen-map'); renderMap(); }; }
 function bootChat(){ $('fab-chat').onclick=openChat; $('btn-chat-close').onclick=closeChat; $('btn-chat-send').onclick=sendChat; $('chat-text').addEventListener('keydown',e=>{ if(e.key==='Enter') sendChat(); }); }
+function bootMinigame(){
+  $('btn-mg-back').onclick=()=>{ clearInterval(mgInterval); clearTimeout(mgTimeout); showScreen('screen-map'); renderMap(); };
+  $('btn-sound3').onclick=$('btn-sound').onclick;
+  $('mg-btn-ok').onclick=()=>handleMgAnswer(true, {ok: mgCurrentCorrect});
+  $('mg-btn-err').onclick=()=>handleMgAnswer(false, {ok: mgCurrentCorrect});
+}
 
 function init(){
-  setSoundBtn(); bootProfile(); bootMap(); bootLevel(); bootComplete(); bootChat();
+  setSoundBtn(); bootProfile(); bootMap(); bootLevel(); bootComplete(); bootChat(); bootMinigame();
   if(state.profileSet){ showScreen('screen-map'); renderMap(); } else { showScreen('screen-profile'); }
 }
 init();
