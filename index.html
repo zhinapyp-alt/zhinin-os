@@ -44,7 +44,6 @@ body{font-size:15px;line-height:1.6}
 .level-card:active{transform:scale(.98)}
 .level-card.locked{opacity:.5;cursor:not-allowed}
 .level-card.done{border-color:var(--green)}
-.level-card.minigame{border-color:var(--yellow);background:linear-gradient(135deg,rgba(255,209,102,.1),rgba(0,0,0,0))}
 .level-card .lvl-num{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
 .level-card .lvl-title{font-size:16px;color:var(--text);font-weight:bold;margin:4px 0}
 .level-card .lvl-desc{font-size:12px;color:var(--muted)}
@@ -76,7 +75,6 @@ body{font-size:15px;line-height:1.6}
 .quiz-q code{background:var(--bg);padding:2px 6px;border-radius:4px;color:var(--green)}
 .quiz-opts{display:grid;gap:8px}
 .quiz-opts button{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:8px;text-align:left;font-family:inherit;font-size:13px;cursor:pointer;line-height:1.4}
-.quiz-opts button:hover{border-color:var(--cyan)}
 .nav-btns{display:flex;gap:10px}
 .nav-btns button{flex:1;padding:14px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;font-weight:bold}
 .nav-btns .back{background:transparent;border:1px solid var(--border);color:var(--muted)}
@@ -118,7 +116,7 @@ body{font-size:15px;line-height:1.6}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 
 /* ESTILOS BATALLA */
-.battle-arena { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; position: relative; }
+.battle-arena { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh; position: relative; }
 .bug-enemy { font-size: 80px; animation: floatBug 2s infinite ease-in-out; transition: all 0.3s; z-index: 10; }
 @keyframes floatBug { 0%,100%{transform:translateY(0) rotate(-5deg)} 50%{transform:translateY(-20px) rotate(5deg)} }
 .laser-beam { position: absolute; top: 50%; left: 50%; width: 0; height: 10px; background: var(--cyan); box-shadow: 0 0 20px var(--cyan); transform: translate(-50%, -50%); transition: all 0.2s; z-index: 5; border-radius: 5px; }
@@ -139,14 +137,14 @@ body{font-size:15px;line-height:1.6}
 <script>
   window.onerror = function(msg, url, line, col, error) {
     var el = document.getElementById('error-log');
-    if(el) { el.style.display = 'block'; el.innerHTML = '<strong>Error detectado:</strong><br>' + msg + '<br>Línea: ' + line; }
+    if(el) { el.style.display = 'block'; el.innerHTML = '<strong>Error:</strong><br>' + msg + '<br>Línea: ' + line; }
     return false;
   };
 </script>
 
 <div class="screen" id="screen-profile">
   <div class="welcome">
-    <h1>ZHININ_OS v14.0</h1>
+    <h1>ZHININ_OS v16.0</h1>
     <p>:: Academia de Combate ::</p>
     <p style="color:var(--text)">¡Hola! Soy Zhinin. Aprender aquí es peligroso: cada lección es una batalla. Dime cómo prefieres que te hable.</p>
     <div class="field"><label>Tu nombre (opcional)</label><input type="text" id="in-name" placeholder="Ej. Zinia" maxlength="20"></div>
@@ -156,7 +154,7 @@ body{font-size:15px;line-height:1.6}
         <button data-g="m">👨 Varón</button>
       </div>
     </div>
-    <button class="btn-primary" id="btn-start">[ INICIAR ENTRENAMIENTO ]</button>
+    <button class="btn-primary" id="btn-start">[ EMPEZAR DESDE CERO ]</button>
   </div>
 </div>
 
@@ -213,6 +211,8 @@ body{font-size:15px;line-height:1.6}
     <div class="quiz-q" id="battle-q">Cargando...</div>
     <div class="battle-opts" id="battle-opts"></div>
     <div class="quiz-feedback" id="battle-fb" style="display:none;"></div>
+    <!-- AQUÍ ESTÁ EL BOTÓN QUE FALTABA -->
+    <button class="btn-primary" id="btn-battle-continue" style="display:none; margin-top:15px;">[ CONTINUAR ]</button>
   </div>
 </div>
 
@@ -229,24 +229,6 @@ body{font-size:15px;line-height:1.6}
   </div>
 </div>
 
-<div class="screen" id="screen-minigame">
-  <div class="topbar">
-    <button id="btn-mg-back">← mapa</button>
-    <div class="logo">Caza Errores</div>
-    <button id="btn-sound3">🔊</button>
-  </div>
-  <div class="content-card minigame-box" style="text-align:center; padding:20px;">
-    <div class="timer-bar" style="height:8px; background:var(--border); border-radius:4px; margin-bottom:20px; overflow:hidden;"><div class="timer-fill" id="mg-timer" style="width:100%; height:100%; background:var(--cyan); transition:width .1s linear;"></div></div>
-    <p style="color:var(--muted);margin-bottom:10px;font-size:12px">¿Este código está BIEN o tiene un ERROR?</p>
-    <div class="code-block" id="mg-code" style="background:#000; padding:20px; border-radius:8px; font-family:monospace; font-size:16px; margin-bottom:20px; text-align:left; color:#fff; border:1px solid var(--border);">cargando...</div>
-    <div class="mg-btns" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-      <button class="btn-ok" id="mg-btn-ok" style="padding:20px; font-size:20px; font-weight:bold; border-radius:12px; border:none; cursor:pointer; color:#fff; background:var(--green); font-family:inherit;">✅ Correcto</button>
-      <button class="btn-error" id="mg-btn-err" style="padding:20px; font-size:20px; font-weight:bold; border-radius:12px; border:none; cursor:pointer; color:#fff; background:var(--red); font-family:inherit;">❌ Error</button>
-    </div>
-    <div class="quiz-feedback" id="mg-fb"></div>
-  </div>
-</div>
-
 <button class="fab" id="fab-chat">💬</button>
 
 <div class="chat-panel" id="chat-panel">
@@ -257,43 +239,70 @@ body{font-size:15px;line-height:1.6}
   </div>
   <div class="chat-body" id="chat-body"></div>
   <div class="chat-input">
-    <input type="text" id="chat-text" placeholder="Pregúntame algo del curso..." maxlength="500">
+    <input type="text" id="chat-text" placeholder="Pregúntame algo..." maxlength="500">
     <button id="btn-chat-send">➤</button>
   </div>
 </div>
 
 <script>
-// He transformado algunos Quizzes en "battles" para fusionar el juego con la teoría.
 const WORLDS = {
   arduino: {
     id: 'arduino', title: 'Mundo Arduino', subtitle: 'Lafvin 4WD Proyecto Final',
     levels: [
       { 
-        id:'a0', title:'Nivel 0: Cero Absoluto', desc:'¿Qué es programar? Variables, funciones.', 
+        id:'a0', title:'Nivel 0: Cero Absoluto', desc:'Aprende las palabras básicas desde manzanas y cucharitas.', 
         sublevels:[
-          { t:'teach', title:'¿Qué es programar?', voice:'¡Holaaa! Bienvenida al nivel cero. Programar es darle instrucciones a una computadora paso a paso, como una receta de cocina.', html:`<h3>Pensar como una computadora</h3><pre class="good"><code>digitalWrite(4, HIGH); // 1. Encender\ndelay(2000);           // 2. Esperar\ndigitalWrite(4, LOW);  // 3. Apagar</code></pre>` },
-          { t:'battle', q:'¿Qué hace la función <code>delay(1000)</code>?', opts:['Enciende el motor','Hace una pausa de 1 segundo','Reinicia el Arduino'], a:1, explain:'delay() pausa el código.', enemy:'🐛' }
+          { 
+            t:'teach', title:'¿Qué es un Arduino?', 
+            voice:'¡Bienvenida de verdad al nivel cero! No te preocupes, aquí no hay código todavía. Un Arduino es un cerebro pequeño. No tiene ojos, ni manos. Solo tiene un cerebro vacío que espera tus órdenes. Tú serás su creadora.', 
+            html:`<h3>El cerebro vacío</h3><p>El Arduino es una placa con un microchip. Por sí solo no hace nada. Es como una lonchera vacía.</p><p>Tú, desde tu computadora, le vas a escribir instrucciones para que haga cosas (como mover un carrito).</p><div class="tip"><b>Resumen:</b> Arduino = Cerebro vacío. Tú = La jefa que le da las órdenes.</div>` 
+          },
+          { 
+            t:'teach', title:'¿Qué son los pines y cables?', 
+            voice:'Para que el cerebro pueda tocar el mundo, tiene unas patitas de metal llamadas pines. Cada patita tiene un número. Cuando en el código digas el número cuatro, te estarás refiriendo a la patita número cuatro. No es magia, es solo su nombre.', 
+            html:`<h3>Las patitas (Pines)</h3><p>Fíjate en los bordes del Arduino. Verás agujeritos donde metes los cables. A esos agujeros los llamamos <b>Pines</b>.</p><p>Cada pin tiene un número grabado: 2, 3, 4, 5... Si tú quieres conectar un foquito (LED), lo conectas al pin 4. En el código, le dirás: "Oye Arduino, usa tu patita número 4".</p><div class="note"><b>Ojo:</b> El número 4 no tiene nada de especial. Solo es el nombre de esa patita.</div>` 
+          },
+          { 
+            t:'teach', title:'¿Qué es HIGH y LOW?', 
+            voice:'Ahora, la palabra HIGH. Piensa en un interruptor de luz. HIGH significa encendido, es decir, le mandamos energía al pin. LOW significa apagado, no le mandamos energía. ¡Es prender y apagar la luz!', 
+            html:`<h3>El interruptor de luz</h3><p>El Arduino manda electricidad a los pines. Solo hay dos estados:</p><ul style="margin-left:20px"><li><b>HIGH (Alto):</b> Enciende la energía. Como decir "¡Prendido!".</li><li><b>LOW (Bajo):</b> Apaga la energía. Como decir "¡Apagado!".</li></ul><p>Si conectas un motor al pin 4 y le mandas HIGH, ¡el motor girará!</p>` 
+          },
+          { 
+            t:'teach', title:'La palabra mágica: digitalWrite', 
+            voice:'Entonces, ¿cómo le decimos al Arduino que mande energía? Con una orden llamada digital write. Digital significa digital, y write significa escribir. Es la orden de escribir un valor. Digital write, paréntesis, pin 4, coma, HIGH. ¡Acabas de programar tu primera orden!', 
+            html:`<h3>Traduciendo el código</h3><p>Vamos a leer la orden paso a paso:</p><pre class="good"><code>digitalWrite(4, HIGH);</code></pre><ul style="margin-left:20px"><li><b>digitalWrite:</b> La orden de mandar energía.</li><li><b>(4, HIGH):</b> "Usa la patita 4, y ponla en estado HIGH (encendido)".</li><li><b>;</b> El punto final. ¡No se te olvide!</li></ul><div class="tip">¡Ya sabes leer tu primera línea de código!</div>` 
+          },
+          { 
+            t:'teach', title:'¿Y el delay(2000)?', 
+            voice:'Ahora, ¿cómo hacemos para que la luz dure encendida un tiempo? Usamos delay. Delay significa retraso. Delay dos mil significa: espera dos mil milisegundos. Y dos mil milisegundos son dos segundos. ¡Es como poner una alarma!', 
+            html:`<h3>Haciendo una pausa</h3><pre class="good"><code>delay(2000);</code></pre><p>El Arduino esperará ese tiempo antes de hacer la siguiente cosa.</p><p>Ahora, si juntamos todo:</p><pre class="good"><code>digitalWrite(4, HIGH); // Prende el pin 4 (enciende)\ndelay(2000);           // Espera 2 segundos\ndigitalWrite(4, LOW);  // Apaga el pin 4 (apagado)</code></pre><p>¡Acabas de prender y apagar una luz! ¿Ves que no era tan difícil?</p>` 
+          },
+          { 
+            t:'battle', 
+            q:'Si digo <code>digitalWrite(4, HIGH)</code>, ¿qué está pasando?', 
+            opts:['Se enciende la patita (pin) número 4', 'Se apaga la patita 4', 'El robot explota'], 
+            a:0, 
+            explain:'¡Correcto! HIGH significa encendido, y el 4 es el nombre de la patita.', 
+            enemy:'🐛' 
+          }
         ] 
       },
       { 
-        id:'a1', title:'El Alfabeto del Código', desc:'Punto y coma, llaves, mayúsculas.', 
+        id:'a1', title:'El Alfabeto del Código', desc:'Punto y coma, llaves y mayúsculas.', 
         sublevels:[
-          { t:'teach', title:'El punto y coma ;', voice:'El punto y coma es el punto final de una oración. Cada orden termina en punto y coma.', html:`<pre class="good"><code>digitalWrite(4, HIGH);</code></pre>` },
-          { t:'battle', q:'¿Cuál es el error en: <code>digitalWrite(4, HIGH)</code>?', opts:['Falta el ; final','HIGH debería ser high','DigitalWrite con D mayúscula'], a:0, explain:'Falta el punto y coma.', enemy:'👾' }
-        ]
-      },
-      { 
-        id:'a3', title:'Bucles y Servomotores', desc:'Domina el for y mueve el cuello del robot.', 
-        sublevels:[
-          { t:'teach', title:'El Bucle For', voice:'El bucle for es el mejor amigo del programador. Repite código sin escribirlo mil veces.', html:`<pre class="good"><code>for (int i = 0; i < 5; i++) {\n  digitalWrite(4, HIGH);\n  delay(200);\n}</code></pre>` },
-          { t:'battle', q:'¿Cuántas veces se repite el bucle <code>for(int i=0; i&lt;5; i++)</code>?', opts:['4 veces','5 veces','Infinitas veces'], a:1, explain:'Empieza en 0 y va hasta 4. Son 5 repeticiones.', enemy:'👹' }
-        ]
-      },
-      { 
-        id:'a7', title:'Control Bluetooth', desc:'Aprende a controlar tu robot desde el celular.', 
-        sublevels:[
-          { t:'teach', title:'Leyendo Bluetooth', voice:'Cuando tú presionas un botón en tu celular, envía una letra. El Arduino la lee con Serial.read().', html:`<pre class="good"><code>if (Serial.available() > 0) {\n  char comando = Serial.read();\n}</code></pre>` },
-          { t:'battle', q:'¿Qué función lee el comando Bluetooth?', opts:['Serial.print()','Serial.read()','analogRead()'], a:1, explain:'Serial.read() lee los datos entrantes.', enemy:'👽' }
+          { 
+            t:'teach', title:'El punto y coma ;', 
+            voice:'Muy bien, ahora que entiendes las órdenes, hablemos de los símbolos. El punto y coma es como el punto final de una oración. Cada orden que le das al Arduino termina en punto y coma. Si lo olvidas, el Arduino se confunde y todo falla.', 
+            html:`<h3>1. El punto y coma <code>;</code></h3><p>Es el <b>punto final</b> de cada instrucción.</p><pre class="bad"><code>digitalWrite(4, HIGH)    // ❌ falta ;</code></pre><pre class="good"><code>digitalWrite(4, HIGH);   // ✅ correcto</code></pre>` 
+          },
+          { 
+            t:'battle', 
+            q:'¿Qué pasa si olvidas poner el punto y coma (;)?', 
+            opts:['El Arduino se confunde y da error', 'El motor gira más rápido', 'No pasa nada'], 
+            a:0, 
+            explain:'El compilador necesita el punto y coma para saber que la orden terminó.', 
+            enemy:'👾' 
+          }
         ]
       }
     ]
@@ -304,8 +313,19 @@ const WORLDS = {
       { 
         id:'e0', title:'ESP32 vs Arduino', desc:'3.3V, pines por GPIO.', 
         sublevels:[
-          { t:'teach', title:'El ESP32 no es un Arduino', voice:'¡Cuidado! El ESP32 trabaja a tres punto tres voltios. ¡Siempre revisa los voltajes!', html:`<p>Voltaje: <b>3.3 V</b>. ADC: <b>12 bits (0-4095)</b>.</p>` },
-          { t:'battle', q:'¿A qué voltaje trabaja el ESP32?', opts:['5V','3.3V','12V'], a:1, explain:'Es de 3.3V, si le metes 5V lo quemas.', enemy:'🔥' }
+          { 
+            t:'teach', title:'El ESP32 no es un Arduino', 
+            voice:'¡Cuidado! El ESP32 trabaja a tres punto tres voltios. ¡Siempre revisa los voltajes!', 
+            html:`<p>Voltaje: <b>3.3 V</b>. ADC: <b>12 bits (0-4095)</b>.</p>` 
+          },
+          { 
+            t:'battle', 
+            q:'¿A qué voltaje trabaja el ESP32?', 
+            opts:['5V','3.3V','12V'], 
+            a:1, 
+            explain:'Es de 3.3V, si le metes 5V lo quemas.', 
+            enemy:'🔥' 
+          }
         ] 
       }
     ]
@@ -315,8 +335,8 @@ const WORLDS = {
 const state = { name:'', gender:'f', sound:true, xp:0, hp:100, streak:0, world:'arduino',
   unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false, mgHighScore:0 };
 
-function save(){ try{ localStorage.setItem('zhinin_v14', JSON.stringify(state)); }catch(e){} }
-function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v14')||'null'); if(s) Object.assign(state,s); }catch(e){} }
+function save(){ try{ localStorage.setItem('zhinin_v16', JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v16')||'null'); if(s) Object.assign(state,s); }catch(e){} }
 load();
 
 let audioCtx=null;
@@ -347,7 +367,7 @@ function stopSpeak(){ if('speechSynthesis' in window) speechSynthesis.cancel(); 
 
 const $=(id)=>document.getElementById(id);
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); window.scrollTo(0,0); }
-function setSoundBtn(){ const t=state.sound?'🔊':'🔇'; $('btn-sound').textContent=t; $('btn-sound2').textContent=t; $('btn-sound3').textContent=t; }
+function setSoundBtn(){ const t=state.sound?'🔊':'🔇'; $('btn-sound').textContent=t; $('btn-sound2').textContent=t; }
 function updateHUD(){
   $('hud-xp').textContent=state.xp; $('hud-hp').textContent=state.hp; $('hud-streak').textContent=state.streak+' 🔥';
   $('hud-xp-bar').style.width=Math.min(100,(state.xp%500)/5)+'%';
@@ -363,12 +383,6 @@ function renderMap(){
   const completed=state.completed[state.world]||{};
   const grid=$('level-grid'); grid.innerHTML='';
   
-  const mgCard=document.createElement('div');
-  mgCard.className='level-card minigame';
-  mgCard.innerHTML=`<div class="lvl-num">Arcade</div><div class="lvl-title">🎮 Caza Errores</div><div class="lvl-desc">Récord: ${state.mgHighScore} pts.</div><div class="lvl-status">▶</div>`;
-  mgCard.onclick=()=>{ sfxClick(); openMinigame(); };
-  grid.appendChild(mgCard);
-
   world.levels.forEach((lvl,i)=>{
     const isUnlocked=unlocked.includes(lvl.id);
     const isDone=completed[lvl.id];
@@ -435,6 +449,7 @@ function startBattle(sub) {
   $('bug-hp').style.width = '100%';
   $('laser-beam').className = 'laser-beam';
   $('battle-fb').style.display = 'none';
+  $('btn-battle-continue').style.display = 'none'; // Ocultar botón al iniciar
   
   $('battle-q').innerHTML = sub.q;
   const optsDiv = $('battle-opts'); optsDiv.innerHTML = '';
@@ -470,14 +485,12 @@ function handleBattleAnswer(idx, btnEl) {
   const sub = currentBattleSub;
   const correct = (idx === sub.a);
   
-  // Deshabilitar botones
   document.querySelectorAll('#battle-opts button').forEach(b => b.style.pointerEvents = 'none');
   
   if(correct) {
     btnEl.style.background = 'rgba(61,220,132,.3)';
     btnEl.style.borderColor = 'var(--green)';
     
-    // Animación de Láser
     sfxLaser();
     const laser = $('laser-beam');
     laser.style.background = 'var(--cyan)';
@@ -499,7 +512,10 @@ function handleBattleAnswer(idx, btnEl) {
         
         state.streak++; state.xp += 150;
         updateHUD(); save();
-        $('btn-next').disabled = false;
+        
+        // Mostrar el botón de continuar
+        $('btn-battle-continue').style.display = 'block';
+        
       }, 500);
     }, 200);
     
@@ -533,7 +549,9 @@ function enemyAttacks(isTimeout = false) {
     state.streak = 0;
     state.hp = Math.max(0, state.hp - 20);
     updateHUD(); save();
-    $('btn-next').disabled = false;
+    
+    // Mostrar el botón de continuar
+    $('btn-battle-continue').style.display = 'block';
     
     if(state.hp <= 0) {
       setTimeout(() => {
@@ -565,33 +583,6 @@ function nextSub(){
   }
   currentSub++; renderSublevel();
 }
-
-let mgInterval, mgTimeout, mgScore=0, mgTime=100, mgCurrentCorrect=true, mgCurrentQuestion=null;
-const mgCodes = [
-  { c: 'digitalWrite(4, HIGH);', ok: true }, { c: 'digitalwrite(4, HIGH);', ok: false, why: 'W minúscula' },
-  { c: 'int x = 10', ok: false, why: 'Falta ;' }, { c: 'void loop() {', ok: true },
-  { c: 'pinMode(4, OUTPUT);', ok: true }, { c: 'if (x = 5) {}', ok: false, why: 'Usa ==' },
-  { c: 'analogWrite(5, 255);', ok: true }, { c: 'delay(1000)', ok: false, why: 'Falta ;' },
-  { c: 'float temp = 23.5;', ok: true }, { c: 'digitalRead(4);', ok: true }, { c: 'analogRead(A0)', ok: false, why: 'Falta ;' }
-];
-function openMinigame(){ showScreen('screen-minigame'); mgScore=0; mgTime=100; $('mg-fb').className='quiz-feedback'; nextMgQuestion(); }
-function nextMgQuestion(){
-  clearInterval(mgInterval); clearTimeout(mgTimeout); if(mgTime <= 0) return endMinigame();
-  mgTime = 100; $('mg-timer').style.width = '100%';
-  mgCurrentQuestion = mgCodes[Math.floor(Math.random() * mgCodes.length)];
-  mgCurrentCorrect = mgCurrentQuestion.ok; $('mg-code').textContent = mgCurrentQuestion.c;
-  $('mg-btn-ok').disabled = false; $('mg-btn-err').disabled = false;
-  mgInterval = setInterval(()=>{ mgTime -= 2; $('mg-timer').style.width = mgTime + '%'; if(mgTime <= 0) { clearInterval(mgInterval); handleMgAnswer(null, mgCurrentQuestion); } }, 50);
-}
-function handleMgAnswer(ans, q){
-  clearInterval(mgInterval); $('mg-btn-ok').disabled = true; $('mg-btn-err').disabled = true;
-  const userSaysOk = (ans === true); const isCorrect = (ans !== null && userSaysOk === q.ok);
-  const fb = $('mg-fb'); fb.className = 'quiz-feedback show ' + (isCorrect ? 'ok' : 'fail'); fb.style.display='block';
-  if(isCorrect){ sfxCorrect(); mgScore += 10; state.xp += 5; fb.innerHTML = `✅ ¡Bien! +5 XP`; }
-  else { sfxWrong(); state.hp = Math.max(0, state.hp - 5); document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'),400); fb.innerHTML = ans === null ? `⏰ ¡Tiempo! ` : `❌ Error. `; if(q.why) fb.innerHTML += `(${q.why})`; updateHUD(); }
-  mgTimeout = setTimeout(()=>{ if(state.hp <= 0) endMinigame(); else nextMgQuestion(); }, 1500);
-}
-function endMinigame(){ clearInterval(mgInterval); clearTimeout(mgTimeout); if(mgScore > state.mgHighScore) state.mgHighScore = mgScore; save(); alert(`¡Juego terminado!\nPuntos: ${mgScore}`); showScreen('screen-map'); renderMap(); }
 
 let chatHistory=[], chatBusy=false;
 function openChat(){
@@ -645,19 +636,15 @@ function bootLevel(){
   $('btn-sound2').onclick=$('btn-sound').onclick;
   $('btn-prev').onclick=()=>{ if(currentSub>0){ currentSub--; stopSpeak(); renderSublevel(); } };
   $('btn-next').onclick=()=>nextSub();
+  // AQUÍ CONECTAMOS EL BOTÓN DE CONTINUAR DE LA BATALLA
+  $('btn-battle-continue').onclick=()=>nextSub();
 }
 function bootComplete(){ $('btn-continue').onclick=()=>{ showScreen('screen-map'); renderMap(); }; }
 function bootChat(){ $('fab-chat').onclick=openChat; $('btn-chat-close').onclick=closeChat; $('btn-chat-send').onclick=sendChat; $('chat-text').addEventListener('keydown',e=>{ if(e.key==='Enter') sendChat(); }); }
-function bootMinigame(){
-  $('btn-mg-back').onclick=()=>{ clearInterval(mgInterval); clearTimeout(mgTimeout); showScreen('screen-map'); renderMap(); };
-  $('btn-sound3').onclick=$('btn-sound').onclick;
-  $('mg-btn-ok').onclick=()=>handleMgAnswer(true, mgCurrentQuestion);
-  $('mg-btn-err').onclick=()=>handleMgAnswer(false, mgCurrentQuestion);
-}
 
 function init(){
   try {
-    setSoundBtn(); bootProfile(); bootMap(); bootLevel(); bootComplete(); bootChat(); bootMinigame();
+    setSoundBtn(); bootProfile(); bootMap(); bootLevel(); bootComplete(); bootChat();
     if(state.profileSet){ showScreen('screen-map'); renderMap(); } else { showScreen('screen-profile'); }
   } catch(e) {
     var el = document.getElementById('error-log');
