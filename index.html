@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Zhinin OS :: Academia de Combate</title>
+<title>Zhinin OS :: Academia Definitiva</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0a0e14;--bg2:#11161f;--card:#161d28;--border:#243041;--text:#d4dae4;--muted:#7a8697;--cyan:#00f0ff;--magenta:#ff2d95;--green:#3ddc84;--red:#ff4757;--yellow:#ffd166;--orange:#ff9f43}
@@ -72,9 +72,6 @@ body{font-size:15px;line-height:1.6}
 .voice-btn.speaking{background:var(--cyan);color:#000;animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,240,255,.6)}50%{box-shadow:0 0 0 10px rgba(0,240,255,0)}}
 .quiz-q{font-size:15px;font-weight:bold;margin-bottom:14px;color:var(--text)}
-.quiz-q code{background:var(--bg);padding:2px 6px;border-radius:4px;color:var(--green)}
-.quiz-opts{display:grid;gap:8px}
-.quiz-opts button{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:8px;text-align:left;font-family:inherit;font-size:13px;cursor:pointer;line-height:1.4}
 .nav-btns{display:flex;gap:10px}
 .nav-btns button{flex:1;padding:14px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;font-weight:bold}
 .nav-btns .back{background:transparent;border:1px solid var(--border);color:var(--muted)}
@@ -115,8 +112,8 @@ body{font-size:15px;line-height:1.6}
 .shake{animation:shake .4s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 
-/* ESTILOS BATALLA */
-.battle-arena { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh; position: relative; }
+/* ESTILOS JUEGOS */
+.game-arena { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50vh; position: relative; }
 .bug-enemy { font-size: 80px; animation: floatBug 2s infinite ease-in-out; transition: all 0.3s; z-index: 10; }
 @keyframes floatBug { 0%,100%{transform:translateY(0) rotate(-5deg)} 50%{transform:translateY(-20px) rotate(5deg)} }
 .laser-beam { position: absolute; top: 50%; left: 50%; width: 0; height: 10px; background: var(--cyan); box-shadow: 0 0 20px var(--cyan); transform: translate(-50%, -50%); transition: all 0.2s; z-index: 5; border-radius: 5px; }
@@ -124,10 +121,28 @@ body{font-size:15px;line-height:1.6}
 .bug-hp-bar { width: 200px; height: 15px; background: #333; border: 2px solid var(--red); border-radius: 8px; margin-top: 20px; overflow: hidden; }
 .bug-hp-fill { height: 100%; background: var(--red); width: 100%; transition: width 0.3s; }
 .battle-timer { font-size: 24px; font-weight: bold; color: var(--yellow); position: absolute; top: 0; right: 0; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; }
-.battle-question { margin-top: 20px; background: var(--card); padding: 20px; border-radius: 12px; border: 2px solid var(--border); width: 100%; }
-.battle-opts { display: grid; gap: 10px; margin-top: 15px; }
-.battle-opts button { padding: 15px; font-size: 14px; font-family: inherit; background: var(--bg2); border: 1px solid var(--border); color: var(--text); border-radius: 8px; cursor: pointer; text-align: left; }
-.battle-opts button:active { transform: scale(0.98); }
+.game-question { margin-top: 20px; background: var(--card); padding: 20px; border-radius: 12px; border: 2px solid var(--border); width: 100%; }
+.game-opts { display: grid; gap: 10px; margin-top: 15px; }
+.game-opts button { padding: 15px; font-size: 14px; font-family: inherit; background: var(--bg2); border: 1px solid var(--border); color: var(--text); border-radius: 8px; cursor: pointer; text-align: left; }
+.game-opts button:active { transform: scale(0.98); }
+
+/* Memorama */
+.memory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+.memory-card { background: var(--bg2); border: 2px solid var(--border); height: 80px; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; text-align: center; padding: 5px; }
+.memory-card.flipped { background: var(--cyan); color: #000; border-color: var(--cyan); }
+.memory-card.matched { background: var(--green); color: #000; border-color: var(--green); pointer-events: none; }
+
+/* Puzzle de Código */
+.code-puzzle { background: #000; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 16px; margin-bottom: 15px; border: 1px solid var(--border); line-height: 2; }
+.code-slot { display: inline-block; min-width: 60px; border-bottom: 2px dashed var(--cyan); color: var(--cyan); text-align: center; cursor: pointer; }
+.puzzle-pieces { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px; }
+.puzzle-piece { background: var(--card); border: 1px solid var(--cyan); color: var(--text); padding: 10px 15px; border-radius: 8px; cursor: pointer; font-family: monospace; font-size: 14px; }
+
+/* Caza Errores (Tocar el bug) */
+.bughunt-container { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+.bughunt-box { background: #000; border: 2px solid var(--border); padding: 15px; border-radius: 8px; font-family: monospace; cursor: pointer; font-size: 14px; transition: 0.2s; }
+.bughunt-box:active { transform: scale(0.98); }
+
 @media(min-width:700px){.hud{grid-template-columns:1fr 1fr 1fr 1fr}}
 </style>
 </head>
@@ -144,9 +159,9 @@ body{font-size:15px;line-height:1.6}
 
 <div class="screen" id="screen-profile">
   <div class="welcome">
-    <h1>ZHININ_OS v16.0</h1>
-    <p>:: Academia de Combate ::</p>
-    <p style="color:var(--text)">¡Hola! Soy Zhinin. Aprender aquí es peligroso: cada lección es una batalla. Dime cómo prefieres que te hable.</p>
+    <h1>ZHININ_OS v18.0</h1>
+    <p>:: Academia Definitiva ::</p>
+    <p style="color:var(--text)">¡Hola! Soy Zhinin. Hoy vamos a dominar el código con 4 minijuegos diferentes. Dime cómo prefieres que te hable.</p>
     <div class="field"><label>Tu nombre (opcional)</label><input type="text" id="in-name" placeholder="Ej. Zinia" maxlength="20"></div>
     <div class="field"><label>¿Cómo te refieres a ti?</label>
       <div class="gender-btns">
@@ -154,7 +169,7 @@ body{font-size:15px;line-height:1.6}
         <button data-g="m">👨 Varón</button>
       </div>
     </div>
-    <button class="btn-primary" id="btn-start">[ EMPEZAR DESDE CERO ]</button>
+    <button class="btn-primary" id="btn-start">[ EMPEZAR ENTRENAMIENTO ]</button>
   </div>
 </div>
 
@@ -195,27 +210,6 @@ body{font-size:15px;line-height:1.6}
   </div>
 </div>
 
-<!-- PANTALLA DE BATALLA -->
-<div class="screen" id="screen-battle">
-  <div class="topbar">
-    <div class="logo">⚔️ Zona de Combate</div>
-  </div>
-  <div class="battle-arena">
-    <div class="battle-timer" id="battle-timer">15s</div>
-    <div class="bug-enemy" id="bug-enemy">👾</div>
-    <div class="laser-beam" id="laser-beam"></div>
-    <div class="bug-hp-bar"><div class="bug-hp-fill" id="bug-hp"></div></div>
-  </div>
-  
-  <div class="battle-question">
-    <div class="quiz-q" id="battle-q">Cargando...</div>
-    <div class="battle-opts" id="battle-opts"></div>
-    <div class="quiz-feedback" id="battle-fb" style="display:none;"></div>
-    <!-- AQUÍ ESTÁ EL BOTÓN QUE FALTABA -->
-    <button class="btn-primary" id="btn-battle-continue" style="display:none; margin-top:15px;">[ CONTINUAR ]</button>
-  </div>
-</div>
-
 <div class="screen" id="screen-complete">
   <div class="complete">
     <div class="trophy">🏆</div>
@@ -245,87 +239,58 @@ body{font-size:15px;line-height:1.6}
 </div>
 
 <script>
+// ==========================================
+// DATOS DEL CURSO: TEORÍA Y JUEGOS
+// ==========================================
 const WORLDS = {
   arduino: {
     id: 'arduino', title: 'Mundo Arduino', subtitle: 'Lafvin 4WD Proyecto Final',
     levels: [
       { 
-        id:'a0', title:'Nivel 0: Cero Absoluto', desc:'Aprende las palabras básicas desde manzanas y cucharitas.', 
+        id:'a0', title:'Nivel 0: Cero Absoluto', desc:'¿Qué es un pin? ¿Qué es HIGH?', 
         sublevels:[
-          { 
-            t:'teach', title:'¿Qué es un Arduino?', 
-            voice:'¡Bienvenida de verdad al nivel cero! No te preocupes, aquí no hay código todavía. Un Arduino es un cerebro pequeño. No tiene ojos, ni manos. Solo tiene un cerebro vacío que espera tus órdenes. Tú serás su creadora.', 
-            html:`<h3>El cerebro vacío</h3><p>El Arduino es una placa con un microchip. Por sí solo no hace nada. Es como una lonchera vacía.</p><p>Tú, desde tu computadora, le vas a escribir instrucciones para que haga cosas (como mover un carrito).</p><div class="tip"><b>Resumen:</b> Arduino = Cerebro vacío. Tú = La jefa que le da las órdenes.</div>` 
-          },
-          { 
-            t:'teach', title:'¿Qué son los pines y cables?', 
-            voice:'Para que el cerebro pueda tocar el mundo, tiene unas patitas de metal llamadas pines. Cada patita tiene un número. Cuando en el código digas el número cuatro, te estarás refiriendo a la patita número cuatro. No es magia, es solo su nombre.', 
-            html:`<h3>Las patitas (Pines)</h3><p>Fíjate en los bordes del Arduino. Verás agujeritos donde metes los cables. A esos agujeros los llamamos <b>Pines</b>.</p><p>Cada pin tiene un número grabado: 2, 3, 4, 5... Si tú quieres conectar un foquito (LED), lo conectas al pin 4. En el código, le dirás: "Oye Arduino, usa tu patita número 4".</p><div class="note"><b>Ojo:</b> El número 4 no tiene nada de especial. Solo es el nombre de esa patita.</div>` 
-          },
-          { 
-            t:'teach', title:'¿Qué es HIGH y LOW?', 
-            voice:'Ahora, la palabra HIGH. Piensa en un interruptor de luz. HIGH significa encendido, es decir, le mandamos energía al pin. LOW significa apagado, no le mandamos energía. ¡Es prender y apagar la luz!', 
-            html:`<h3>El interruptor de luz</h3><p>El Arduino manda electricidad a los pines. Solo hay dos estados:</p><ul style="margin-left:20px"><li><b>HIGH (Alto):</b> Enciende la energía. Como decir "¡Prendido!".</li><li><b>LOW (Bajo):</b> Apaga la energía. Como decir "¡Apagado!".</li></ul><p>Si conectas un motor al pin 4 y le mandas HIGH, ¡el motor girará!</p>` 
-          },
-          { 
-            t:'teach', title:'La palabra mágica: digitalWrite', 
-            voice:'Entonces, ¿cómo le decimos al Arduino que mande energía? Con una orden llamada digital write. Digital significa digital, y write significa escribir. Es la orden de escribir un valor. Digital write, paréntesis, pin 4, coma, HIGH. ¡Acabas de programar tu primera orden!', 
-            html:`<h3>Traduciendo el código</h3><p>Vamos a leer la orden paso a paso:</p><pre class="good"><code>digitalWrite(4, HIGH);</code></pre><ul style="margin-left:20px"><li><b>digitalWrite:</b> La orden de mandar energía.</li><li><b>(4, HIGH):</b> "Usa la patita 4, y ponla en estado HIGH (encendido)".</li><li><b>;</b> El punto final. ¡No se te olvide!</li></ul><div class="tip">¡Ya sabes leer tu primera línea de código!</div>` 
-          },
-          { 
-            t:'teach', title:'¿Y el delay(2000)?', 
-            voice:'Ahora, ¿cómo hacemos para que la luz dure encendida un tiempo? Usamos delay. Delay significa retraso. Delay dos mil significa: espera dos mil milisegundos. Y dos mil milisegundos son dos segundos. ¡Es como poner una alarma!', 
-            html:`<h3>Haciendo una pausa</h3><pre class="good"><code>delay(2000);</code></pre><p>El Arduino esperará ese tiempo antes de hacer la siguiente cosa.</p><p>Ahora, si juntamos todo:</p><pre class="good"><code>digitalWrite(4, HIGH); // Prende el pin 4 (enciende)\ndelay(2000);           // Espera 2 segundos\ndigitalWrite(4, LOW);  // Apaga el pin 4 (apagado)</code></pre><p>¡Acabas de prender y apagar una luz! ¿Ves que no era tan difícil?</p>` 
-          },
-          { 
-            t:'battle', 
-            q:'Si digo <code>digitalWrite(4, HIGH)</code>, ¿qué está pasando?', 
-            opts:['Se enciende la patita (pin) número 4', 'Se apaga la patita 4', 'El robot explota'], 
-            a:0, 
-            explain:'¡Correcto! HIGH significa encendido, y el 4 es el nombre de la patita.', 
-            enemy:'🐛' 
-          }
+          { t:'teach', title:'El Cerebro y los Pines', voice:'¡Bienvenida! Un Arduino es un cerebro vacío. Tiene patitas de metal llamadas pines, numeradas. El pin 4 es solo el nombre de la patita 4. Si le mandas energía, se llama HIGH. Si se la quitas, se llama LOW.', html:`<h3>Vocabulario Básico</h3><ul style="margin-left:20px"><li><b>Pin:</b> Las patitas donde conectas las cosas. Tienen números (2, 3, 4...).</li><li><b>HIGH:</b> Encendido. Le mandamos energía.</li><li><b>LOW:</b> Apagado. Le quitamos la energía.</li></ul>` },
+          { t:'memory', title:'Memorama de Sintaxis', voice:'¡Vamos a jugar! Voltea las cartas y encuentra las parejas correctas.', html:`<h3>Encuentra las parejas</h3><p>Une el concepto con su significado.</p>`, pairs: [{a:'HIGH', b:'Encender'}, {a:'LOW', b:'Apagar'}, {a:'Pin', b:'Patita de metal'}] }
         ] 
       },
       { 
-        id:'a1', title:'El Alfabeto del Código', desc:'Punto y coma, llaves y mayúsculas.', 
+        id:'a1', title:'El Alfabeto del Código', desc:'Punto y coma, digitalWrite.', 
         sublevels:[
-          { 
-            t:'teach', title:'El punto y coma ;', 
-            voice:'Muy bien, ahora que entiendes las órdenes, hablemos de los símbolos. El punto y coma es como el punto final de una oración. Cada orden que le das al Arduino termina en punto y coma. Si lo olvidas, el Arduino se confunde y todo falla.', 
-            html:`<h3>1. El punto y coma <code>;</code></h3><p>Es el <b>punto final</b> de cada instrucción.</p><pre class="bad"><code>digitalWrite(4, HIGH)    // ❌ falta ;</code></pre><pre class="good"><code>digitalWrite(4, HIGH);   // ✅ correcto</code></pre>` 
-          },
-          { 
-            t:'battle', 
-            q:'¿Qué pasa si olvidas poner el punto y coma (;)?', 
-            opts:['El Arduino se confunde y da error', 'El motor gira más rápido', 'No pasa nada'], 
-            a:0, 
-            explain:'El compilador necesita el punto y coma para saber que la orden terminó.', 
-            enemy:'👾' 
-          }
+          { t:'teach', title:'La orden: digitalWrite', voice:'La orden digital write enciende o apaga un pin. Por ejemplo, digital write 4, HIGH. Enciende el pin 4. ¡No olvides el punto y coma al final!', html:`<h3>La primera orden</h3><pre class="good"><code>digitalWrite(4, HIGH);</code></pre><p>Traduce: "Usa el pin 4 y ponlo en HIGH (encendido)".</p>` },
+          { t:'puzzle', title:'Rompecabezas de Código', voice:'El código está incompleto. Toca las piezas correctas para encender el pin 4.', html:`<h3>Arma la orden</h3>`, codeTemplate: "digitalWrite(4, [SLOT]);", pieces: ['HIGH', 'LOW', 'int'], answer: 'HIGH' }
+        ]
+      },
+      { 
+        id:'a2', title:'Variables', desc:'Cajitas con nombre para guardar datos.', 
+        sublevels:[
+          { t:'teach', title:'¿Qué es una variable?', voice:'Una variable es una cajita con un nombre. Tiene un tipo. Si guardas un entero, es int. Si guardas decimales, es float.', html:`<h3>Tipos de datos</h3><pre class="good"><code>int distancia = 25; // Entero\nfloat temp = 23.5; // Decimal</code></pre>` },
+          { t:'battle', q:'¿Qué tipo usarías para guardar <code>23.5</code>?', opts:['int','float','char'], a:1, explain:'<code>float</code> guarda decimales.', enemy:'👾' }
+        ]
+      },
+      { 
+        id:'a3', title:'Sensores y OLED', desc:'Los ojos del robot y su cara.', 
+        sublevels:[
+          { t:'teach', title:'Sensor Ultrasónico', voice:'El sensor ultrasónico manda un pulso y mide cuánto tarda en volver. Esa duración la divides entre 58 y te da la distancia.', html:`<h3>HC-SR04</h3><pre class="good"><code>long tiempo = pulseIn(echo, HIGH);\nint distancia = tiempo / 58.00;</code></pre>` },
+          { t:'bughunt', title:'Caza Errores', voice:'Encuentra el bloque de código que tiene el error. Toca el bug.', html:`<h3>Toca el código con error</h3>`, goodCode: "digitalWrite(4, HIGH);", badCode: "digitalWrite(4, HIGH)" }
+        ]
+      },
+      { 
+        id:'a4', title:'Examen Final (600 líneas)', desc:'El jefe final del Lafvin.', 
+        sublevels:[
+          { t:'teach', title:'La trampa del while', voice:'El código original tiene un bucle while que atrapa el programa. Si pones tu código fuera, nunca se ejecutará.', html:`<h3>Funtion_Flag</h3><pre class="bad"><code>while(Funtion_Flag) {\n  // Tu código debe ir AQUÍ ADENTRO\n}</code></pre>` },
+          { t:'battle', q:'¿Dónde va tu código nuevo para que sí se ejecute?', opts:['Fuera del while', 'Dentro del while (Funtion_Flag)', 'En el setup'], a:1, explain:'El while atrapa la ejecución, así que debes meterlo ahí.', enemy:'👹' }
         ]
       }
     ]
   },
   esp32: {
-    id: 'esp32', title: 'Mundo ESP32', subtitle: 'WiFi, BLE, 3.3V y ADC 12 bits',
+    id: 'esp32', title: 'Mundo ESP32', subtitle: 'WiFi, BLE, 3.3V',
     levels: [
       { 
-        id:'e0', title:'ESP32 vs Arduino', desc:'3.3V, pines por GPIO.', 
+        id:'e0', title:'ESP32 Básico', desc:'El ESP32 trabaja a 3.3V.', 
         sublevels:[
-          { 
-            t:'teach', title:'El ESP32 no es un Arduino', 
-            voice:'¡Cuidado! El ESP32 trabaja a tres punto tres voltios. ¡Siempre revisa los voltajes!', 
-            html:`<p>Voltaje: <b>3.3 V</b>. ADC: <b>12 bits (0-4095)</b>.</p>` 
-          },
-          { 
-            t:'battle', 
-            q:'¿A qué voltaje trabaja el ESP32?', 
-            opts:['5V','3.3V','12V'], 
-            a:1, 
-            explain:'Es de 3.3V, si le metes 5V lo quemas.', 
-            enemy:'🔥' 
-          }
+          { t:'teach', title:'El voltaje', voice:'El ESP32 no tolera 5V. Solo 3.3V. Si le metes 5V, lo quemas.', html:`<p>Voltaje: <b>3.3V</b>. ADC: <b>12 bits (0-4095)</b>.</p>` },
+          { t:'battle', q:'¿A qué voltaje trabaja el ESP32?', opts:['5V','3.3V'], a:1, explain:'Es de 3.3V.', enemy:'🔥' }
         ] 
       }
     ]
@@ -333,10 +298,10 @@ const WORLDS = {
 };
 
 const state = { name:'', gender:'f', sound:true, xp:0, hp:100, streak:0, world:'arduino',
-  unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false, mgHighScore:0 };
+  unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false };
 
-function save(){ try{ localStorage.setItem('zhinin_v16', JSON.stringify(state)); }catch(e){} }
-function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v16')||'null'); if(s) Object.assign(state,s); }catch(e){} }
+function save(){ try{ localStorage.setItem('zhinin_v18', JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v18')||'null'); if(s) Object.assign(state,s); }catch(e){} }
 load();
 
 let audioCtx=null;
@@ -403,6 +368,9 @@ let currentLevel=null, currentSub=0, currentQuizAnswered=false, currentLevelStar
 function findLevel(id){ for(const w of Object.values(WORLDS)){ const l=w.levels.find(x=>x.id===id); if(l) return {level:l,world:w}; } return null; }
 function openLevel(id){ const found=findLevel(id); if(!found) return; currentLevel=found.level; currentLevelStartXP=state.xp; currentSub=0; showScreen('screen-level'); renderSublevel(); }
 
+// ==========================================
+// RENDERIZADOR DE NIVELES Y JUEGOS
+// ==========================================
 function renderSublevel(){
   currentQuizAnswered=false;
   const sub=currentLevel.sublevels[currentSub];
@@ -428,141 +396,210 @@ function renderSublevel(){
     $('btn-next').disabled=false;
   } 
   else if(sub.t==='battle'){
-    showScreen('screen-battle');
+    showScreen('screen-level');
     startBattle(sub);
+  }
+  else if(sub.t==='memory'){
+    showScreen('screen-level');
+    startMemory(sub);
+  }
+  else if(sub.t==='puzzle'){
+    showScreen('screen-level');
+    startPuzzle(sub);
+  }
+  else if(sub.t==='bughunt'){
+    showScreen('screen-level');
+    startBughunt(sub);
   }
 }
 
-// === SISTEMA DE BATALLA INTERACTIVA ===
-let battleTimerInterval;
-let battleTimeLeft = 15;
-let currentBattleSub = null;
-
+// --- 1. BATALLA ---
+let battleTimerInterval, currentBattleSub;
 function startBattle(sub) {
   currentBattleSub = sub;
-  battleTimeLeft = 15;
-  currentQuizAnswered = false;
+  const content=$('lvl-content'); content.innerHTML='';
+  let timeLeft = 15;
   
-  $('bug-enemy').textContent = sub.enemy || '👾';
-  $('bug-enemy').style.transform = 'scale(1)';
-  $('bug-enemy').style.opacity = '1';
-  $('bug-hp').style.width = '100%';
-  $('laser-beam').className = 'laser-beam';
-  $('battle-fb').style.display = 'none';
-  $('btn-battle-continue').style.display = 'none'; // Ocultar botón al iniciar
-  
-  $('battle-q').innerHTML = sub.q;
-  const optsDiv = $('battle-opts'); optsDiv.innerHTML = '';
+  const arena=document.createElement('div'); arena.className='content-card game-arena';
+  arena.innerHTML=`
+    <div class="battle-timer" id="bt-time">15s</div>
+    <div class="bug-enemy" id="bt-bug">${sub.enemy}</div>
+    <div class="laser-beam" id="bt-laser"></div>
+    <div class="bug-hp-bar"><div class="bug-hp-fill" id="bt-hp"></div></div>
+    <div class="game-question">
+      <div class="quiz-q">${sub.q}</div>
+      <div class="game-opts" id="bt-opts"></div>
+      <div class="quiz-feedback" id="bt-fb" style="display:none; margin-top:10px; padding:10px; border-radius:8px;"></div>
+    </div>
+  `;
+  content.appendChild(arena);
   
   sub.opts.forEach((opt, i) => {
     const b = document.createElement('button');
     b.innerHTML = opt;
-    b.onclick = () => handleBattleAnswer(i, b);
-    optsDiv.appendChild(b);
+    b.onclick = () => handleBattleAnswer(i, b, sub);
+    $('bt-opts').appendChild(b);
   });
 
   clearInterval(battleTimerInterval);
-  $('battle-timer').textContent = battleTimeLeft + 's';
-  $('battle-timer').style.color = 'var(--yellow)';
-  
   battleTimerInterval = setInterval(() => {
-    battleTimeLeft--;
-    $('battle-timer').textContent = battleTimeLeft + 's';
-    if(battleTimeLeft <= 5) $('battle-timer').style.color = 'var(--red)';
-    
-    if(battleTimeLeft <= 0) {
-      clearInterval(battleTimerInterval);
-      timeOutBattle();
-    }
+    timeLeft--;
+    if($('bt-time')) $('bt-time').textContent = timeLeft + 's';
+    if(timeLeft <= 5 && $('bt-time')) $('bt-time').style.color = 'var(--red)';
+    if(timeLeft <= 0) { clearInterval(battleTimerInterval); enemyAttacks(sub, true); }
   }, 1000);
 }
 
-function handleBattleAnswer(idx, btnEl) {
+function handleBattleAnswer(idx, btnEl, sub) {
   if(currentQuizAnswered) return;
   currentQuizAnswered = true;
   clearInterval(battleTimerInterval);
+  document.querySelectorAll('#bt-opts button').forEach(b => b.style.pointerEvents = 'none');
   
-  const sub = currentBattleSub;
-  const correct = (idx === sub.a);
-  
-  document.querySelectorAll('#battle-opts button').forEach(b => b.style.pointerEvents = 'none');
-  
-  if(correct) {
+  if(idx === sub.a) {
     btnEl.style.background = 'rgba(61,220,132,.3)';
-    btnEl.style.borderColor = 'var(--green)';
-    
     sfxLaser();
-    const laser = $('laser-beam');
-    laser.style.background = 'var(--cyan)';
-    laser.style.boxShadow = '0 0 20px var(--cyan)';
-    laser.classList.add('fire');
-    
+    const laser = $('bt-laser'); laser.style.background = 'var(--cyan)'; laser.classList.add('fire');
     setTimeout(() => {
-      sfxExplode();
-      const bug = $('bug-enemy');
-      bug.style.transform = 'scale(1.5) rotate(45deg)';
-      bug.textContent = '💥';
-      $('bug-hp').style.width = '0%';
-      
+      sfxExplode(); $('bt-bug').textContent = '💥'; $('bt-hp').style.width = '0%';
       setTimeout(() => {
-        bug.style.opacity = '0';
-        $('battle-fb').className = 'quiz-feedback show ok';
-        $('battle-fb').style.display = 'block';
-        $('battle-fb').innerHTML = `✅ <b>¡Impacto letal!</b> ${sub.explain}`;
-        
-        state.streak++; state.xp += 150;
-        updateHUD(); save();
-        
-        // Mostrar el botón de continuar
-        $('btn-battle-continue').style.display = 'block';
-        
+        $('bt-bug').style.opacity = '0';
+        $('bt-fb').className = 'quiz-feedback show ok'; $('bt-fb').style.display = 'block';
+        $('bt-fb').innerHTML = `✅ <b>¡Impacto!</b> ${sub.explain}`;
+        state.streak++; state.xp += 150; updateHUD(); save();
+        $('btn-next').disabled = false;
       }, 500);
     }, 200);
-    
   } else {
     btnEl.style.background = 'rgba(255,71,87,.3)';
-    btnEl.style.borderColor = 'var(--red)';
-    enemyAttacks();
+    enemyAttacks(sub, false);
   }
 }
 
-function timeOutBattle() {
-  if(currentQuizAnswered) return;
-  currentQuizAnswered = true;
-  enemyAttacks(true);
-}
-
-function enemyAttacks(isTimeout = false) {
-  sfxWrong();
-  document.body.classList.add('shake');
-  setTimeout(()=>document.body.classList.remove('shake'), 400);
-  
-  const bug = $('bug-enemy');
-  bug.style.transform = 'scale(1.3) translateY(30px)';
-  
+function enemyAttacks(sub, isTimeout) {
+  sfxWrong(); document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'), 400);
+  $('bt-bug').style.transform = 'scale(1.3)';
   setTimeout(() => {
-    bug.style.transform = 'scale(1) translateY(0)';
-    $('battle-fb').className = 'quiz-feedback show fail';
-    $('battle-fb').style.display = 'block';
-    $('battle-fb').innerHTML = `❌ <b>${isTimeout ? '¡Tiempo agotado!' : '¡Respuesta incorrecta!'}</b> El Bug te atacó. -20 HP.<br>${currentBattleSub.explain}`;
-    
-    state.streak = 0;
-    state.hp = Math.max(0, state.hp - 20);
-    updateHUD(); save();
-    
-    // Mostrar el botón de continuar
-    $('btn-battle-continue').style.display = 'block';
-    
-    if(state.hp <= 0) {
-      setTimeout(() => {
-        alert('☠️ Has caído en combate. Tu vida se ha restaurado a 100 para que sigas entrenando.');
-        state.hp = 100; updateHUD(); save();
-        showScreen('screen-map'); renderMap();
-      }, 1000);
-    }
+    $('bt-bug').style.transform = 'scale(1)';
+    $('bt-fb').className = 'quiz-feedback show fail'; $('bt-fb').style.display = 'block';
+    $('bt-fb').innerHTML = `❌ <b>${isTimeout ? 'Tiempo' : 'Error'}.</b> -20 HP.<br>${sub.explain}`;
+    state.streak = 0; state.hp = Math.max(0, state.hp - 20); updateHUD(); save();
+    $('btn-next').disabled = false;
   }, 300);
 }
-// =====================================
+
+// --- 2. MEMORAMA ---
+function startMemory(sub) {
+  const content=$('lvl-content'); content.innerHTML='';
+  const cards = [];
+  sub.pairs.forEach((p, i) => { cards.push({id:i, text:p.a}); cards.push({id:i, text:p.b}); });
+  cards.sort(() => Math.random() - 0.5);
+  
+  const cardHtml = cards.map((c, i) => `<div class="memory-card" data-id="${c.id}" onclick="flipMemory(this)">?</div>`).join('');
+  
+  const arena=document.createElement('div'); arena.className='content-card';
+  arena.innerHTML=`<div>${sub.html}</div><div class="memory-grid">${cardHtml}</div>`;
+  content.appendChild(arena);
+  
+  window.memoryFlipped = [];
+  window.memoryMatched = 0;
+  window.memoryTotalPairs = sub.pairs.length;
+  setTimeout(()=>speak(sub.voice),300);
+}
+
+function flipMemory(el) {
+  if (el.classList.contains('flipped') || el.classList.contains('matched')) return;
+  el.classList.add('flipped');
+  
+  const sub = currentLevel.sublevels[currentSub];
+  const id = el.dataset.id;
+  const pair = sub.pairs[id];
+  el.textContent = el.textContent === '?' ? (window.memoryFlipped.length === 0 ? pair.a : pair.b) : el.textContent;
+  
+  // Corrección simple de texto
+  if(el.textContent === '?') el.textContent = pair.a; 
+  
+  window.memoryFlipped.push({el, id, text: el.textContent});
+  
+  if (window.memoryFlipped.length === 2) {
+    if (window.memoryFlipped[0].id === window.memoryFlipped[1].id) {
+      sfxCorrect();
+      window.memoryFlipped[0].el.classList.add('matched'); window.memoryFlipped[1].el.classList.add('matched');
+      window.memoryMatched++;
+      window.memoryFlipped = [];
+      if(window.memoryMatched === window.memoryTotalPairs) {
+        state.xp += 200; updateHUD(); save(); $('btn-next').disabled=false; currentQuizAnswered=true;
+      }
+    } else {
+      sfxWrong();
+      setTimeout(() => {
+        window.memoryFlipped.forEach(c => { c.el.classList.remove('flipped'); c.el.textContent = '?'; });
+        window.memoryFlipped = [];
+      }, 1000);
+    }
+  }
+}
+
+// --- 3. ROMPECABEZAS DE CÓDIGO ---
+function startPuzzle(sub) {
+  const content=$('lvl-content'); content.innerHTML='';
+  const arena=document.createElement('div'); arena.className='content-card';
+  arena.innerHTML=`
+    <div>${sub.html}</div>
+    <div class="code-puzzle" id="pz-code">${sub.codeTemplate.replace('[SLOT]', '<span class="code-slot" id="pz-slot">?</span>')}</div>
+    <div class="puzzle-pieces" id="pz-pieces"></div>
+  `;
+  content.appendChild(arena);
+  
+  sub.pieces.forEach(p => {
+    const b = document.createElement('div'); b.className='puzzle-piece'; b.textContent=p;
+    b.onclick = () => {
+      sfxClick();
+      $('pz-slot').textContent = p;
+      if (p === sub.answer) {
+        sfxCorrect(); $('pz-slot').style.color = 'var(--green)'; $('pz-slot').style.borderColor = 'var(--green)';
+        state.xp += 100; updateHUD(); save(); $('btn-next').disabled=false; currentQuizAnswered=true;
+        spawnParticle('+100 XP', 'var(--green)');
+      } else {
+        sfxWrong(); $('pz-slot').style.color = 'var(--red)'; $('pz-slot').style.borderColor = 'var(--red)';
+        document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'), 400);
+      }
+    };
+    $('pz-pieces').appendChild(b);
+  });
+}
+
+// --- 4. CAZA ERRORES ---
+function startBughunt(sub) {
+  const content=$('lvl-content'); content.innerHTML='';
+  const arena=document.createElement('div'); arena.className='content-card';
+  arena.innerHTML=`
+    <div>${sub.html}</div>
+    <div class="bughunt-container">
+      <div class="bughunt-box" onclick="checkBug(this, true)">${sub.goodCode.replace(/\n/g, '<br>')}</div>
+      <div class="bughunt-box" onclick="checkBug(this, false)">${sub.badCode.replace(/\n/g, '<br>')}</div>
+    </div>
+  `;
+  content.appendChild(arena);
+}
+
+function checkBug(el, isGood) {
+  if(currentQuizAnswered) return;
+  currentQuizAnswered = true;
+  if(!isGood) {
+    sfxExplode(); el.style.background = 'rgba(255,71,87,.3)'; el.style.borderColor = 'var(--red)';
+    spawnParticle('¡Bug encontrado!', 'var(--green)');
+    state.xp += 150; updateHUD(); save(); $('btn-next').disabled=false;
+  } else {
+    sfxWrong(); el.style.background = 'rgba(255,71,87,.1)';
+    state.hp = Math.max(0, state.hp - 20); updateHUD();
+    document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'), 400);
+    spawnParticle('-20 HP', 'var(--red)');
+    $('btn-next').disabled=false;
+  }
+}
+
+// ==========================================
 
 function nextSub(){
   stopSpeak();
@@ -588,7 +625,7 @@ let chatHistory=[], chatBusy=false;
 function openChat(){
   $('chat-panel').classList.add('open'); $('chat-text').focus();
   if(chatHistory.length===0){
-    const greet=state.gender==='f'?`¡Hola, ${state.name||'Zinia'}! Soy Zhinin, tu asistente. ¿En qué te ayudo?`:`¡Hola, ${state.name||'campeón'}! Soy Zhinin, tu asistente. ¿En qué te ayudo?`;
+    const greet=state.gender==='f'?`¡Hola, ${state.name||'Zinia'}! Soy Zhinin. ¿En qué te ayudo?`:`¡Hola, ${state.name||'campeón'}! Soy Zhinin. ¿En qué te ayudo?`;
     addMsg('bot',greet); chatHistory.push({role:'assistant',content:greet});
   }
 }
@@ -614,7 +651,7 @@ async function sendChat(){
     const data = await res.json(); $('typing')?.remove();
     if(data.error) { addMsg('bot', 'Zhinin dice: ' + data.error); }
     else { const reply = data.reply || 'No pude responder.'; addMsg('bot',reply); chatHistory.push({role:'assistant',content:reply}); speak(reply); }
-  }catch(e){ $('typing')?.remove(); addMsg('bot','Zhinin no puede responder ahora.'); }
+  }catch(e){ $('typing')?.remove(); addMsg('bot','Error de conexión.'); }
   finally{ chatBusy=false; $('btn-chat-send').disabled=false; $('chat-text').focus(); }
 }
 
@@ -629,15 +666,13 @@ function bootProfile(){
 function bootMap(){
   document.querySelectorAll('.world-tabs button').forEach(b=>{ b.onclick=()=>{ state.world=b.dataset.world; sfxClick(); renderMap(); }; });
   $('btn-sound').onclick=()=>{ state.sound=!state.sound; save(); setSoundBtn(); if(!state.sound) stopSpeak(); sfxClick(); };
-  $('btn-reset').onclick=()=>{ if(!confirm('¿Borrar todo tu progreso?')) return; state.xp=0; state.hp=100; state.streak=0; state.unlocked={arduino:['a0'],esp32:['e0']}; state.completed={arduino:{},esp32:{}}; state.mgHighScore=0; save(); updateHUD(); renderMap(); };
+  $('btn-reset').onclick=()=>{ if(!confirm('¿Borrar todo tu progreso?')) return; state.xp=0; state.hp=100; state.streak=0; state.unlocked={arduino:['a0'],esp32:['e0']}; state.completed={arduino:{},esp32:{}}; save(); updateHUD(); renderMap(); };
 }
 function bootLevel(){
-  $('btn-back').onclick=()=>{ stopSpeak(); showScreen('screen-map'); renderMap(); };
+  $('btn-back').onclick=()=>{ stopSpeak(); clearInterval(battleTimerInterval); showScreen('screen-map'); renderMap(); };
   $('btn-sound2').onclick=$('btn-sound').onclick;
-  $('btn-prev').onclick=()=>{ if(currentSub>0){ currentSub--; stopSpeak(); renderSublevel(); } };
+  $('btn-prev').onclick=()=>{ if(currentSub>0){ currentSub--; stopSpeak(); clearInterval(battleTimerInterval); renderSublevel(); } };
   $('btn-next').onclick=()=>nextSub();
-  // AQUÍ CONECTAMOS EL BOTÓN DE CONTINUAR DE LA BATALLA
-  $('btn-battle-continue').onclick=()=>nextSub();
 }
 function bootComplete(){ $('btn-continue').onclick=()=>{ showScreen('screen-map'); renderMap(); }; }
 function bootChat(){ $('fab-chat').onclick=openChat; $('btn-chat-close').onclick=closeChat; $('btn-chat-send').onclick=sendChat; $('chat-text').addEventListener('keydown',e=>{ if(e.key==='Enter') sendChat(); }); }
