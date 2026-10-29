@@ -137,32 +137,32 @@ body{font-size:15px;line-height:1.6}
 .bughunt-box { background: #000; border: 2px solid var(--border); padding: 15px; border-radius: 8px; font-family: monospace; cursor: pointer; font-size: 14px; transition: 0.2s; }
 .bughunt-box:active { transform: scale(0.98); }
 
-/* ESTILOS GUÍA DESCARGABLE */
+/* ESTILOS CUADERNILLO */
 .guide-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
 .guide-section h2 { color: var(--cyan); font-size: 20px; margin-bottom: 15px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
-.guide-week { margin-bottom: 25px; background: var(--bg2); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
-.guide-week-header { background: var(--bg); padding: 10px 15px; font-weight: bold; color: var(--yellow); font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+.guide-week { margin-bottom: 25px; background: var(--bg2); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); page-break-inside: avoid; }
+.guide-week-header { background: var(--bg); padding: 10px 15px; font-weight: bold; color: var(--yellow); font-size: 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
 .guide-content { padding: 15px; }
-.guide-card { display: flex; gap: 15px; margin-bottom: 15px; background: var(--card); padding: 15px; border-radius: 8px; border-left: 4px solid var(--cyan); }
-.guide-icon { font-size: 30px; }
-.guide-text h4 { color: var(--text); margin-bottom: 5px; }
-.guide-text p { font-size: 13px; color: var(--muted); margin-bottom: 5px; }
+.guide-card { margin-bottom: 15px; background: var(--card); padding: 15px; border-radius: 8px; border-left: 4px solid var(--cyan); }
+.guide-card h4 { color: var(--text); margin-bottom: 5px; }
+.guide-card p { font-size: 13px; color: var(--muted); margin-bottom: 5px; }
+.blank { display: inline-block; border-bottom: 2px solid var(--muted); min-width: 80px; height: 20px; margin: 0 5px; }
 .btn-print { background: var(--green); color: #000; border: none; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 16px; width: 100%; margin-bottom: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
 
 /* ESTILOS PARA IMPRIMIR (PDF) */
 @media print {
-  body { background: #fff; color: #000; }
+  body { background: #fff; color: #000; font-family: 'Courier New', monospace; }
   .screen, .topbar, .nav-btns, .fab, .btn-print, .chat-panel, .hud { display: none !important; }
   #screen-guide { display: block !important; padding: 0; }
-  .guide-section { border: none; padding: 0; }
+  .guide-section { border: none; padding: 0; background: #fff; }
   .guide-section h2 { color: #000; border-bottom: 2px solid #000; }
-  .guide-week { border: 1px solid #000; background: #fff; page-break-inside: avoid; }
+  .guide-week { border: 1px solid #000; background: #fff; margin-bottom: 15px; }
   .guide-week-header { background: #eee; color: #000; border-bottom: 1px solid #000; }
-  .guide-card { border: 1px solid #ccc; border-left: 4px solid #000; background: #fff; page-break-inside: avoid; }
-  .guide-text h4 { color: #000; }
-  .guide-text p { color: #333; }
+  .guide-card { border: 1px solid #ccc; border-left: 4px solid #000; background: #fff; }
+  .guide-card h4 { color: #000; }
+  .guide-card p { color: #333; }
+  .blank { border-bottom: 2px solid #000; color: transparent; }
 }
-
 @media(min-width:700px){.hud{grid-template-columns:1fr 1fr 1fr 1fr}}
 </style>
 </head>
@@ -179,7 +179,7 @@ body{font-size:15px;line-height:1.6}
 
 <div class="screen" id="screen-profile">
   <div class="welcome">
-    <h1>ZHININ_OS v24.0</h1>
+    <h1>ZHININ_OS v25.0</h1>
     <p>:: Curso Intensivo de 1 Mes ::</p>
     <p style="color:var(--text)">¡Hola! Soy Zhinin. He organizado todo tu aprendizaje en un plan de 4 semanas. Dime cómo prefieres que te hable.</p>
     <div class="field"><label>Tu nombre (opcional)</label><input type="text" id="in-name" placeholder="Ej. Zinia" maxlength="20"></div>
@@ -207,7 +207,7 @@ body{font-size:15px;line-height:1.6}
   </div>
   
   <!-- BOTÓN DE LA GUÍA -->
-  <button class="btn-primary" id="btn-open-guide" style="margin-bottom:16px; background:linear-gradient(135deg,var(--yellow),var(--orange)); color:#000;">📚 Guía de Estudio (PDF)</button>
+  <button class="btn-primary" id="btn-open-guide" style="margin-bottom:16px; background:linear-gradient(135deg,var(--yellow),var(--orange)); color:#000;">📚 Cuadernillo de Repaso (PDF)</button>
 
   <div class="world-tabs">
     <button data-world="arduino" class="sel"><span class="wicon">🤖</span>Mundo Arduino</button>
@@ -220,31 +220,28 @@ body{font-size:15px;line-height:1.6}
 <div class="screen" id="screen-guide">
   <div class="topbar">
     <button id="btn-guide-back">← mapa</button>
-    <div class="logo">📚 Guía de Estudio</div>
+    <div class="logo">📚 Cuadernillo de Repaso</div>
   </div>
 
-  <button class="btn-print" onclick="window.print()">🖨️ Descargar PDF / Imprimir</button>
+  <button class="btn-print" onclick="window.print()">🖨️ Descargar PDF / Imprimir para rellenar</button>
 
   <div class="guide-section">
-    <h2>Plan de 1 Mes: De Cero a Programador</h2>
+    <h2>Plan de 1 Mes: Repaso y Práctica</h2>
     
     <!-- SEMANA 1 -->
     <div class="guide-week">
       <div class="guide-week-header"><span>Semana 1 (Días 1-7)</span><span>Fundamentos</span></div>
       <div class="guide-content">
         <div class="guide-card">
-          <div class="guide-icon">🔌</div>
-          <div class="guide-text">
-            <h4>Electrónica Básica y Hardware</h4>
-            <p>Voltaje (presión), Corriente (flujo), Resistencia (tubo). Ley de Ohm (V=I*R). Componentes como LEDs, resistencias y la Protoboard. Los pines del Arduino (números) y estados HIGH/LOW.</p>
-          </div>
+          <h4>Electrónica Básica</h4>
+          <p>La Ley de Ohm dice que el Voltaje es igual a la <span class="blank"></span> multiplicada por la <span class="blank"></span>.</p>
+          <p>Los LEDs siempre necesitan una <span class="blank"></span> para no quemarse.</p>
         </div>
         <div class="guide-card">
-          <div class="guide-icon">📦</div>
-          <div class="guide-text">
-            <h4>Variables y Operadores</h4>
-            <p>Cajitas para guardar datos: int (enteros), float (decimales), String (textos). Operadores matemáticos (+, -, *, /) y lógicos (&&, ||).</p>
-          </div>
+          <h4>Sintaxis Básica</h4>
+          <p>Completa la orden para encender el pin 4:</p>
+          <p><code>digitalWrite(4, <span class="blank"></span>);</code></p>
+          <p>¿Qué símbolo va al final de cada línea? <span class="blank"></span></p>
         </div>
       </div>
     </div>
@@ -254,67 +251,54 @@ body{font-size:15px;line-height:1.6}
       <div class="guide-week-header"><span>Semana 2 (Días 8-14)</span><span>Control de Flujo</span></div>
       <div class="guide-content">
         <div class="guide-card">
-          <div class="guide-icon">🤔</div>
-          <div class="guide-text">
-            <h4>Decisiones (if / else / switch)</h4>
-            <p>Si pasa esto, haz aquello. Los operadores mayor (>), menor (<), igual (==). El switch para menús de opciones múltiples.</p>
-          </div>
+          <h4>Variables y Bucles</h4>
+          <p>Para guardar un número entero usas <span class="blank"></span>. Para decimales usas <span class="blank"></span>.</p>
+          <p>Completa el bucle para que se repita 5 veces:</p>
+          <p><code>for (int i = 0; i &lt; <span class="blank"></span>; i++)</code></p>
         </div>
         <div class="guide-card">
-          <div class="guide-icon">🔄</div>
-          <div class="guide-text">
-            <h4>Bucles y Funciones</h4>
-            <p>El bucle `for` (repite X veces) y `while` (repite mientras pase algo). Crear funciones propias con `void` (no devuelve) o `int` (devuelve un número).</p>
-          </div>
-        </div>
-        <div class="guide-card">
-          <div class="guide-icon">💬</div>
-          <div class="guide-text">
-            <h4>Comunicación Serial</h4>
-            <p>Hablar con la PC. `Serial.begin(9600)`, `Serial.print()`. Es la base para entender cómo funciona el Bluetooth.</p>
-          </div>
+          <h4>Decisiones</h4>
+          <p>Si la distancia es menor a 15, frena. Completa el código:</p>
+          <p><code>if (distancia <span class="blank"></span> 15) { ... }</code></p>
         </div>
       </div>
     </div>
 
     <!-- SEMANA 3 -->
     <div class="guide-week">
-      <div class="guide-week-header"><span>Semana 3 (Días 15-21)</span><span>El Mundo Físico</span></div>
+      <div class="guide-week-header"><span>Semana 3 (Días 15-21)</span><span>Sensores y Actuadores</span></div>
       <div class="guide-content">
         <div class="guide-card">
-          <div class="guide-icon">⚙️</div>
-          <div class="guide-text">
-            <h4>Actuadores: Motores y Servos</h4>
-            <p>`digitalWrite` para dirección, `analogWrite` (PWM 0-255) para velocidad. Servomotores (0-180 grados) con `Servo.h` y `attach()`.</p>
-          </div>
+          <h4>Servomotores</h4>
+          <p>¿Qué librería necesitas? <code>#include &lt;<span class="blank"></span>&gt;</code></p>
+          <p>La orden para moverlo a 90 grados es: <code>miServo.<span class="blank"></span>(90);</code></p>
         </div>
         <div class="guide-card">
-          <div class="guide-icon">👁️</div>
-          <div class="guide-text">
-            <h4>Sensores y Pantallas</h4>
-            <p>Ultrasónico (pulseIn / 58.00). Sensores Agroindustriales (Humedad analógica A0, DHT11). Pantalla OLED (U8g2, I2C A4/A5) para mostrar datos.</p>
-          </div>
+          <h4>Sensores (Ultrasónico y Humedad)</h4>
+          <p>Para el ultrasónico, divides el tiempo entre <span class="blank"></span> para obtener centímetros.</p>
+          <p>El sensor de humedad se lee en el pin <span class="blank"></span> con la función <code>analogRead()</code>.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Pantalla OLED</h4>
+          <p>Los pines I2C en el Arduino Uno son SDA = <span class="blank"></span> y SCL = <span class="blank"></span>.</p>
+          <p>Para mandar lo dibujado a la pantalla usas <code>u8g2.<span class="blank"></span>();</code></p>
         </div>
       </div>
     </div>
 
     <!-- SEMANA 4 -->
     <div class="guide-week">
-      <div class="guide-week-header"><span>Semana 4 (Días 22-30)</span><span>Integración y Proyecto</span></div>
+      <div class="guide-week-header"><span>Semana 4 (Días 22-30)</span><span>Integración</span></div>
       <div class="guide-content">
         <div class="guide-card">
-          <div class="guide-icon">📡</div>
-          <div class="guide-text">
-            <h4>Bluetooth y ESP32</h4>
-            <p>Control remoto con `Serial.read()` y `switch`. ESP32 (3.3V, ADC 12 bits, WiFi, ledcWrite).</p>
-          </div>
+          <h4>Bluetooth y ESP32</h4>
+          <p>Para leer el comando del Bluetooth usas <code>Serial.<span class="blank"></span>();</code></p>
+          <p>El ESP32 trabaja a <span class="blank"></span> Voltios (¡no le metas 5V!).</p>
         </div>
         <div class="guide-card">
-          <div class="guide-icon">🏆</div>
-          <div class="guide-text">
-            <h4>El Examen Final: 600 Líneas</h4>
-            <p>La trampa del `while(Funtion_Flag)`. El código original atrapa el loop. Debes meter tu código de sensores DENTRO del while para que funcione.</p>
-          </div>
+          <h4>La Trampa del Examen (600 líneas)</h4>
+          <p>El código del Lafvin usa un bucle <code>while(Funtion_Flag)</code>. Si pones tus sensores fuera de ese bucle, <span class="blank"></span> se van a ejecutar.</p>
+          <p>Por lo tanto, debes ponerlos <span class="blank"></span> del while.</p>
         </div>
       </div>
     </div>
@@ -411,8 +395,8 @@ const WORLDS = {
 const state = { name:'', gender:'f', sound:true, xp:0, hp:100, streak:0, world:'arduino',
   unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false };
 
-function save(){ try{ localStorage.setItem('zhinin_v24', JSON.stringify(state)); }catch(e){} }
-function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v24')||'null'); if(s) Object.assign(state,s); }catch(e){} }
+function save(){ try{ localStorage.setItem('zhinin_v25', JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v25')||'null'); if(s) Object.assign(state,s); }catch(e){} }
 load();
 
 let audioCtx=null;
