@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Zhinin OS :: Misión Lafvin & ESP32</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0a0e14;--bg2:#11161f;--card:#161d28;--border:#243041;--text:#d4dae4;--muted:#7a8697;--cyan:#00f0ff;--magenta:#ff2d95;--green:#3ddc84;--red:#ff4757;--yellow:#ffd166;--orange:#ff9f43}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Courier New',ui-monospace,monospace;overflow-x:hidden}
+body{font-size:15px;line-height:1.6}
+.screen{display:none;min-height:100vh;padding:16px}
+.screen.active{display:block}
+.topbar{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;position:sticky;top:8px;z-index:50;margin-bottom:16px}
+.topbar .logo{font-weight:bold;color:var(--cyan);font-size:14px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar button{background:transparent;border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit}
+.topbar button:active{background:var(--border)}
+.hud{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.hud-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px}
+.hud-card .label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.hud-card .value{font-size:18px;color:var(--cyan);font-weight:bold;margin-top:2px}
+.bar{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:6px}
+.bar-fill{height:100%;transition:width .4s ease}
+.bar-fill.hp{background:linear-gradient(90deg,var(--red),var(--orange))}
+.bar-fill.xp{background:linear-gradient(90deg,var(--cyan),var(--magenta))}
+.welcome{max-width:480px;margin:0 auto;padding-top:8vh}
+.welcome h1{color:var(--cyan);font-size:24px;margin-bottom:8px;text-shadow:0 0 10px rgba(0,240,255,.5)}
+.welcome p{color:var(--muted);margin-bottom:16px;font-size:14px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.field input{width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px;border-radius:8px;font-family:inherit;font-size:15px}
+.field input:focus{outline:none;border-color:var(--cyan)}
+.gender-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gender-btns button{padding:14px;background:var(--card);border:2px solid var(--border);color:var(--text);border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer}
+.gender-btns button.sel{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 15px rgba(0,240,255,.3)}
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,var(--cyan),var(--magenta));color:#000;border:none;border-radius:10px;font-family:inherit;font-weight:bold;font-size:15px;cursor:pointer;letter-spacing:1px;margin-top:8px}
+.btn-primary:active{transform:scale(.98)}
+.world-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.world-tabs button{padding:12px;background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:8px;font-family:inherit;font-size:13px;cursor:pointer;text-align:left}
+.world-tabs button .wicon{font-size:20px;display:block;margin-bottom:4px}
+.world-tabs button.sel{border-color:var(--cyan);color:var(--text);background:linear-gradient(135deg,rgba(0,240,255,.1),rgba(255,45,149,.1))}
+.level-grid{display:grid;gap:12px}
+.level-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s}
+.level-card:active{transform:scale(.98)}
+.level-card.locked{opacity:.5;cursor:not-allowed}
+.level-card.done{border-color:var(--green)}
+.level-card.minigame{border-color:var(--yellow);background:linear-gradient(135deg,rgba(255,209,102,.1),rgba(0,0,0,0))}
+.level-card .lvl-num{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.level-card .lvl-title{font-size:16px;color:var(--text);font-weight:bold;margin:4px 0}
+.level-card .lvl-desc{font-size:12px;color:var(--muted)}
+.level-card .lvl-status{position:absolute;top:12px;right:12px;font-size:20px}
+.level-card.done .lvl-status{color:var(--green)}
+.level-card.locked .lvl-status{color:var(--muted)}
+.level-card.current{border-color:var(--cyan);box-shadow:0 0 20px rgba(0,240,255,.2)}
+.level-header{margin-bottom:16px}
+.level-header h2{color:var(--cyan);font-size:18px;margin-bottom:4px}
+.level-header .progress-text{font-size:12px;color:var(--muted)}
+.sub-progress{display:flex;gap:4px;margin-top:10px}
+.sub-progress span{flex:1;height:4px;background:var(--border);border-radius:2px}
+.sub-progress span.done{background:var(--cyan)}
+.sub-progress span.current{background:var(--magenta)}
+.content-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.content-card h3{color:var(--yellow);font-size:16px;margin-bottom:12px}
+.content-card p{margin-bottom:12px}
+.content-card code{background:var(--bg);color:var(--green);padding:2px 6px;border-radius:4px;font-size:13px}
+.content-card pre{background:var(--bg);border-left:3px solid var(--cyan);padding:12px;border-radius:6px;overflow-x:auto;margin-bottom:12px;font-size:13px;line-height:1.5}
+.content-card pre code{background:none;color:var(--text);padding:0}
+.content-card pre.good{border-left-color:var(--green)}
+.content-card pre.bad{border-left-color:var(--red)}
+.content-card .note{background:rgba(255,45,149,.1);border-left:3px solid var(--magenta);padding:10px 12px;border-radius:6px;font-size:13px;margin-bottom:12px}
+.content-card .tip{background:rgba(61,220,132,.1);border-left:3px solid var(--green);padding:10px 12px;border-radius:6px;font-size:13px;margin-bottom:12px}
+.voice-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(0,240,255,.1);border:1px solid var(--cyan);color:var(--cyan);padding:8px 14px;border-radius:20px;font-family:inherit;font-size:12px;cursor:pointer;margin-bottom:12px}
+.voice-btn.speaking{background:var(--cyan);color:#000;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,240,255,.6)}50%{box-shadow:0 0 0 10px rgba(0,240,255,0)}}
+.quiz-q{font-size:15px;font-weight:bold;margin-bottom:14px;color:var(--text)}
+.quiz-q code{background:var(--bg);padding:2px 6px;border-radius:4px;color:var(--green)}
+.quiz-opts{display:grid;gap:8px}
+.quiz-opts button{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:8px;text-align:left;font-family:inherit;font-size:13px;cursor:pointer;line-height:1.4}
+.quiz-opts button:hover{border-color:var(--cyan)}
+.quiz-opts button.correct{border-color:var(--green);background:rgba(61,220,132,.15);color:var(--green)}
+.quiz-opts button.wrong{border-color:var(--red);background:rgba(255,71,87,.15);color:var(--red)}
+.quiz-feedback{margin-top:12px;padding:12px;border-radius:8px;font-size:13px;display:none}
+.quiz-feedback.show{display:block}
+.quiz-feedback.ok{background:rgba(61,220,132,.1);border:1px solid var(--green);color:var(--green)}
+.quiz-feedback.fail{background:rgba(255,71,87,.1);border:1px solid var(--red);color:var(--red)}
+.nav-btns{display:flex;gap:10px}
+.nav-btns button{flex:1;padding:14px;border-radius:10px;font-family:inherit;font-size:14px;cursor:pointer;font-weight:bold}
+.nav-btns .back{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.nav-btns .next{background:linear-gradient(135deg,var(--cyan),var(--magenta));border:none;color:#000}
+.nav-btns .next:disabled{opacity:.3;cursor:not-allowed}
+.complete{text-align:center;padding:40px 20px}
+.complete .trophy{font-size:80px;margin-bottom:20px;animation:bounce 1s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+.complete h2{color:var(--cyan);font-size:24px;margin-bottom:10px}
+.complete p{color:var(--muted);margin-bottom:20px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.stats div{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+.stats div .num{color:var(--cyan);font-size:22px;font-weight:bold}
+.stats div .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.fab{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--magenta));border:none;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(0,240,255,.4);z-index:100;display:flex;align-items:center;justify-content:center}
+.fab:active{transform:scale(.95)}
+.chat-panel{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column}
+.chat-panel.open{display:flex}
+.chat-head{padding:14px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.chat-head .avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--magenta));display:flex;align-items:center;justify-content:center;font-size:20px}
+.chat-head .info{flex:1}
+.chat-head .info h4{font-size:14px;color:var(--cyan)}
+.chat-head .info span{font-size:11px;color:var(--muted)}
+.chat-head button{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px 8px}
+.chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.msg.bot{background:var(--card);border:1px solid var(--border);align-self:flex-start;border-top-left-radius:4px}
+.msg.user{background:linear-gradient(135deg,rgba(0,240,255,.2),rgba(255,45,149,.2));border:1px solid var(--cyan);align-self:flex-end;border-top-right-radius:4px}
+.msg code{background:var(--bg);padding:1px 5px;border-radius:3px;font-size:12px;color:var(--green)}
+.msg pre{background:var(--bg);padding:8px;border-radius:6px;overflow-x:auto;margin:6px 0;font-size:12px}
+.chat-input{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px}
+.chat-input input{flex:1;background:var(--card);border:1px solid var(--border);color:var(--text);padding:12px;border-radius:20px;font-family:inherit;font-size:14px}
+.chat-input input:focus{outline:none;border-color:var(--cyan)}
+.chat-input button{background:var(--cyan);border:none;color:#000;padding:0 18px;border-radius:20px;font-family:inherit;font-weight:bold;cursor:pointer}
+.chat-input button:disabled{opacity:.4}
+.particle{position:fixed;pointer-events:none;font-weight:bold;font-size:14px;z-index:150;animation:floatUp 1.2s ease-out forwards}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(1.5)}}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.simulator{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:20px;text-align:center;margin-top:20px}
+.oled-screen{background:#000;border:4px solid #333;border-radius:8px;width:200px;height:100px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--cyan);font-family:monospace;box-shadow:0 0 15px rgba(0,240,255,.3);transition:all .3s}
+.slider-group{margin-bottom:15px;text-align:left}
+.slider-group label{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+.slider-group input[type=range]{width:100%;accent-color:var(--magenta)}
+.minigame-box{text-align:center;padding:20px}
+.timer-bar{height:8px;background:var(--border);border-radius:4px;margin-bottom:20px;overflow:hidden}
+.timer-fill{height:100%;background:var(--cyan);transition:width .1s linear}
+.code-block{background:#000;padding:20px;border-radius:8px;font-family:monospace;font-size:16px;margin-bottom:20px;text-align:left;color:#fff;border:1px solid var(--border)}
+.mg-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mg-btns button{padding:20px;font-size:20px;font-weight:bold;border-radius:12px;border:none;cursor:pointer;color:#fff;font-family:inherit}
+.btn-ok{background:var(--green)}
+.btn-error{background:var(--red)}
+@media(min-width:700px){.hud{grid-template-columns:1fr 1fr 1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div id="error-log" style="display:none; position:fixed; top:0; left:0; right:0; background:red; color:white; padding:20px; z-index:9999; font-family:sans-serif;"></div>
+<script>
+  window.onerror = function(msg, url, line, col, error) {
+    var el = document.getElementById('error-log');
+    if(el) {
+      el.style.display = 'block';
+      el.innerHTML = '<strong>Error detectado:</strong><br>' + msg + '<br>Línea: ' + line;
+    }
+    return false;
+  };
+</script>
+
+<div class="screen" id="screen-profile">
+  <div class="welcome">
+    <h1>ZHININ_OS v5.0</h1>
+    <p>:: Laboratorio Agroindustrial ::</p>
+    <p style="color:var(--text)">Antes de empezar, Zhinin necesita saber cómo llamarte y cómo hablarte.</p>
+    <div class="field"><label>Tu nombre (opcional)</label><input type="text" id="in-name" placeholder="Ej. Zinia" maxlength="20"></div>
+    <div class="field"><label>¿Cómo te refieres a ti?</label>
+      <div class="gender-btns">
+        <button data-g="f" class="sel">👩 Mujer</button>
+        <button data-g="m">👨 Varón</button>
+      </div>
+    </div>
+    <button class="btn-primary" id="btn-start">[ INICIAR ENTRENAMIENTO ]</button>
+  </div>
+</div>
+
+<div class="screen" id="screen-map">
+  <div class="topbar">
+    <div class="logo">ZHININ_OS</div>
+    <button id="btn-sound">🔊</button>
+    <button id="btn-reset">reiniciar</button>
+  </div>
+  <div class="hud">
+    <div class="hud-card"><div class="label">Rango</div><div class="value" id="hud-rank">Novato</div></div>
+    <div class="hud-card"><div class="label">XP</div><div class="value" id="hud-xp">0</div><div class="bar"><div class="bar-fill xp" id="hud-xp-bar" style="width:0%"></div></div></div>
+    <div class="hud-card"><div class="label">Vida</div><div class="value" id="hud-hp">100</div><div class="bar"><div class="bar-fill hp" id="hud-hp-bar" style="width:100%"></div></div></div>
+    <div class="hud-card"><div class="label">Racha</div><div class="value" id="hud-streak">0 🔥</div></div>
+  </div>
+  <div class="world-tabs">
+    <button data-world="arduino" class="sel"><span class="wicon">🤖</span>Mundo Arduino</button>
+    <button data-world="esp32"><span class="wicon">📡</span>Mundo ESP32</button>
+  </div>
+  <div class="level-grid" id="level-grid"></div>
+</div>
+
+<div class="screen" id="screen-level">
+  <div class="topbar">
+    <button id="btn-back">← mapa</button>
+    <div class="logo" id="lvl-top-title">Nivel</div>
+    <button id="btn-sound2">🔊</button>
+  </div>
+  <div class="level-header">
+    <h2 id="lvl-title">Nivel</h2>
+    <div class="progress-text" id="lvl-progress">Subnivel 1/1</div>
+    <div class="sub-progress" id="lvl-dots"></div>
+  </div>
+  <div id="lvl-content"></div>
+  <div class="nav-btns" style="margin-top:16px">
+    <button class="back" id="btn-prev">← Atrás</button>
+    <button class="next" id="btn-next">Siguiente →</button>
+  </div>
+</div>
+
+<div class="screen" id="screen-complete">
+  <div class="complete">
+    <div class="trophy">🏆</div>
+    <h2 id="comp-title">¡Nivel superado!</h2>
+    <p id="comp-desc"></p>
+    <div class="stats">
+      <div><div class="num" id="comp-xp">+0</div><div class="lbl">XP ganada</div></div>
+      <div><div class="num" id="comp-streak">0</div><div class="lbl">Racha</div></div>
+    </div>
+    <button class="btn-primary" id="btn-continue">[ VOLVER AL MAPA ]</button>
+  </div>
+</div>
+
+<div class="screen" id="screen-minigame">
+  <div class="topbar">
+    <button id="btn-mg-back">← mapa</button>
+    <div class="logo">Caza Errores</div>
+    <button id="btn-sound3">🔊</button>
+  </div>
+  <div class="content-card minigame-box">
+    <div class="timer-bar"><div class="timer-fill" id="mg-timer" style="width:100%"></div></div>
+    <p style="color:var(--muted);margin-bottom:10px;font-size:12px">¿Este código está BIEN o tiene un ERROR?</p>
+    <div class="code-block" id="mg-code">cargando...</div>
+    <div class="mg-btns">
+      <button class="btn-ok" id="mg-btn-ok">✅ Correcto</button>
+      <button class="btn-error" id="mg-btn-err">❌ Error</button>
+    </div>
+    <div class="quiz-feedback" id="mg-fb"></div>
+  </div>
+</div>
+
+<button class="fab" id="fab-chat">💬</button>
+
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-head">
+    <div class="avatar">🤖</div>
+    <div class="info"><h4>Zhinin</h4><span>Asistente de estudio · en línea</span></div>
+    <button id="btn-chat-close">✕</button>
+  </div>
+  <div class="chat-body" id="chat-body"></div>
+  <div class="chat-input">
+    <input type="text" id="chat-text" placeholder="Pregúntame algo del curso..." maxlength="500">
+    <button id="btn-chat-send">➤</button>
+  </div>
+</div>
+
+<script>
+const WORLDS = {
+  arduino: {
+    id: 'arduino', title: 'Mundo Arduino', subtitle: 'Lafvin 6 en 1 · Examen a papel',
+    levels: [
+      {
+        id:'a0', title:'El Alfabeto del Código',
+        desc:'Punto y coma, llaves, mayúsculas y la plantilla universal.',
+        sublevels:[
+          { t:'teach', title:'El punto y coma ;', voice:'Bienvenida al nivel cero. Antes de mover un motor, tienes que entender tres símbolos. El primero es el punto y coma. Cada orden que le das al Arduino termina en punto y coma. Si lo olvidas, el código no compila y el examen queda mal.', html:`<h3>1. El punto y coma <code>;</code></h3><p>Es el <b>punto final</b> de cada instrucción. Sin él, el compilador cree que la orden sigue en la línea siguiente.</p><pre class="bad"><code>digitalWrite(4, HIGH)    // ❌ falta ;</code></pre><pre class="good"><code>digitalWrite(4, HIGH);   // ✅ correcto</code></pre><div class="note"><b>Trampa de examen:</b> te dan el código bien escrito pero le quitan un <code>;</code> y te piden "marcar el error". Revisa siempre el final de cada línea.</div>` },
+          { t:'teach', title:'Las llaves { }', voice:'El segundo símbolo son las llaves. Abren y cierran bloques. Si abres una llave, tienes que cerrarla. Si no la cierras, el compilador se pierde y te marca error en una línea que no era.', html:`<h3>2. Las llaves <code>{ }</code></h3><p>Delimitan bloques: el cuerpo de <code>setup()</code>, de <code>loop()</code>, de un <code>if</code>.</p><pre class="good"><code>void setup() {\n  pinMode(4, OUTPUT);\n}</code></pre><div class="note"><b>Trampa:</b> si olvidas cerrar una llave, el error aparece muchas líneas después. Cuenta: deben ser pares.</div>` },
+          { t:'teach', title:'Mayúsculas que valen puntos', voice:'El tercer símbolo son las mayúsculas. C más más distingue mayúsculas de minúsculas. Digital write con la W mayúscula. Digital write con la w minúscula no existe y el Arduino no lo reconoce.', html:`<h3>3. Mayúsculas obligatorias (CamelCase)</h3><pre class="good"><code>pinMode(4, OUTPUT);       // ✅ M mayúscula\ndigitalWrite(4, HIGH);    // ✅ W mayúscula\ndigitalRead(2);           // ✅ R mayúscula\nanalogWrite(6, 128);      // ✅ W mayúscula</code></pre><pre class="bad"><code>digitalwrite(4, HIGH);    // ❌ W minúscula\npinmode(4, OUTPUT);       // ❌ M minúscula</code></pre><div class="note"><b>En el examen:</b> es el error más fácil de tachar. Repasa las "W" y las "M".</div>` },
+          { t:'teach', title:'La plantilla universal', voice:'Con esos tres símbolos ya puedes escribir tu plantilla universal. Constante entera, void setup, void loop. Es lo primero que dibujas en la hoja en blanco.', html:`<h3>4. La plantilla universal</h3><pre class="good"><code>// PARTE 1: DEFINIR PINES Y VARIABLES\nconst int IN1 = 4;\nconst int IN2 = 5;\n\n// PARTE 2: CONFIGURACIÓN (1 sola vez)\nvoid setup() {\n  pinMode(IN1, OUTPUT);\n  pinMode(IN2, OUTPUT);\n}\n\n// PARTE 3: BUCLE INFINITO\nvoid loop() {\n  // Aquí va la lógica del robot\n}</code></pre><div class="tip"><b>Truco:</b> si te dan la hoja en blanco, lo primero que dibujas es esta plantilla.</div>` },
+          { t:'quiz', q:'¿Cuál es el error en: <code>digitalWrite(4, HIGH)</code>?', opts:['Falta el punto y coma al final','HIGH debería ser high','digitalWrite debería ser DigitalWrite','El 4 debería ir entre comillas'], a:0, explain:'La instrucción está bien escrita, pero le falta el <code>;</code> final. Sin él, el compilador no sabe que terminó.' },
+          { t:'quiz', q:'¿Qué diferencia hay entre <code>setup()</code> y <code>loop()</code>?', opts:['setup() corre una vez al encender; loop() se repite sin parar','setup() es para motores; loop() para sensores','Son iguales, solo cambia el nombre','loop() solo corre si hay WiFi'], a:0, explain:'<code>setup()</code> corre una sola vez. <code>loop()</code> se ejecuta en bucle.' }
+        ]
+      },
+      {
+        id:'a1', title:'Variables y Tipos',
+        desc:'int, float, String, boolean, char y volatile.',
+        sublevels:[
+          { t:'teach', title:'¿Qué es una variable?', voice:'Una variable es una caja con nombre donde guardas un valor. En Arduino cada caja tiene un tipo. Entero: int. Decimal: float. Texto: String.', html:`<h3>Una caja con nombre</h3><pre class="good"><code>int distancia = 25;          // entero\nfloat temperatura = 23.5;     // decimal\nString nombre = "Zinia";      // texto\nboolean encendido = true;     // verdadero/falso\nchar letra = 'A';             // un carácter</code></pre><div class="note"><b>Ojo:</b> <code>"texto"</code> con comillas dobles (String), <code>'A'</code> con comillas simples (char).</div>` },
+          { t:'teach', title:'¿Y para qué sirve volatile?', voice:'Volatile es una palabra rara que aparece mucho en el código del Lafvin. Le dice al compilador: oye, este valor puede cambiar solo, no lo guardes en un registro.', html:`<h3><code>volatile</code></h3><p>Le dice al compilador: <i>"no optimices esta variable, su valor puede cambiar por fuera"</i>. Se usa en variables que modifica una interrupción o un bucle muy rápido.</p><pre class="good"><code>volatile int contador = 0;</code></pre><div class="tip"><b>En el Lafvin:</b> verás <code>volatile</code> en <code>Funtion_Flag</code> que controla los <code>while</code>.</div>` },
+          { t:'teach', title:'const int para pines', voice:'Constante entera es la combinación que usas para darle nombre a un pin. Const int IN1 igual a cuatro. Le dices al Arduino: el pin cuatro se llama IN1 y no cambia.', html:`<h3><code>const int</code> para pines</h3><pre class="good"><code>const int IN1 = 4;\nconst int IN2 = 5;\n\nvoid setup() {\n  pinMode(IN1, OUTPUT);\n}</code></pre>` },
+          { t:'quiz', q:'¿Qué tipo usarías para guardar <code>23.5</code>?', opts:['int','float','char','String'], a:1, explain:'<code>float</code> guarda decimales. <code>int</code> solo enteros.' },
+          { t:'quiz', q:'¿Cuál declaración es correcta para guardar la letra A?', opts:['<code>char letra = "A";</code>','<code>char letra = \'A\';</code>','<code>String letra = \'A\';</code>','<code>int letra = "A";</code>'], a:1, explain:'Para <code>char</code> se usan comillas simples.' }
+        ]
+      },
+      {
+        id:'a2', title:'Motores y PWM',
+        desc:'digitalWrite para dirección, analogWrite para velocidad.',
+        sublevels:[
+          { t:'teach', title:'Mover un motor', voice:'Para mover un motor hacia adelante le mandas energía por un canal y apagas el otro. Digital write IN1 en HIGH y digital write IN2 en LOW. Para frenar, los dos en LOW.', html:`<h3>Avanzar y frenar</h3><pre class="good"><code>// Avanzar\ndigitalWrite(IN1, HIGH);\ndigitalWrite(IN2, LOW);\n\n// Frenar\ndigitalWrite(IN1, LOW);\ndigitalWrite(IN2, LOW);</code></pre>` },
+          { t:'teach', title:'delay() para pausas', voice:'Delay detiene la ejecución durante el tiempo que le digas en milisegundos. Delay dos mil mantiene el avance dos segundos. Ojo, delay bloquea todo lo demás.', html:`<h3><code>delay(ms)</code></h3><pre class="good"><code>digitalWrite(IN1, HIGH);   // Avanza\ndelay(2000);               // 2 segundos\ndigitalWrite(IN1, LOW);    // Se detiene</code></pre><div class="note"><b>Trampa Lafvin:</b> <code>delay()</code> <b>bloquea</b>. Durante esos 2 s el Arduino no lee sensores ni Bluetooth.</div>` },
+          { t:'teach', title:'analogWrite y PWM', voice:'Analog write genera una señal PWM para controlar velocidad. Va de cero a doscientos cincuenta y cinco. Cero es parado, doscientos cincuenta y cinco es velocidad máxima. Solo funciona en pines con el símbolo de la tilde.', html:`<h3><code>analogWrite(pin, 0..255)</code></h3><pre class="good"><code>analogWrite(5, 128);   // mitad\nanalogWrite(5, 255);   // máximo</code></pre><div class="note"><b>Error clásico:</b> usar <code>analogWrite</code> en un pin sin PWM. En el Uno son <b>3, 5, 6, 9, 10, 11</b>.</div>` },
+          { t:'quiz', q:'¿Qué hace <code>analogWrite(5, 200)</code>?', opts:['Enciende el pin 5 al máximo','Da al pin 5 una velocidad del 78% (200/255) por PWM','Apaga el pin 5','Lee el pin 5'], a:1, explain:'200/255 ≈ 78% del ciclo de trabajo.' },
+          { t:'quiz', q:'Diferencia entre <code>digitalWrite</code> y <code>analogWrite</code>:', opts:['digitalWrite controla dirección (HIGH/LOW); analogWrite controla velocidad (0-255) por PWM','Son lo mismo','analogWrite es solo para sensores','digitalWrite solo funciona en el pin 13'], a:0, explain:'digitalWrite es on/off. analogWrite da valor intermedio 0-255 por PWM.' }
+        ]
+      },
+      {
+        id:'a3', title:'Sensores, OLED y Lafvin',
+        desc:'Ultrasónico, suelo, DHT11, OLED y la trampa del código.',
+        sublevels:[
+          { t:'teach', title:'Sensor ultrasónico (HC-SR04)', voice:'El sensor ultrasónico manda un pulso por el pin trig y mide cuánto tarda en volver por el pin echo. Esa duración la divides entre cincuenta y ocho punto cero cero y te da la distancia en centímetros.', html:`<h3>HC-SR04</h3><pre class="good"><code>digitalWrite(trig, LOW);\ndelayMicroseconds(2);\ndigitalWrite(trig, HIGH);\ndelayMicroseconds(10);\ndigitalWrite(trig, LOW);\n\nlong tiempo = pulseIn(echo, HIGH);\nint distancia = tiempo / 58.00;   // cm</code></pre><div class="note"><b>¿Por qué 58.00?</b> El sonido tarda ~29 µs en ir y ~29 µs en volver por cm. 29 + 29 = 58.</div>` },
+          { t:'teach', title:'Humedad de suelo (analogRead A0)', voice:'El sensor de humedad de suelo se lee con analog read en el pin A cero. Devuelve un número entre cero y mil veintitrés. Cuanto más seco, más alto el número.', html:`<h3>Humedad de suelo</h3><pre class="good"><code>int humedad = analogRead(A0);   // 0..1023\n\nif (humedad &lt; 300) {\n  // suelo seco\n}</code></pre><div class="tip"><b>Ojo:</b> en ESP32 es <b>0..4095</b> (12 bits).</div>` },
+          { t:'teach', title:'DHT11', voice:'El D H T once necesita la librería D H T punto h. Le dices el tipo D H T once, el pin, y lees read temperature o read humidity.', html:`<h3>DHT11 con <code>DHT.h</code></h3><pre class="good"><code>#include "DHT.h"\n\n#define DHTPIN 2\n#define DHTTYPE DHT11\nDHT dht(DHTPIN, DHTTYPE);\n\nvoid setup() {\n  dht.begin();\n}\n\nvoid loop() {\n  float t = dht.readTemperature();\n  float h = dht.readHumidity();\n  delay(2000);\n}</code></pre><div class="note"><b>Ojo:</b> el DHT11 es lento. Lee cada 2 s o devuelve <code>NaN</code>.</div>` },
+          { t:'teach', title:'OLED SH1106 con U8g2', voice:'La pantalla O L E D se conecta por I dos C. S D A va al pin A cuatro y S C L al A cinco. Se controla con U ocho g dos. clear Buffer borra, draw Str escribe, send Buffer manda a la pantalla.', html:`<h3>OLED SH1106</h3><p>Conexión: <b>SDA = A4</b>, <b>SCL = A5</b>.</p><pre class="good"><code>#include &lt;U8g2lib.h&gt;\n#include &lt;Wire.h&gt;\n\nU8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);\n\nvoid setup() {\n  u8g2.begin();\n}\n\nvoid loop() {\n  u8g2.clearBuffer();\n  u8g2.setFont(u8g2_font_ncenB08_tr);\n  u8g2.drawStr(0, 20, "Hola Zinia!");\n  u8g2.sendBuffer();\n}</code></pre><div class="tip"><b>Flujo:</b> <code>clearBuffer → drawStr → sendBuffer</code>. Sin el último, no se ve nada.</div>` },
+          { t:'teach', title:'Simulador: La Carita OLED', voice:'Juega con los controles. Si el obstáculo está a menos de quince centímetros o la humedad es menor a trescientos, la pantalla se pondrá molesta.', html:`<h3>Prueba la lógica del examen final</h3><p>Mueve los controles y observa la pantalla OLED virtual. Esta es la misma condición <code>if</code> que usarás en el papel.</p>
+          <div class="simulator">
+            <div class="oled-screen" id="sim-face">:)</div>
+            <div class="slider-group">
+              <label><span>Distancia (cm)</span> <span id="sim-dist-val">50</span></label>
+              <input type="range" id="sim-dist" min="0" max="100" value="50">
+            </div>
+            <div class="slider-group">
+              <label><span>Humedad de suelo</span> <span id="sim-hum-val">500</span></label>
+              <input type="range" id="sim-hum" min="0" max="1023" value="500">
+            </div>
+            <pre style="text-align:left;margin-top:15px;font-size:11px"><code id="sim-code">if (distancia &lt; 15 || humedad &lt; 300) {</code></pre>
+          </div>` },
+          { t:'teach', title:'La trampa del while (Funtion_Flag)', voice:'Esta es la trampa más grande del código Lafvin. El código original usa bucles while con una bandera para atrapar la ejecución. Si tú pones tu código de sensores en el loop principal, nunca se va a ejecutar porque el while se queda dando vueltas para siempre.', html:`<h3>¿Qué hace <code>while (Funtion_Flag)</code>?</h3><p>Es un bucle que se repite <b>mientras</b> la variable <code>Funtion_Flag</code> sea verdadera. El código original del Lafvin lo usa para "secuestrar" el programa dentro de una función hasta que pase algo (como recibir un comando Bluetooth).</p><pre class="bad"><code>void loop() {\n  while (Funtion_Flag) {\n    // El programa se queda ATRAPADO aquí\n    // hasta que Funtion_Flag cambie a false\n  }\n  // Tu código de sensores NUNCA llega aquí\n}</code></pre><div class="note"><b>Trampa de examen:</b> si te piden agregar un sensor nuevo, NO lo pongas en el <code>loop()</code> principal. Debes ponerlo <b>dentro</b> del <code>while</code> que ya existe, o cambiar la lógica para que la bandera se libere.</div><pre class="good"><code>// Correcto: el sensor va DENTRO del while\nvoid loop() {\n  while (Funtion_Flag) {\n    int humedad = analogRead(A0);  // ✅ aquí sí corre\n    // ... resto de la lógica\n  }\n}</code></pre>` },
+          { t:'teach', title:'Bluetooth: switch/case con charAt(1)', voice:'Cuando el robot recibe un mensaje por Bluetooth, lo lee carácter por carácter. El primer carácter suele ser un símbolo como el asterisco, y el segundo carácter es el comando real. Char At uno te devuelve ese segundo carácter. Después usas switch y case para decidir qué hacer.', html:`<h3>Leer Bluetooth y decidir con <code>switch</code></h3><pre class="good"><code>String comando = "";\n\nvoid loop() {\n  while (Serial.available() > 0) {\n    char c = Serial.read();\n    comando += c;\n  }\n\n  if (comando.length() > 1) {\n    char accion = comando.charAt(1);  // segundo carácter\n    switch (accion) {\n      case 'G': avanzar(); break;\n      case 'T': retroceder(); break;\n      case 'L': girarIzquierda(); break;\n      case 'R': girarDerecha(); break;\n      default:  detener(); break;\n    }\n  }\n  comando = "";  // limpiar para el siguiente\n}</code></pre><div class="tip"><b>¿Por qué <code>charAt(1)</code>?</b> Si el mensaje es <code>"*G"</code>, el índice 0 es <code>'*'</code> y el índice 1 es <code>'G'</code>. Por eso se lee el segundo carácter.</div><div class="note"><b>Ojo:</b> los <code>case 'G'</code> van con <b>comillas simples</b> porque son <code>char</code>, no <code>String</code>.</div>` },
+          { t:'quiz', q:'¿Por qué se divide entre <code>58.00</code> en el ultrasónico?', opts:['Porque 58 es la velocidad del sonido en m/s','Porque el sonido tarda ~29 µs en ir y ~29 en volver por cm','Porque el sensor usa PWM de 58 Hz','Es una constante arbitraria'], a:1, explain:'29 + 29 = 58 µs por cm (ida y vuelta). Por eso <code>tiempo / 58.00</code> da cm.' },
+          { t:'quiz', q:'¿Dónde debes poner el código de un sensor nuevo en el Lafvin para que SÍ se ejecute?', opts:['En el loop() principal','Dentro del while (Funtion_Flag) que ya existe','En el setup()','Fuera de todas las funciones'], a:1, explain:'Si el código original usa <code>while (Funtion_Flag)</code>, el <code>loop()</code> queda atrapado. Tu sensor debe ir dentro de ese <code>while</code> o liberar la bandera.' }
+        ]
+      }
+    ]
+  },
+  esp32: {
+    id: 'esp32', title: 'Mundo ESP32', subtitle: 'WiFi, BLE, 3.3V y ADC de 12 bits',
+    levels: [
+      {
+        id:'e0', title:'ESP32 vs Arduino',
+        desc:'3.3V, pines por GPIO y qué NO conectar.',
+        sublevels:[
+          { t:'teach', title:'El ESP32 no es un Arduino con WiFi', voice:'Cuidado. El ESP32 no es solo un Arduino con WiFi. Trabaja a tres punto tres voltios, y si le metes cinco voltios a un pin lo puedes quemar.', html:`<h3>Diferencias críticas</h3><table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px"><tr style="border-bottom:1px solid var(--border)"><th style="text-align:left;padding:8px;color:var(--cyan)">Aspecto</th><th style="text-align:left;padding:8px;color:var(--cyan)">Arduino Uno</th><th style="text-align:left;padding:8px;color:var(--cyan)">ESP32</th></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">Voltaje</td><td style="padding:8px">5 V</td><td style="padding:8px"><b>3.3 V</b></td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">ADC</td><td style="padding:8px">10 bits (0-1023)</td><td style="padding:8px"><b>12 bits (0-4095)</b></td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">PWM</td><td style="padding:8px">analogWrite</td><td style="padding:8px">ledcWrite</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">Pines</td><td style="padding:8px">D2, D3, A0</td><td style="padding:8px">GPIO + número</td></tr><tr><td style="padding:8px">WiFi</td><td style="padding:8px">No integrado</td><td style="padding:8px"><b>Integrado</b></td></tr></table><div class="note"><b>Regla de oro:</b> ningún GPIO tolera más de 3.3 V.</div>` },
+          { t:'teach', title:'Pines por GPIO', voice:'En el ESP32 los pines no se llaman D dos o A cero. Se llaman G P I O y el número. Y no todos se pueden usar.', html:`<h3>Restricciones</h3><ul style="margin-left:20px;color:var(--text);font-size:13px"><li><b>GPIO 34, 35, 36, 39:</b> solo entrada.</li><li><b>GPIO 6–11:</b> ocupados por flash. No usar.</li><li><b>GPIO 1 y 3:</b> UART0 (Serial).</li><li><b>GPIO 0, 2, 5, 12, 15:</b> pines de arranque.</li></ul><div class="tip"><b>Buenos para empezar:</b> GPIO 4, 5, 18, 19, 21, 22, 23, 25, 26, 27.</div>` },
+          { t:'quiz', q:'¿Qué voltaje toleran los pines del ESP32?', opts:['5 V, igual que el Uno','3.3 V','12 V','Depende del pin'], a:1, explain:'Todos los GPIO del ESP32 son de 3.3 V. 5 V los daña.' },
+          { t:'quiz', q:'¿Qué rango devuelve <code>analogRead()</code> en ESP32?', opts:['0–255','0–1023','0–4095','0–65535'], a:2, explain:'ADC de 12 bits: 0 a 4095. Esa es la trampa clásica.' }
+        ]
+      },
+      {
+        id:'e1', title:'ADC y WiFi',
+        desc:'Los 12 bits y el truco del ADC2 que falla con WiFi.',
+        sublevels:[
+          { t:'teach', title:'ADC2 falla con WiFi', voice:'Aquí viene la trampa más grande del ESP32. Tiene dos convertidores: A D C uno y A D C dos. El A D C dos no funciona cuando el WiFi está encendido.', html:`<h3>ADC1 vs ADC2</h3><pre class="good"><code>// ADC1 (seguro con WiFi):\n// GPIO 32, 33, 34, 35, 36, 37, 38, 39\nint valor = analogRead(34);\n\n// ADC2 (falla con WiFi):\n// GPIO 0, 2, 4, 12-15, 25-27</code></pre><div class="note"><b>Regla:</b> si usas WiFi + sensor analógico, conecta el sensor a un pin de <b>ADC1</b> (32–39).</div>` },
+          { t:'teach', title:'Conectarse a WiFi', voice:'Para conectar el ESP32 a WiFi incluyes la librería WiFi punto h. Llamas a WiFi punto begin con nombre y contraseña. Después un while que espera hasta que el estado sea connected.', html:`<h3>WiFi en 5 líneas</h3><pre class="good"><code>#include &lt;WiFi.h&gt;\n\nvoid setup() {\n  Serial.begin(115200);\n  WiFi.begin("MiRed", "MiPassword");\n  while (WiFi.status() != WL_CONNECTED) {\n    delay(500);\n    Serial.print(".");\n  }\n  Serial.println(WiFi.localIP());\n}</code></pre><div class="tip"><b>Ojo:</b> <code>WL_CONNECTED</code> va todo en mayúsculas.</div>` },
+          { t:'quiz', q:'Tu sensor analógico no lee cuando activas WiFi. ¿Qué pasó?', opts:['Sensor dañado','Sensor en pin del ADC2 (falla con WiFi)','El ESP32 no tiene ADC','Falta <code>delay()</code>'], a:1, explain:'ADC2 se desactiva con WiFi. Mueve el sensor a ADC1 (GPIO 32–39).' }
+        ]
+      },
+      {
+        id:'e2', title:'PWM con ledc',
+        desc:'El reemplazo de analogWrite en ESP32.',
+        sublevels:[
+          { t:'teach', title:'No existe analogWrite', voice:'En el ESP32 no existe analog write. Se usa el controlador L E D C. Primero lo configuras con ledc Attach, después escribes con ledc Write.', html:`<h3>PWM con <code>ledc</code></h3><pre class="good"><code>// Core ESP32 nuevo (3.x)\n#define PIN_MOTOR 18\n#define FREC 5000\n#define RES 8    // 8 bits → 0..255\n\nvoid setup() {\n  ledcAttach(PIN_MOTOR, FREC, RES);\n}\n\nvoid loop() {\n  ledcWrite(PIN_MOTOR, 128);   // 50%\n}</code></pre><div class="note"><b>Core viejo (2.x):</b> <code>ledcSetup(canal, frec, res)</code> + <code>ledcAttachPin(pin, canal)</code> + <code>ledcWrite(canal, val)</code>.</div>` },
+          { t:'quiz', q:'¿Qué reemplaza a <code>analogWrite</code> en ESP32?', opts:['digitalWrite','ledcWrite','analogOutput','pwmWrite'], a:1, explain:'Se configura con <code>ledcAttach</code> y se escribe con <code>ledcWrite</code>.' }
+        ]
+      }
+    ]
+  }
+};
+
+const state = { name:'', gender:'f', sound:true, xp:0, hp:100, streak:0, world:'arduino',
+  unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false, mgHighScore:0 };
+
+function save(){ try{ localStorage.setItem('zhinin_v5', JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v5')||'null'); if(s) Object.assign(state,s); }catch(e){} }
+load();
+
+let audioCtx=null;
+function ensureCtx(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended') audioCtx.resume(); return audioCtx; }
+function beep(freq,dur,type,vol){ if(!state.sound) return; try{ const ctx=ensureCtx(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.frequency.value=freq; o.type=type||'sine'; g.gain.setValueAtTime(vol||0.1,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur); o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur); }catch(e){} }
+function sfxClick(){ beep(800,0.05,'square',0.06); }
+function sfxCorrect(){ beep(660,0.1,'sine',0.1); setTimeout(()=>beep(880,0.15,'sine',0.1),100); setTimeout(()=>beep(1320,0.2,'sine',0.1),220); }
+function sfxWrong(){ beep(200,0.15,'sawtooth',0.1); setTimeout(()=>beep(140,0.25,'sawtooth',0.1),120); }
+function sfxLevel(){ beep(523,0.12,'sine',0.12); setTimeout(()=>beep(659,0.12,'sine',0.12),130); setTimeout(()=>beep(784,0.12,'sine',0.12),260); setTimeout(()=>beep(1047,0.3,'sine',0.12),390); }
+
+if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices(); speechSynthesis.getVoices(); }
+function speak(text){
+  if(!state.sound || !('speechSynthesis' in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='es-ES'; u.pitch=1.6; u.rate=1.15;
+    const voices=speechSynthesis.getVoices();
+    const es=voices.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
+    const male=es.find(v=>/(male|hombre|jorge|diego|enrique|pablo|juan)/i.test(v.name));
+    if(male) u.voice=male; else if(es[0]) u.voice=es[0];
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function stopSpeak(){ if('speechSynthesis' in window) speechSynthesis.cancel(); }
+
+const $=(id)=>document.getElementById(id);
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); window.scrollTo(0,0); }
+function setSoundBtn(){ const t=state.sound?'🔊':'🔇'; $('btn-sound').textContent=t; $('btn-sound2').textContent=t; $('btn-sound3').textContent=t; }
+function updateHUD(){
+  $('hud-xp').textContent=state.xp; $('hud-hp').textContent=state.hp; $('hud-streak').textContent=state.streak+' 🔥';
+  $('hud-xp-bar').style.width=Math.min(100,(state.xp%500)/5)+'%';
+  $('hud-hp-bar').style.width=state.hp+'%';
+  const ranks=['Novato','Aprendiz','Junior','Senior','Maestro','Leyenda'];
+  $('hud-rank').textContent=ranks[Math.min(5,Math.floor(state.xp/500))];
+}
+
+function renderMap(){
+  const world=WORLDS[state.world];
+  document.querySelectorAll('.world-tabs button').forEach(b=>b.classList.toggle('sel',b.dataset.world===state.world));
+  const unlocked=state.unlocked[state.world]||[];
+  const completed=state.completed[state.world]||{};
+  const grid=$('level-grid'); grid.innerHTML='';
+  
+  const mgCard=document.createElement('div');
+  mgCard.className='level-card minigame';
+  mgCard.innerHTML=`<div class="lvl-num">Arcade</div><div class="lvl-title">🎮 Caza Errores</div><div class="lvl-desc">Récord: ${state.mgHighScore} pts. ¡Pon a prueba tus reflejos!</div><div class="lvl-status">▶</div>`;
+  mgCard.onclick=()=>{ sfxClick(); openMinigame(); };
+  grid.appendChild(mgCard);
+
+  world.levels.forEach((lvl,i)=>{
+    const isUnlocked=unlocked.includes(lvl.id);
+    const isDone=completed[lvl.id];
+    const isCurrent=isUnlocked && !isDone && (i===0 || completed[world.levels[i-1].id]);
+    const card=document.createElement('div');
+    card.className='level-card'+(isUnlocked?'':' locked')+(isDone?' done':'')+(isCurrent?' current':'');
+    card.innerHTML=`<div class="lvl-num">Nivel ${i} · ${lvl.sublevels.length} subniveles</div>
+      <div class="lvl-title">${lvl.title}</div>
+      <div class="lvl-desc">${lvl.desc}</div>
+      <div class="lvl-status">${isDone?'✓':(isUnlocked?'▶':'🔒')}</div>`;
+    card.onclick=()=>{ if(!isUnlocked){ beep(200,0.1,'sawtooth',0.08); return; } sfxClick(); openLevel(lvl.id); };
+    grid.appendChild(card);
+  });
+  updateHUD();
+}
+
+let currentLevel=null, currentSub=0, currentQuizAnswered=false, currentLevelStartXP=0;
+function findLevel(id){ for(const w of Object.values(WORLDS)){ const l=w.levels.find(x=>x.id===id); if(l) return {level:l,world:w}; } return null; }
+function openLevel(id){ const found=findLevel(id); if(!found) return; currentLevel=found.level; currentLevelStartXP=state.xp; currentSub=0; showScreen('screen-level'); renderSublevel(); }
+
+function renderSublevel(){
+  currentQuizAnswered=false;
+  const sub=currentLevel.sublevels[currentSub];
+  $('lvl-top-title').textContent=currentLevel.title;
+  $('lvl-title').textContent=currentLevel.title;
+  $('lvl-progress').textContent=`Subnivel ${currentSub+1} / ${currentLevel.sublevels.length}`;
+  const dots=$('lvl-dots'); dots.innerHTML='';
+  currentLevel.sublevels.forEach((_,i)=>{ const s=document.createElement('span'); if(i<currentSub) s.className='done'; else if(i===currentSub) s.className='current'; dots.appendChild(s); });
+  const content=$('lvl-content'); content.innerHTML='';
+  
+  if(sub.t==='teach'){
+    const card=document.createElement('div'); card.className='content-card';
+    card.innerHTML=`<button class="voice-btn" id="btn-voice">🔊 Escuchar a Zhinin</button><div>${sub.html}</div>`;
+    content.appendChild(card);
+    
+    if(sub.title === 'Simulador: La Carita OLED'){
+      setTimeout(()=>{
+        const dEl=$('sim-dist'), hEl=$('sim-hum'), fEl=$('sim-face'), cdEl=$('sim-code');
+        if(!dEl || !hEl) return;
+        const updateSim=()=>{
+          const d=parseInt(dEl.value), h=parseInt(hEl.value);
+          $('sim-dist-val').textContent=d; $('sim-hum-val').textContent=h;
+          if(d < 15 || h < 300) { fEl.textContent=':('; fEl.style.color='var(--red)'; cdEl.textContent='if (distancia < 15 || humedad < 300) { // ⚠️ MOVIDO'; }
+          else { fEl.textContent=':)'; fEl.style.color='var(--cyan)'; cdEl.textContent='if (distancia < 15 || humedad < 300) { // OK'; }
+        };
+        dEl.addEventListener('input', updateSim); hEl.addEventListener('input', updateSim);
+        updateSim();
+      }, 100);
+    }
+
+    $('btn-voice').onclick=()=>{ const btn=$('btn-voice'); btn.classList.add('speaking'); btn.textContent='🔊 Hablando...'; speak(sub.voice); const check=setInterval(()=>{ if(!speechSynthesis.speaking){ clearInterval(check); btn.classList.remove('speaking'); btn.textContent='🔊 Escuchar a Zhinin'; } },300); };
+    setTimeout(()=>speak(sub.voice),300);
+  } else {
+    const card=document.createElement('div'); card.className='content-card';
+    card.innerHTML=`<div class="quiz-q">${sub.q}</div><div class="quiz-opts" id="quiz-opts"></div><div class="quiz-feedback" id="quiz-fb"></div>`;
+    content.appendChild(card);
+    sub.opts.forEach((opt,i)=>{ const b=document.createElement('button'); b.textContent=opt; b.onclick=()=>selectAnswer(i); $('quiz-opts').appendChild(b); });
+  }
+  $('btn-prev').disabled=currentSub===0;
+  $('btn-next').textContent=currentSub===currentLevel.sublevels.length-1?'Terminar →':'Siguiente →';
+  $('btn-next').disabled=(sub.t==='quiz' && !currentQuizAnswered);
+  window.scrollTo(0,0);
+}
+
+function selectAnswer(i){
+  if(currentQuizAnswered) return;
+  const sub=currentLevel.sublevels[currentSub];
+  const opts=document.querySelectorAll('#quiz-opts button');
+  const fb=$('quiz-fb');
+  opts.forEach((b,idx)=>{ if(idx===sub.a) b.classList.add('correct'); else if(idx===i) b.classList.add('wrong'); b.disabled=true; });
+  const correct=i===sub.a;
+  currentQuizAnswered=true;
+  if(correct){
+    sfxCorrect(); state.streak++;
+    const gain=state.streak>3?75:50; state.xp+=gain;
+    fb.className='quiz-feedback show ok';
+    fb.innerHTML=`✅ <b>¡Correcto!</b> +${gain} XP · Racha: ${state.streak} 🔥<br>${sub.explain}`;
+    spawnParticle('+'+gain+' XP','var(--green)');
+    save();
+  } else {
+    sfxWrong(); state.streak=0; state.hp=Math.max(0,state.hp-10);
+    fb.className='quiz-feedback show fail';
+    fb.innerHTML=`❌ <b>Incorrecto.</b> −10 HP<br>${sub.explain}`;
+    document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'),400);
+    save();
+  }
+  updateHUD();
+  $('btn-next').disabled=false;
+}
+
+function spawnParticle(text,color){
+  const p=document.createElement('div'); p.className='particle'; p.textContent=text; p.style.color=color;
+  p.style.left=(window.innerWidth/2-30)+'px'; p.style.top=(window.innerHeight/2)+'px';
+  document.body.appendChild(p); setTimeout(()=>p.remove(),1200);
+}
+
+function nextSub(){
+  stopSpeak();
+  if(currentSub===currentLevel.sublevels.length-1){
+    const world=state.world;
+    if(!state.completed[world]) state.completed[world]={};
+    state.completed[world][currentLevel.id]=true;
+    const found=findLevel(currentLevel.id);
+    const idx=found.world.levels.findIndex(l=>l.id===currentLevel.id);
+    const nextLvl=found.world.levels[idx+1];
+    if(nextLvl && !state.unlocked[world].includes(nextLvl.id)) state.unlocked[world].push(nextLvl.id);
+    const gained=state.xp-currentLevelStartXP;
+    $('comp-title').textContent='¡Nivel superado!';
+    $('comp-desc').textContent=`Terminaste "${currentLevel.title}". ${nextLvl?'El siguiente nivel se desbloqueó.':'¡Completaste el mundo!'}`;
+    $('comp-xp').textContent='+'+gained;
+    $('comp-streak').textContent=state.streak;
+    sfxLevel(); save(); showScreen('screen-complete'); return;
+  }
+  currentSub++; renderSublevel();
+}
+
+let mgInterval, mgTimeout, mgScore=0, mgTime=100, mgCurrentCorrect=true, mgCurrentQuestion=null;
+const mgCodes = [
+  { c: 'digitalWrite(4, HIGH);', ok: true },
+  { c: 'digitalwrite(4, HIGH);', ok: false, why: 'W minúscula' },
+  { c: 'int x = 10', ok: false, why: 'Falta ;' },
+  { c: 'void loop() {', ok: true },
+  { c: 'pinMode(4, OUTPUT);', ok: true },
+  { c: 'if (x = 5) {}', ok: false, why: 'Usa ==' },
+  { c: 'analogWrite(5, 255);', ok: true },
+  { c: 'delay(1000)', ok: false, why: 'Falta ;' },
+  { c: 'float temp = 23.5;', ok: true },
+  { c: 'digitalRead(4);', ok: true },
+  { c: 'analogRead(A0)', ok: false, why: 'Falta ;' }
+];
+
+function openMinigame(){
+  showScreen('screen-minigame');
+  mgScore=0; mgTime=100; $('mg-fb').className='quiz-feedback';
+  nextMgQuestion();
+}
+
+function nextMgQuestion(){
+  clearInterval(mgInterval); clearTimeout(mgTimeout);
+  if(mgTime <= 0) return endMinigame();
+  
+  mgTime = 100;
+  $('mg-timer').style.width = '100%';
+  
+  mgCurrentQuestion = mgCodes[Math.floor(Math.random() * mgCodes.length)];
+  mgCurrentCorrect = mgCurrentQuestion.ok;
+  $('mg-code').textContent = mgCurrentQuestion.c;
+  
+  $('mg-btn-ok').disabled = false;
+  $('mg-btn-err').disabled = false;
+
+  mgInterval = setInterval(()=>{
+    mgTime -= 2;
+    $('mg-timer').style.width = mgTime + '%';
+    if(mgTime <= 0) {
+      clearInterval(mgInterval);
+      handleMgAnswer(null, mgCurrentQuestion);
+    }
+  }, 50);
+}
+
+function handleMgAnswer(ans, q){
+  clearInterval(mgInterval);
+  $('mg-btn-ok').disabled = true;
+  $('mg-btn-err').disabled = true;
+  
+  const userSaysOk = (ans === true);
+  const isCorrect = (ans !== null && userSaysOk === q.ok);
+  
+  const fb = $('mg-fb');
+  fb.className = 'quiz-feedback show ' + (isCorrect ? 'ok' : 'fail');
+  
+  if(isCorrect){
+    sfxCorrect();
+    mgScore += 10; state.xp += 5;
+    fb.innerHTML = `✅ ¡Bien! +5 XP`;
+    spawnParticle('+5 XP', 'var(--green)');
+  } else {
+    sfxWrong();
+    state.hp = Math.max(0, state.hp - 5);
+    document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'),400);
+    fb.innerHTML = ans === null ? `⏰ ¡Tiempo! ` : `❌ Error. `;
+    if(q.why) fb.innerHTML += `(${q.why})`;
+    updateHUD();
+  }
+  
+  mgTimeout = setTimeout(()=>{
+    if(state.hp <= 0) endMinigame();
+    else nextMgQuestion();
+  }, 1500);
+}
+
+function endMinigame(){
+  clearInterval(mgInterval); clearTimeout(mgTimeout);
+  if(mgScore > state.mgHighScore) state.mgHighScore = mgScore;
+  save();
+  alert(`¡Juego terminado!\nPuntos: ${mgScore}\nRécord: ${state.mgHighScore}`);
+  showScreen('screen-map'); renderMap();
+}
+
+let chatHistory=[], chatBusy=false;
+function openChat(){
+  $('chat-panel').classList.add('open'); $('chat-text').focus();
+  if(chatHistory.length===0){
+    const greet=state.gender==='f'?`¡Hola, ${state.name||'Zinia'}! Soy Zhinin, tu asistente. ¿En qué te ayudo?`:`¡Hola, ${state.name||'campeón'}! Soy Zhinin, tu asistente. ¿En qué te ayudo?`;
+    addMsg('bot',greet); chatHistory.push({role:'assistant',content:greet});
+  }
+}
+function closeChat(){ $('chat-panel').classList.remove('open'); stopSpeak(); }
+function addMsg(role,text){
+  const body=$('chat-body'); const div=document.createElement('div');
+  div.className='msg '+(role==='user'?'user':'bot');
+  let html=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/```(\w*)\n([\s\S]*?)```/g,(_,l,c)=>`<pre><code>${c.trim()}</code></pre>`)
+    .replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\n/g,'<br>');
+  div.innerHTML=html; body.appendChild(div); body.scrollTop=body.scrollHeight;
+}
+
+async function sendChat(){
+  if(chatBusy) return;
+  const input=$('chat-text'); const text=input.value.trim(); if(!text) return;
+  input.value=''; addMsg('user',text); chatHistory.push({role:'user',content:text});
+  chatBusy=true; $('btn-chat-send').disabled=true;
+  const typing=document.createElement('div'); typing.className='msg bot'; typing.textContent='...'; typing.id='typing';
+  $('chat-body').appendChild(typing); $('chat-body').scrollTop=$('chat-body').scrollHeight;
+  
+  try{
+    const res = await fetch('/api/zhinin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: chatHistory, gender: state.gender, level: currentLevel ? currentLevel.title : 'Intro' })
+    });
+
+    const data = await res.json();
+    $('typing')?.remove();
+
+    if(data.error) {
+       addMsg('bot', 'Zhinin dice: ' + data.error);
+    } else {
+       const reply = data.reply || 'No pude responder.';
+       addMsg('bot',reply); 
+       chatHistory.push({role:'assistant',content:reply}); 
+       speak(reply); 
+    }
+
+  }catch(e){ 
+    $('typing')?.remove(); 
+    addMsg('bot','Zhinin no puede responder en este momento. Revisa tu conexión a internet.'); 
+  }
+  finally{ chatBusy=false; $('btn-chat-send').disabled=false; $('chat-text').focus(); }
+}
+
+function bootProfile(){
+  $('in-name').value=state.name||'';
+  document.querySelectorAll('.gender-btns button').forEach(b=>{
+    b.classList.toggle('sel',b.dataset.g===state.gender);
+    b.onclick=()=>{ document.querySelectorAll('.gender-btns button').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); state.gender=b.dataset.g; sfxClick(); };
+  });
+  $('btn-start').onclick=()=>{ state.name=($('in-name').value||'').trim().slice(0,20); state.profileSet=true; save(); sfxClick(); showScreen('screen-map'); renderMap(); };
+}
+function bootMap(){
+  document.querySelectorAll('.world-tabs button').forEach(b=>{ b.onclick=()=>{ state.world=b.dataset.world; sfxClick(); renderMap(); }; });
+  $('btn-sound').onclick=()=>{ state.sound
