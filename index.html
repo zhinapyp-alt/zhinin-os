@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Zhinin OS :: Proyecto Final</title>
+<title>Zhinin OS :: Battle Royale</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0a0e14;--bg2:#11161f;--card:#161d28;--border:#243041;--text:#d4dae4;--muted:#7a8697;--cyan:#00f0ff;--magenta:#ff2d95;--green:#3ddc84;--red:#ff4757;--yellow:#ffd166;--orange:#ff9f43}
@@ -138,18 +138,23 @@ body{font-size:15px;line-height:1.6}
 .btn-run{background:var(--green);color:#000;border:none;padding:10px;width:100%;font-family:inherit;font-weight:bold;font-size:14px;cursor:pointer;transition:0.2s}
 .btn-run:active{transform:scale(0.98)}
 .console-output{background:#000;color:var(--muted);padding:10px;font-size:12px;min-height:40px;border-top:1px solid var(--border);font-family:monospace}
-.royale-arena{background:#0a1a2e; border:2px dashed #1a3b5c; border-radius:12px; padding:15px; min-height:120px; display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; justify-content:center; margin-bottom:20px; position:relative}
-.royale-hero{font-size:40px; position:absolute; bottom:10px; left:15px; transition:transform 0.5s}
-.royale-enemy{font-size:40px; position:absolute; bottom:10px; right:15px}
-.royale-card{background:linear-gradient(135deg, #1e293b, #0f172a); border:2px solid var(--border); border-radius:8px; padding:10px; width:90px; height:110px; display:flex; flex-direction:column; justify-content:center; align-items:center; cursor:pointer; transition:transform 0.1s; box-shadow:0 4px 6px rgba(0,0,0,0.3)}
-.royale-card:active{transform:scale(0.95)}
-.royale-card .r-icon{font-size:24px; margin-bottom:5px}
-.royale-card .r-name{font-size:10px; text-align:center; font-weight:bold; color:var(--cyan)}
-.royale-card .r-cost{position:absolute; top:-8px; right:-8px; background:var(--magenta); color:#fff; border-radius:50%; width:20px; height:20px; font-size:12px; display:flex; align-items:center; justify-content:center; font-weight:bold}
-.royale-deck{display:flex; gap:10px; overflow-x:auto; padding:10px 0}
-.royale-sequence{display:flex; flex-wrap:wrap; gap:8px; background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; min-height:50px}
-.seq-item{background:var(--bg2); border:1px solid var(--cyan); color:var(--cyan); font-size:10px; padding:5px 10px; border-radius:4px; display:flex; align-items:center}
-.btn-execute{background:var(--magenta); color:#fff; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; font-size:16px; margin-top:15px; font-family:inherit; box-shadow:0 0 15px rgba(255,45,149,0.4)}
+
+/* ESTILOS BATTLE ROYALE */
+.br-container { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 10px; }
+.br-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 2px; width: 100%; max-width: 350px; aspect-ratio: 1; background: #000; border: 2px solid var(--border); padding: 4px; border-radius: 8px; }
+.br-cell { background: #1a2233; border-radius: 2px; display: flex; justify-content: center; align-items: center; font-size: 14px; transition: all 0.2s; }
+.br-cell.storm { background: rgba(255, 45, 149, 0.3); border: 1px solid rgba(255, 45, 149, 0.5); }
+.br-cell.player { background: var(--cyan); font-size: 20px; box-shadow: 0 0 10px var(--cyan); z-index: 2;}
+.br-cell.enemy { background: var(--red); font-size: 16px; z-index: 1;}
+.d-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 160px; height: 160px; }
+.d-pad button { background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 8px; font-size: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; user-select: none; }
+.d-pad button:active { background: var(--cyan); color: #000; }
+.btn-up { grid-column: 2; grid-row: 1; }
+.btn-left { grid-column: 1; grid-row: 2; }
+.btn-right { grid-column: 3; grid-row: 2; }
+.btn-down { grid-column: 2; grid-row: 3; }
+.btn-attack { grid-column: 1 / span 3; grid-row: 4; background: var(--magenta); color: #fff; font-weight: bold; font-size: 16px; border: none; border-radius: 8px; margin-top: 10px; padding: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,45,149,0.4); }
+.btn-attack:active { transform: scale(0.95); }
 @media(min-width:700px){.hud{grid-template-columns:1fr 1fr 1fr 1fr}}
 </style>
 </head>
@@ -166,9 +171,9 @@ body{font-size:15px;line-height:1.6}
 
 <div class="screen" id="screen-profile">
   <div class="welcome">
-    <h1>ZHININ_OS v10.0</h1>
-    <p>:: Edición Proyecto Final ::</p>
-    <p style="color:var(--text)">¡Hola! Soy Zhinin. Hoy vamos a construir el código del Lafvin 4WD pieza por pieza. Dime cómo prefieres que te hable.</p>
+    <h1>ZHININ_OS v13.0</h1>
+    <p>:: Battle Royale de Código ::</p>
+    <p style="color:var(--text)">¡Hola! Soy Zhinin. Prepárate para sobrevivir a la tormenta de bugs. Dime cómo prefieres que te hable.</p>
     <div class="field"><label>Tu nombre (opcional)</label><input type="text" id="in-name" placeholder="Ej. Zinia" maxlength="20"></div>
     <div class="field"><label>¿Cómo te refieres a ti?</label>
       <div class="gender-btns">
@@ -176,7 +181,7 @@ body{font-size:15px;line-height:1.6}
         <button data-g="m">👨 Varón</button>
       </div>
     </div>
-    <button class="btn-primary" id="btn-start">[ INICIAR ENTRENAMIENTO ]</button>
+    <button class="btn-primary" id="btn-start">[ ENTRAR A LA ARENA ]</button>
   </div>
 </div>
 
@@ -248,26 +253,28 @@ body{font-size:15px;line-height:1.6}
   </div>
 </div>
 
-<div class="screen" id="screen-royale">
+<div class="screen" id="screen-br">
   <div class="topbar">
-    <button id="btn-ry-back">← mapa</button>
-    <div class="logo">⚔️ Code Royale</div>
-    <button id="btn-sound4">🔊</button>
+    <button id="btn-br-back">← mapa</button>
+    <div class="logo">Battle Royale</div>
+    <button id="btn-sound5">🔊</button>
   </div>
-  <div class="content-card">
-    <h3 style="text-align:center; margin-bottom:10px; color:var(--yellow)">Nivel 1: Derrota al Motor Rebelde</h3>
-    <p style="font-size:12px; text-align:center; color:var(--muted); margin-bottom:10px">El motor está atascado. Usa cartas para darle energía y luego apagarlo.</p>
-    <div class="royale-arena">
-      <div class="royale-hero" id="ry-hero">🤖</div>
-      <div class="royale-enemy" id="ry-enemy">⚙️</div>
-      <div style="position:absolute; top:10px; width:100%; text-align:center; color:var(--muted); font-size:10px" id="ry-status">Esperando instrucciones...</div>
+  
+  <div class="hud">
+    <div class="hud-card"><div class="label">Vida</div><div class="value" id="br-hp">100</div></div>
+    <div class="hud-card"><div class="label">Tiempo</div><div class="value" id="br-time">60s</div></div>
+    <div class="hud-card"><div class="label">Bugs</div><div class="value" id="br-score">0</div></div>
+  </div>
+
+  <div class="br-container">
+    <div class="br-grid" id="br-grid"></div>
+    <div class="d-pad">
+      <button class="btn-up" onclick="moveBR(0,-1)">↑</button>
+      <button class="btn-left" onclick="moveBR(-1,0)">←</button>
+      <button class="btn-right" onclick="moveBR(1,0)">→</button>
+      <button class="btn-down" onclick="moveBR(0,1)">↓</button>
+      <button class="btn-attack" onclick="attackBR()">⚔️ ATACAR</button>
     </div>
-    <div class="royale-sequence" id="ry-sequence"></div>
-    <button class="btn-execute" id="btn-ry-execute">▶ EJECUTAR COMBO</button>
-  </div>
-  <div class="content-card" style="padding:10px">
-    <h4 style="font-size:12px; color:var(--muted); margin-bottom:5px">Tu Mazo (Toca para añadir):</h4>
-    <div class="royale-deck" id="ry-deck"></div>
   </div>
 </div>
 
@@ -291,59 +298,28 @@ const WORLDS = {
   arduino: {
     id: 'arduino', title: 'Mundo Arduino', subtitle: 'Lafvin 4WD Proyecto Final',
     levels: [
-      // ... (Niveles a0 a a5 se mantienen igual, omito para no hacer el texto infinito, pero van en el archivo final) ...
-      {
-        id:'a0', title:'Nivel 0: Cero Absoluto',
-        desc:'¿Qué es programar? Variables, funciones y la estructura básica.',
+      { id:'a0', title:'Nivel 0: Cero Absoluto', desc:'¿Qué es programar? Variables, funciones y la estructura básica.', sublevels:[{ t:'teach', title:'¿Qué es programar?', voice:'¡Holaaa! Bienvenida al nivel cero. Estoy muy feliz de acompañarte. Programar es darle instrucciones a una computadora paso a paso, como una receta de cocina.', html:`<h3>Pensar como una computadora</h3><pre class="good"><code>digitalWrite(4, HIGH); // 1. Encender\ndelay(2000);           // 2. Esperar\ndigitalWrite(4, LOW);  // 3. Apagar</code></pre>` }] },
+      { id:'a1', title:'El Alfabeto del Código', desc:'Punto y coma, llaves, mayúsculas.', sublevels:[{ t:'teach', title:'El punto y coma ;', voice:'El punto y coma es el punto final de una oración. Cada orden termina en punto y coma.', html:`<pre class="good"><code>digitalWrite(4, HIGH);</code></pre>` }] },
+      { id:'a3', title:'Bucles y Servomotores', desc:'Domina el for y mueve el cuello del robot.', sublevels:[{ t:'teach', title:'El Bucle For', voice:'El bucle for es el mejor amigo del programador.', html:`<pre class="good"><code>for (int i = 0; i < 5; i++) {\n  digitalWrite(4, HIGH);\n  delay(200);\n}</code></pre>` }] },
+      { 
+        id:'a7', title:'Nivel 8: Control Bluetooth', 
+        desc:'Aprende a controlar tu robot desde el celular.', 
         sublevels:[
-          { t:'teach', title:'¿Qué es programar?', voice:'¡Holaaa! Bienvenida al nivel cero. Estoy muy feliz de acompañarte. Programar es darle instrucciones a una computadora paso a paso, como una receta de cocina. El Arduino es una mini computadora que lee tus instrucciones de arriba a abajo.', html:`<h3>Pensar como una computadora</h3><p>Una computadora no adivina. Hace <b>exactamente</b> lo que le dices, en el orden en que se lo dices. Si te equivocas en un símbolo, se rompe.</p><pre class="good"><code>digitalWrite(4, HIGH); // 1. Encender\ndelay(2000);           // 2. Esperar\ndigitalWrite(4, LOW);  // 3. Apagar</code></pre>` },
-          { t:'quiz', q:'¿Qué hace la función <code>delay(1000)</code>?', opts:['Enciende el motor','Hace una pausa de 1 segundo','Guarda una variable','Reinicia el Arduino'], a:1, explain:'<code>delay()</code> detiene el programa durante los milisegundos que le pongas entre paréntesis.' }
+          { t:'teach', title:'¿Cómo funciona el Bluetooth?', voice:'El módulo Bluetooth se conecta a los pines RX y TX del Arduino. Cuando tú presionas un botón en tu celular, envía una letra. El Arduino la lee y hace una acción.', html:`<h3>El módulo HC-05 / HC-06</h3><p>Todo lo que envíes desde tu celular, el Arduino lo lee con <code>Serial.read()</code>.</p><pre class="good"><code>void setup() {\n  Serial.begin(9600); // Iniciar Bluetooth\n}</code></pre>` },
+          { t:'code', title:'¡Desafío Bluetooth!', 
+            voice:'Escribe un if que compruebe si hay datos disponibles en Serial. Si es así, guarda el dato en una variable llamada comando.', 
+            html:`<h3>Tu misión</h3><p>Escribe el código para leer el comando Bluetooth.</p><p style="font-size:12px;color:var(--muted)">Pista: <code>if (Serial.available() > 0) { char comando = Serial.read(); }</code></p>`,
+            codeReq: /if\s*\(\s*Serial\.available\s*\(\s*\)\s*>\s*0\s*\)\s*\{?\s*(char\s+)?comando\s*=\s*Serial\.read\s*\(\s*\)/i,
+            codeSuccess: '¡Excelente! Ya sabes cómo leer el control remoto.',
+            codeError: 'Revisa la sintaxis. Debe ser Serial.available() > 0 y Serial.read().' }
         ]
       },
-      {
-        id:'a1', title:'El Alfabeto del Código',
-        desc:'Punto y coma, llaves, mayúsculas y la plantilla universal.',
+      { 
+        id:'a8', title:'Nivel 9: La Verdad de las 600 líneas', 
+        desc:'Descubre por qué el código original es tan largo y cómo limpiarlo.', 
         sublevels:[
-          { t:'teach', title:'El punto y coma ;', voice:'El punto y coma es el punto final de una oración. Cada orden que le das al Arduino termina en punto y coma. Si lo olvidas, el código no compila y el examen queda mal.', html:`<h3>1. El punto y coma <code>;</code></h3><p>Sin él, el compilador cree que la orden sigue en la línea siguiente.</p><pre class="bad"><code>digitalWrite(4, HIGH)    // ❌ falta ;</code></pre><pre class="good"><code>digitalWrite(4, HIGH);   // ✅ correcto</code></pre>` },
-          { t:'quiz', q:'¿Cuál es el error en: <code>digitalWrite(4, HIGH)</code>?', opts:['Falta el punto y coma al final','HIGH debería ser high','digitalWrite debería ser DigitalWrite','El 4 debería ir entre comillas'], a:0, explain:'Le falta el <code>;</code> final.' }
-        ]
-      },
-      {
-        id:'a2', title:'Lógica y Decisiones',
-        desc:'Aprende a hacer que el robot piense con if, else y switch.',
-        sublevels:[
-          { t:'teach', title:'Tomar decisiones (if / else)', voice:'El robot es inteligente si le enseñas a tomar decisiones. If significa Si. Else significa Sino. Si pasa esto, haz aquello. ¡Es como decidir si llevar paraguas o no!', html:`<h3>El poder de elegir</h3><pre class="good"><code>int distancia = 10;\n\nif (distancia < 15) {\n  digitalWrite(IN1, LOW);\n} else {\n  digitalWrite(IN1, HIGH);\n}</code></pre>` },
-          { t:'code', title:'¡Desafío CodeCombat!', 
-            voice:'Escribe un if que compruebe si la variable temperatura es mayor a 30. Si es así, haz un digitalWrite en el pin 5 en HIGH.', 
-            html:`<h3>Tu misión</h3><p>Escribe el código para encender un ventilador (pin 5) si la <code>temperatura</code> supera los 30 grados.</p><p style="font-size:12px;color:var(--muted)">Pista: <code>if (temperatura > 30) { digitalWrite(5, HIGH); }</code></p>`,
-            codeReq: /if\s*\(\s*temperatura\s*>\s*30\s*\)\s*\{?\s*digitalWrite\s*\(\s*5\s*,\s*HIGH\s*\)/i,
-            codeSuccess: '¡Eres una genio! Has encendido el ventilador correctamente.',
-            codeError: 'Revisa que el if compare temperatura > 30 y que el digitalWrite tenga punto y coma.' }
-        ]
-      },
-      {
-        id:'a3', title:'Bucles y Servomotores',
-        desc:'Domina el for, los arrays y cómo mover un servo.',
-        sublevels:[
-          { t:'teach', title:'El Bucle For', voice:'El bucle for es el mejor amigo del programador. En lugar de escribir una instrucción cien veces, le dices al Arduino: repite esto desde cero hasta cien.', html:`<h3>Repetir sin cansarse: <code>for</code></h3><pre class="good"><code>for (int i = 0; i < 5; i++) {\n  digitalWrite(4, HIGH);\n  delay(200);\n  digitalWrite(4, LOW);\n  delay(200);\n}</code></pre>` },
-          { t:'teach', title:'Servomotores', voice:'Un servomotor no gira sin parar, solo 180 grados. Es el que usa el Lafvin para mover el sensor ultrasónico. Necesitas la librería Servo punto h.', html:`<h3>Controlando un Servo</h3><pre class="good"><code>#include &lt;Servo.h&gt;\nServo miServo;\n\nvoid setup() {\n  miServo.attach(9);\n}\n\nvoid loop() {\n  miServo.write(0);\n  delay(1000);\n  miServo.write(180);\n  delay(1000);\n}</code></pre>` },
-          { t:'code', title:'¡Desafío Servo!', 
-            voice:'Escribe un bucle for que haga que la variable angulo vaya desde 0 hasta 180, sumando 10. Dentro, escribe miServo punto write angulo.', 
-            html:`<h3>Tu misión</h3><p>Escribe el bucle <code>for</code> para que el servo barra de 0 a 180.</p><p style="font-size:12px;color:var(--muted)">Pista: <code>for (int angulo = 0; angulo <= 180; angulo += 10) { miServo.write(angulo); }</code></p>`,
-            codeReq: /for\s*\(\s*int\s+angulo\s*=\s*0\s*;\s*angulo\s*<=\s*180\s*;\s*angulo\s*\+=\s*10\s*\)\s*\{?\s*miServo\.write\s*\(\s*angulo\s*\)/i,
-            codeSuccess: '¡Perfecto! El servo ahora puede escanear.',
-            codeError: 'Revisa la sintaxis del for y recuerda usar miServo.write(angulo).' }
-        ]
-      },
-      {
-        id:'a6', title:'Nivel 7: El Proyecto Final',
-        desc:'Construye el código completo del Lafvin 4WD con TODOS los sensores.',
-        sublevels:[
-          { t:'teach', title:'Paso 1: La Base (Setup y Motores)', voice:'¡Aquí empieza la magia! Primero definimos los pines de los motores y en el setup los declaramos como salidas. Esto es el 10 por ciento del código.', html:`<h3>Definiendo la base</h3><p>En el Lafvin, los motores suelen usar pines como el 4, 5, 6, 7 para dirección y PWM.</p><pre class="good"><code>const int IN1 = 4;\nconst int IN2 = 5;\nconst int ENA = 9; // Pin PWM\n\nvoid setup() {\n  pinMode(IN1, OUTPUT);\n  pinMode(IN2, OUTPUT);\n  pinMode(ENA, OUTPUT);\n}</code></pre>` },
-          { t:'teach', title:'Paso 2: Los Ojos (Ultrasónico + Servo)', voice:'Ahora creamos la función que mueve el cuello (el servo) y lee la distancia del sensor ultrasónico. Esto va antes del loop principal.', html:`<h3>Función medirDistancia</h3><pre class="good"><code>int medirDistancia() {\n  digitalWrite(trig, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trig, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trig, LOW);\n  long tiempo = pulseIn(echo, HIGH);\n  return tiempo / 58.00; // Retorna cm\n}</code></pre>` },
-          { t:'teach', title:'Paso 3: Los Sensores Agroindustriales (DHT11 y Suelo)', voice:'Ahora añadimos el DHT11 y el sensor de humedad. Recuerda incluir las librerías arriba de todo y leer los datos en el loop.', html:`<h3>Leyendo el suelo y el clima</h3><pre class="good"><code>#include "DHT.h"\nDHT dht(2, DHT11);\n\nvoid loop() {\n  int humedadSuelo = analogRead(A0);\n  float temp = dht.readTemperature();\n  float hum  = dht.readHumidity();\n  // ... resto del código\n}</code></pre>` },
-          { t:'teach', title:'Paso 4: La Cara (OLED SH1106)', voice:'La pantalla OLED le dará personalidad al robot. Muestra la carita feliz o triste dependiendo de los sensores.', html:`<h3>Mostrando datos en la OLED</h3><pre class="good"><code>#include &lt;U8g2lib.h&gt;\nU8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0);\n\nvoid mostrarCarita(bool feliz) {\n  u8g2.clearBuffer();\n  if(feliz) u8g2.drawStr(0, 20, ":) Todo bien");\n  else u8g2.drawStr(0, 20, ":( Cuidado!");\n  u8g2.sendBuffer();\n}</code></pre>` },
-          { t:'teach', title:'Paso 5: Unirlo Todo (El Loop Final)', voice:'¡Llegó el momento! El loop principal llama a todas las funciones que creamos. Si el obstáculo está cerca o la tierra seca, se muestra la carita molesta y frena.', html:`<h3>El corazón del robot</h3><pre class="good"><code>void loop() {\n  int dist = medirDistancia();\n  int suelo = analogRead(A0);\n  \n  if (dist < 15 || suelo < 300) {\n    mostrarCarita(false);\n    digitalWrite(IN1, LOW); // Frena\n  } else {\n    mostrarCarita(true);\n    digitalWrite(IN1, HIGH); // Avanza\n  }\n  delay(500);\n}</code></pre><div class="note"><b>¡Felicidades!</b> Acabas de armar mentalmente las 600 líneas del proyecto final.</div>` }
+          { t:'teach', title:'El código espagueti', voice:'El código original del Lafvin es largo porque el autor no usó funciones ni bucles. Simplemente copió y pegó el mismo código para cada sensor. ¡Es lo que llamamos código espagueti!', html:`<h3>¿Por qué 600 líneas?</h3><p>En lugar de crear una función <code>avanzar()</code>, escribió el <code>digitalWrite</code> una y otra vez por cada modo de operación.</p><div class="tip"><b>La Solución:</b> Crear una función <code>void avanzar() { ... }</code> y llamarla. Así el código baja a 150 líneas.</div>` },
+          { t:'quiz', q:'¿Cuál es el mejor consejo para leer el código de 600 líneas?', opts:['Memorizar todo', 'Identificar los 5 bloques principales (Setup, Motores, Sensores, Bluetooth, Loop)', 'Escribirlo 100 veces'], a:1, explain:'Al identificar los bloques, el código largo se vuelve fácil de entender.' }
         ]
       }
     ]
@@ -351,39 +327,16 @@ const WORLDS = {
   esp32: {
     id: 'esp32', title: 'Mundo ESP32', subtitle: 'WiFi, BLE, 3.3V y ADC 12 bits',
     levels: [
-      {
-        id:'e0', title:'ESP32 vs Arduino',
-        desc:'3.3V, pines por GPIO y qué NO conectar.',
-        sublevels:[
-          { t:'teach', title:'El ESP32 no es un Arduino con WiFi', voice:'¡Cuidado, preciosa! El ESP32 trabaja a tres punto tres voltios, y si le metes cinco voltios a un pin lo puedes quemar. ¡Siempre revisa los voltajes!', html:`<h3>Diferencias críticas</h3><table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px"><tr style="border-bottom:1px solid var(--border)"><th style="text-align:left;padding:8px;color:var(--cyan)">Aspecto</th><th style="text-align:left;padding:8px;color:var(--cyan)">Arduino Uno</th><th style="text-align:left;padding:8px;color:var(--cyan)">ESP32</th></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">Voltaje</td><td style="padding:8px">5 V</td><td style="padding:8px"><b>3.3 V</b></td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:8px">ADC</td><td style="padding:8px">10 bits (0-1023)</td><td style="padding:8px"><b>12 bits (0-4095)</b></td></tr><tr><td style="padding:8px">WiFi</td><td style="padding:8px">No integrado</td><td style="padding:8px"><b>Integrado</b></td></tr></table>` },
-          { t:'quiz', q:'¿Qué voltaje toleran los pines del ESP32?', opts:['5 V, igual que el Uno','3.3 V','12 V','Depende del pin'], a:1, explain:'Todos los GPIO del ESP32 son de 3.3 V. 5 V los daña.' }
-        ]
-      },
-      {
-        id:'e3', title:'PWM con LEDC',
-        desc:'Cómo mover motores en ESP32 usando ledc.',
-        sublevels:[
-          { t:'teach', title:'No existe analogWrite', voice:'En el ESP32 no existe analog write. Se usa el controlador L E D C. Primero lo configuras con ledc Attach, después escribes con ledc Write.', html:`<h3>PWM con <code>ledc</code></h3><pre class="good"><code>// Core ESP32 nuevo (3.x)\n#define PIN_MOTOR 18\n#define FREC 5000\n#define RES 8    // 8 bits → 0..255\n\nvoid setup() {\n  ledcAttach(PIN_MOTOR, FREC, RES);\n}\n\nvoid loop() {\n  ledcWrite(PIN_MOTOR, 128);   // 50%\n}</code></pre>` },
-          { t:'quiz', q:'¿Qué reemplaza a <code>analogWrite</code> en ESP32?', opts:['digitalWrite','ledcWrite','analogOutput','pwmWrite'], a:1, explain:'Se configura con <code>ledcAttach</code> y se escribe con <code>ledcWrite</code>.' }
-        ]
-      },
-      {
-        id:'e4', title:'Conexión WiFi',
-        desc:'Conecta tu ESP32 a internet.',
-        sublevels:[
-          { t:'teach', title:'Librería WiFi.h', voice:'Para conectar el ESP32 a WiFi incluyes la librería WiFi punto h. Llamas a WiFi punto begin con el nombre y la contraseña, y esperas a que se conecte.', html:`<h3>WiFi en 5 líneas</h3><pre class="good"><code>#include &lt;WiFi.h&gt;\n\nvoid setup() {\n  Serial.begin(115200);\n  WiFi.begin("MiRed", "MiPassword");\n  while (WiFi.status() != WL_CONNECTED) {\n    delay(500);\n    Serial.print(".");\n  }\n  Serial.println(WiFi.localIP());\n}</code></pre><div class="tip"><b>Ojo:</b> <code>WL_CONNECTED</code> va todo en mayúsculas.</div>` },
-          { t:'quiz', q:'¿Qué librería necesitas para el WiFi en ESP32?', opts:['WiFi.h','ESP8266WiFi.h','Bluetooth.h','Network.h'], a:0, explain:'<code>WiFi.h</code> es la librería estándar para el ESP32.' }
-        ]
-      }
+      { id:'e0', title:'ESP32 vs Arduino', desc:'3.3V, pines por GPIO.', sublevels:[{ t:'teach', title:'El ESP32 no es un Arduino', voice:'¡Cuidado! El ESP32 trabaja a tres punto tres voltios. ¡Siempre revisa los voltajes!', html:`<p>Voltaje: <b>3.3 V</b>. ADC: <b>12 bits (0-4095)</b>.</p>` }] }
     ]
   }
 };
 
 const state = { name:'', gender:'f', sound:true, xp:0, hp:100, streak:0, world:'arduino',
-  unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false, mgHighScore:0, ryHighScore:0 };
+  unlocked:{ arduino:['a0'], esp32:['e0'] }, completed:{ arduino:{}, esp32:{} }, profileSet:false, mgHighScore:0, brHighScore:0 };
 
-function save(){ try{ localStorage.setItem('zhinin_v10', JSON.stringify(state)); }catch(e){} }
-function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v10')||'null'); if(s) Object.assign(state,s); }catch(e){} }
+function save(){ try{ localStorage.setItem('zhinin_v13', JSON.stringify(state)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem('zhinin_v13')||'null'); if(s) Object.assign(state,s); }catch(e){} }
 load();
 
 let audioCtx=null;
@@ -393,6 +346,7 @@ function sfxClick(){ beep(800,0.05,'square',0.06); }
 function sfxCorrect(){ beep(660,0.1,'sine',0.1); setTimeout(()=>beep(880,0.15,'sine',0.1),100); setTimeout(()=>beep(1320,0.2,'sine',0.1),220); }
 function sfxWrong(){ beep(200,0.15,'sawtooth',0.1); setTimeout(()=>beep(140,0.25,'sawtooth',0.1),120); }
 function sfxLevel(){ beep(523,0.12,'sine',0.12); setTimeout(()=>beep(659,0.12,'sine',0.12),130); setTimeout(()=>beep(784,0.12,'sine',0.12),260); setTimeout(()=>beep(1047,0.3,'sine',0.12),390); }
+function sfxHit(){ beep(100,0.2,'sawtooth',0.2); }
 
 if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices(); speechSynthesis.getVoices(); }
 function speak(text){
@@ -400,14 +354,11 @@ function speak(text){
   try{
     speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
-    u.lang='es-ES'; 
-    u.pitch=1.4; 
-    u.rate=1.15; 
+    u.lang='es-ES'; u.pitch=1.4; u.rate=1.15;
     const voices=speechSynthesis.getVoices();
     const es=voices.filter(v=>v.lang && v.lang.toLowerCase().startsWith('es'));
     const male = es.find(v=>/(male|hombre|jorge|diego|enrique|pablo|juan|alex)/i.test(v.name));
-    if(male) u.voice=male; 
-    else if(es[0]) u.voice=es[0];
+    if(male) u.voice=male; else if(es[0]) u.voice=es[0];
     speechSynthesis.speak(u);
   }catch(e){}
 }
@@ -415,7 +366,7 @@ function stopSpeak(){ if('speechSynthesis' in window) speechSynthesis.cancel(); 
 
 const $=(id)=>document.getElementById(id);
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); window.scrollTo(0,0); }
-function setSoundBtn(){ const t=state.sound?'🔊':'🔇'; $('btn-sound').textContent=t; $('btn-sound2').textContent=t; $('btn-sound3').textContent=t; $('btn-sound4').textContent=t; }
+function setSoundBtn(){ const t=state.sound?'🔊':'🔇'; $('btn-sound').textContent=t; $('btn-sound2').textContent=t; $('btn-sound3').textContent=t; $('btn-sound5').textContent=t; }
 function updateHUD(){
   $('hud-xp').textContent=state.xp; $('hud-hp').textContent=state.hp; $('hud-streak').textContent=state.streak+' 🔥';
   $('hud-xp-bar').style.width=Math.min(100,(state.xp%500)/5)+'%';
@@ -433,15 +384,15 @@ function renderMap(){
   
   const mgCard=document.createElement('div');
   mgCard.className='level-card minigame';
-  mgCard.innerHTML=`<div class="lvl-num">Arcade</div><div class="lvl-title">🎮 Caza Errores</div><div class="lvl-desc">Récord: ${state.mgHighScore} pts. ¡Pon a prueba tus reflejos!</div><div class="lvl-status">▶</div>`;
+  mgCard.innerHTML=`<div class="lvl-num">Arcade</div><div class="lvl-title">🎮 Caza Errores</div><div class="lvl-desc">Récord: ${state.mgHighScore} pts.</div><div class="lvl-status">▶</div>`;
   mgCard.onclick=()=>{ sfxClick(); openMinigame(); };
   grid.appendChild(mgCard);
 
-  const ryCard=document.createElement('div');
-  ryCard.className='level-card royale';
-  ryCard.innerHTML=`<div class="lvl-num">Batalla</div><div class="lvl-title">⚔️ Code Royale</div><div class="lvl-desc">Usa cartas de código para derrotar al Motor Rebelde.</div><div class="lvl-status">▶</div>`;
-  ryCard.onclick=()=>{ sfxClick(); openRoyale(); };
-  grid.appendChild(ryCard);
+  const brCard=document.createElement('div');
+  brCard.className='level-card royale';
+  brCard.innerHTML=`<div class="lvl-num">Supervivencia</div><div class="lvl-title">☠️ Battle Royale</div><div class="lvl-desc">Sobrevive a la tormenta de bugs por 60s.</div><div class="lvl-status">▶</div>`;
+  brCard.onclick=()=>{ sfxClick(); openBR(); };
+  grid.appendChild(brCard);
 
   world.levels.forEach((lvl,i)=>{
     const isUnlocked=unlocked.includes(lvl.id);
@@ -606,54 +557,158 @@ function handleMgAnswer(ans, q){
 }
 function endMinigame(){ clearInterval(mgInterval); clearTimeout(mgTimeout); if(mgScore > state.mgHighScore) state.mgHighScore = mgScore; save(); alert(`¡Juego terminado!\nPuntos: ${mgScore}\nRécord: ${state.mgHighScore}`); showScreen('screen-map'); renderMap(); }
 
-let rySequence = [];
-const ryCards = [
-  { id:'dw_high', name:'Encender', type:'digitalWrite(5, HIGH);', icon:'⚡', cost:2, effect:'on' },
-  { id:'dw_low', name:'Apagar', type:'digitalWrite(5, LOW);', icon:'🌑', cost:2, effect:'off' },
-  { id:'delay', name:'Esperar', type:'delay(1000);', icon:'⏳', cost:1, effect:'wait' }
-];
-function openRoyale(){ showScreen('screen-royale'); rySequence = []; renderRoyale(); }
-function renderRoyale(){
-  const deck = $('ry-deck'); deck.innerHTML='';
-  ryCards.forEach(c => {
-    const el = document.createElement('div'); el.className = 'royale-card';
-    el.innerHTML = `<div class="r-cost">${c.cost}</div><div class="r-icon">${c.icon}</div><div class="r-name">${c.name}</div>`;
-    el.onclick = () => { sfxClick(); rySequence.push(c); renderRoyaleSequence(); };
-    deck.appendChild(el);
-  });
-  renderRoyaleSequence();
+// ================= BATTLE ROYALE =================
+let brPlayer = {x: 5, y: 5};
+let brEnemies = [];
+let brStormRadius = 5;
+let brTime = 60;
+let brScore = 0;
+let brHp = 100;
+let brInterval = null;
+
+function openBR(){
+  showScreen('screen-br');
+  startBR();
 }
-function renderRoyaleSequence(){
-  const seq = $('ry-sequence'); seq.innerHTML='';
-  rySequence.forEach((c, index) => {
-    const el = document.createElement('div'); el.className = 'seq-item'; el.innerHTML = `${c.icon} ${c.name}`;
-    el.onclick = () => { rySequence.splice(index, 1); renderRoyaleSequence(); };
-    seq.appendChild(el);
-  });
-}
-function executeRoyale(){
-  const hero = $('ry-hero'); const enemy = $('ry-enemy'); const status = $('ry-status');
-  if(rySequence.length === 0) return;
-  status.textContent = "Ejecutando programa..."; let success = false;
-  const hasHigh = rySequence.some(c => c.effect === 'on'); const hasLow = rySequence.some(c => c.effect === 'off'); const hasWait = rySequence.some(c => c.effect === 'wait');
-  if(hasHigh && hasLow && hasWait) success = true;
-  hero.style.transform = 'translateX(150px)';
-  setTimeout(() => {
-    if(success){
-      sfxCorrect(); enemy.textContent = '💥'; enemy.style.transform = 'scale(1.5) rotate(45deg)';
-      status.textContent = "¡Victoria! Has desactivado al Motor Rebelde."; status.style.color = "var(--green)";
-      if(state.ryHighScore < 100) { state.xp += 200; state.ryHighScore = 100; save(); updateHUD(); spawnParticle('+200 XP', 'var(--magenta)'); }
-    } else {
-      sfxWrong(); document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'),400);
-      status.textContent = "¡Fallaste! Necesitas darle energía (Encender), esperar un poco (Delay) y apagarlo (Apagar)."; status.style.color = "var(--red)";
+
+function startBR() {
+    brPlayer = {x: 5, y: 5};
+    brEnemies = [];
+    // Spawn 6 enemies en las esquinas
+    for(let i=0; i<6; i++) {
+        brEnemies.push({x: Math.random() > 0.5 ? 0 : 10, y: Math.random() > 0.5 ? 0 : 10, id: i});
     }
-    setTimeout(() => {
-      hero.style.transform = 'translateX(0)';
-      if(!success) { enemy.textContent = '⚙️'; enemy.style.transform = 'none'; }
-      rySequence = []; renderRoyaleSequence();
-    }, 2000);
-  }, 1000);
+    brStormRadius = 5;
+    brTime = 60;
+    brScore = 0;
+    brHp = 100;
+    clearInterval(brInterval);
+    brInterval = setInterval(brTick, 1000);
+    renderBR();
 }
+
+function renderBR() {
+    const grid = $('br-grid');
+    grid.innerHTML = '';
+    for(let y=0; y<11; y++) {
+        for(let x=0; x<11; x++) {
+            const cell = document.createElement('div');
+            cell.className = 'br-cell';
+            
+            // Tormenta
+            if (Math.abs(x-5) > brStormRadius || Math.abs(y-5) > brStormRadius) {
+                cell.classList.add('storm');
+            }
+            
+            // Jugador
+            if (x === brPlayer.x && y === brPlayer.y) {
+                cell.classList.add('player');
+                cell.textContent = '🤖';
+            }
+            
+            // Enemigos
+            if (brEnemies.some(e => e.x === x && e.y === y)) {
+                cell.classList.add('enemy');
+                if(cell.textContent !== '🤖') cell.textContent = '👾';
+            }
+            
+            grid.appendChild(cell);
+        }
+    }
+    
+    $('br-hp').textContent = brHp;
+    $('br-time').textContent = brTime;
+    $('br-score').textContent = brScore;
+}
+
+function moveBR(dx, dy) {
+    if(brHp <= 0 || brTime <= 0) return;
+    brPlayer.x = Math.max(0, Math.min(10, brPlayer.x + dx));
+    brPlayer.y = Math.max(0, Math.min(10, brPlayer.y + dy));
+    renderBR();
+}
+
+function attackBR() {
+    if(brHp <= 0 || brTime <= 0) return;
+    
+    let nearest = null; let minDist = 999;
+    brEnemies.forEach(e => {
+        let dist = Math.abs(e.x - brPlayer.x) + Math.abs(e.y - brPlayer.y);
+        if(dist < minDist) { minDist = dist; nearest = e; }
+    });
+    
+    if(nearest && minDist <= 3) {
+        brEnemies = brEnemies.filter(e => e !== nearest);
+        brScore += 10;
+        sfxCorrect();
+        spawnParticle('💥 Bug eliminado', 'var(--cyan)');
+        renderBR();
+        
+        // Spawn nuevo enemigo para mantener el reto
+        setTimeout(() => {
+           if(brHp > 0 && brTime > 0) {
+              brEnemies.push({x: Math.random() > 0.5 ? 0 : 10, y: Math.random() > 0.5 ? 0 : 10, id: Date.now()});
+              renderBR();
+           }
+        }, 1500);
+        
+    } else {
+        sfxWrong();
+        spawnParticle('Fuera de rango', 'var(--muted)');
+    }
+}
+
+function brTick() {
+    brTime--;
+    
+    // Daño de la tormenta
+    if (Math.abs(brPlayer.x-5) > brStormRadius || Math.abs(brPlayer.y-5) > brStormRadius) {
+        brHp -= 5;
+        sfxHit();
+        spawnParticle('-5 HP (Tormenta)', 'var(--red)');
+    }
+    
+    // La tormenta se cierra
+    if (brTime % 15 === 0 && brStormRadius > 1) brStormRadius--;
+    
+    // Movimiento de enemigos
+    brEnemies.forEach(e => {
+        let dx = Math.sign(brPlayer.x - e.x);
+        let dy = Math.sign(brPlayer.y - e.y);
+        
+        // Movimiento inteligente (persigue en el eje más lejano)
+        if (Math.abs(brPlayer.x - e.x) > Math.abs(brPlayer.y - e.y)) e.x += dx;
+        else e.y += dy;
+        
+        // Daño al jugador
+        if (e.x === brPlayer.x && e.y === brPlayer.y) {
+            brHp -= 15;
+            sfxHit();
+            spawnParticle('-15 HP', 'var(--red)');
+            // Empujar al enemigo hacia atrás para que no te ataque 60 veces por segundo
+            e.x += dx; 
+            e.y += dy;
+        }
+    });
+    
+    renderBR();
+    
+    if (brHp <= 0) {
+        clearInterval(brInterval);
+        sfxWrong();
+        document.body.classList.add('shake');
+        setTimeout(()=>document.body.classList.remove('shake'), 500);
+        alert('☠️ HAS SIDO ELIMINADO. Los bugs te atraparon. ¡Intenta atacar más rápido!');
+        showScreen('screen-map'); renderMap();
+    } else if (brTime <= 0) {
+        clearInterval(brInterval);
+        sfxLevel();
+        alert(`🏆 ¡VICTORIA! Has sobrevivido al Battle Royale.\nBugs eliminados: ${brScore / 10}`);
+        if(state.brHighScore < brScore) { state.xp += 500; state.brHighScore = brScore; save(); updateHUD(); }
+        showScreen('screen-map'); renderMap();
+    }
+}
+// ==========================================================
 
 let chatHistory=[], chatBusy=false;
 function openChat(){
@@ -700,7 +755,7 @@ function bootProfile(){
 function bootMap(){
   document.querySelectorAll('.world-tabs button').forEach(b=>{ b.onclick=()=>{ state.world=b.dataset.world; sfxClick(); renderMap(); }; });
   $('btn-sound').onclick=()=>{ state.sound=!state.sound; save(); setSoundBtn(); if(!state.sound) stopSpeak(); sfxClick(); };
-  $('btn-reset').onclick=()=>{ if(!confirm('¿Borrar todo tu progreso y récords?')) return; state.xp=0; state.hp=100; state.streak=0; state.unlocked={arduino:['a0'],esp32:['e0']}; state.completed={arduino:{},esp32:{}}; state.mgHighScore=0; state.ryHighScore=0; save(); updateHUD(); renderMap(); };
+  $('btn-reset').onclick=()=>{ if(!confirm('¿Borrar todo tu progreso y récords?')) return; state.xp=0; state.hp=100; state.streak=0; state.unlocked={arduino:['a0'],esp32:['e0']}; state.completed={arduino:{},esp32:{}}; state.mgHighScore=0; state.brHighScore=0; save(); updateHUD(); renderMap(); };
 }
 function bootLevel(){
   $('btn-back').onclick=()=>{ stopSpeak(); showScreen('screen-map'); renderMap(); };
@@ -716,15 +771,14 @@ function bootMinigame(){
   $('mg-btn-ok').onclick=()=>handleMgAnswer(true, mgCurrentQuestion);
   $('mg-btn-err').onclick=()=>handleMgAnswer(false, mgCurrentQuestion);
 }
-function bootRoyale(){
-  $('btn-ry-back').onclick=()=>{ stopSpeak(); showScreen('screen-map'); renderMap(); };
-  $('btn-sound4').onclick=$('btn-sound').onclick;
-  $('btn-ry-execute').onclick=executeRoyale;
+function bootBR(){
+  $('btn-br-back').onclick=()=>{ clearInterval(brInterval); stopSpeak(); showScreen('screen-map'); renderMap(); };
+  $('btn-sound5').onclick=$('btn-sound').onclick;
 }
 
 function init(){
   try {
-    setSoundBtn(); bootProfile(); bootMap(); bootLevel(); bootComplete(); bootChat(); bootMinigame(); bootRoyale();
+    setSoundBtn(); bootProfile(); bootMap(); bootLevel(); bootComplete(); bootChat(); bootMinigame(); bootBR();
     if(state.profileSet){ showScreen('screen-map'); renderMap(); } else { showScreen('screen-profile'); }
   } catch(e) {
     var el = document.getElementById('error-log');
