@@ -497,7 +497,7 @@ Reglas:
 - Si te piden la respuesta directa de una evaluación, da una pista en lugar de la solución.`;
 
     // Hacemos la petición directo a Google
-    const res = await const res = await fetch('/api/zhinin', {
+ const res = await fetch('/api/zhinin', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ messages: chatHistory, gender: state.gender, level: currentLevel ? currentLevel.title : 'Intro' })
